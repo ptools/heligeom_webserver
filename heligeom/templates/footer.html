@@ -1,0 +1,63 @@
+
+<footer class="page-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col l2 s12">
+            <img src="{{ url_for('static', filename='img/ibpc-batiment.jpg') }}">
+        </div>
+
+        <div class="col l6 s12">
+          <h5>Laboratoire de Biochimie Théorique</h5>
+          <p>
+          The <a href="http://www-lbt.ibpc.fr/">Laboratoire de Biochimie Théorique</a> (LBT, CNRS UPR 9080) is one of five laboratories
+           within the  <a href="http://www.ibpc.fr/">Institut de Biologie Physico-Chimique</a> in Paris.
+          </p>
+          <p>
+          Our field is theoretical and computational biochemistry, at the interface between biology, chemistry, physics, and computing.
+          </p>
+        </div>
+        <div class="col l2 s12">
+            <a href="http://www-lbt.ibpc.fr/">
+                <img src="{{ url_for('static', filename='img/lbt-logo.png') }}">
+            </a>
+        </div>
+      </div>
+        <div class="row">
+            <div class="valign-wrapper logos">
+                <div class="col">
+                    <a href="http://www.ibpc.fr/">
+                    <img src="{{ url_for('static', filename='img/ibpc-logo.png') }}">
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="http://www.cnrs.fr/">
+                    <img src="{{ url_for('static', filename='img/cnrs-logo.png') }}">
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="https://www.psl.eu/">
+                    <img src="{{ url_for('static', filename='img/psl-logo.png') }}" style="width: 150px;">
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="https://u-paris.fr/">
+                    <img src="{{ url_for('static', filename='img/uparis-logo.png') }}" style="width: 200px;">
+                    </a>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="footer-copyright">
+      <div class="container">
+      Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+      </div>
+    </div> -->
+  </footer>
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="{{ url_for('static', filename='js/materialize.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/init.js') }}"></script>
+

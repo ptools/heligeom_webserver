@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Heligeom - Run{% endblock %}
+
+{% block content %}
+
+
+  <div class="container">
+    <div class="section contacts">
+
+        <h2 class="header light blue-grey-text text-darken-3"">Contacts</h2>
+        <div class="row">
+            <div class="col l5 s12">
+                <h5 class="blue-grey-text text-darken-3">People</h5>
+                <p>
+                    Lorem Ipseum
+                </p>
+            </div>
+            <div class="col l2 s12">
+                <img class="circle responsive-img" src="{{ url_for('static', filename='img/ibpc-batiment.jpg') }}">
+            </div>
+            <div class="col l5 s12">
+                <h5 class="blue-grey-text text-darken-3" style="margin-top: 0;">Address</h5>
+                <p class="light">
+                <b>Laboratoire de Biochimie Théorique</b><br />
+                UPR 9080 CNRS<br/>
+                Institut de Biologie Physico-Chimique<br/>
+                13 rue Pierre et Marie Curie<br/>
+                75005 Paris, France<br/>
+                <i class="tiny material-icons contact-icons">computer</i> <a href="http://www-lbt.ibpc.fr/">www-lbt.ibpc.fr/</a><br />
+                <i class="tiny material-icons contact-icons">phone</i> +33 [0]1 58 41 50 06
+                </p>
+            </div>
+        </div>
+
+        <h2 class="header light blue-grey-text text-darken-3">Citations</h2>
+
+    </div>
+  </div>
+
+
+
+  {% endblock %}

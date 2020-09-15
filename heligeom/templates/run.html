@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Heligeom - Run{% endblock %}
+
+{% block content %}
+
+  <div class="container">
+    <div class="section">
+
+        <h2 class="header light center">Run the Program</h2>
+        <div class="col s6 m6 l6 right-align">
+          <a class="header waves-effect grey lighten-5 grey-text text-darken-3 btn" href="#"><i class="material-icons left hide-on-small-only">info_outline</i>Example</a>
+      </div>
+
+          <form id="" method="POST" action='' class="form" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+              <div class="card">
+                  <div class="card-content">
+                      <div class="row">
+                          <div class="col s12">
+                              <p><b style="font-size: 18px;">Structural Information</b></p>
+                          </div>
+                          <div class="col s12 light" style="margin:12px">
+                            <p>Either upload 2 PDB files or provide 2 PDB ids</p>
+                          </div>
+                          <div class="col s12 m6">
+                            <div class="card hoverable">
+                              <div class="card-content">
+                                <span class="card-title">Protein 1</span>
+                                <div class="row">
+                                  <div class="col s12 m6">
+                                    <div class="file-field input-field">
+                                        <div class="btn-small lbt-gris">
+                                            <i class="material-icons right">file_upload</i>
+                                            <span>Upload</span>
+                                            {{ form.pdb1_file}}
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text">
+
+                                        </div>
+                                        <span class="helper-text">Submit a molecule in <a href="https://www.wwpdb.org/documentation/file-format">PDB format</a></span>
+                                      {% if form.pdb1_file.errors %}
+                                        <span class="helper-text" style="color: #F44336;">{{form.pdb1_file.errors}}</span>
+                                      {% endif %}
+                                    </div>
+                                  </div>
+                                  <div class="col s12 m4 input-field">
+                                    {{ form.pdb1_id(class_="validate", placeholder="1KX2")}}
+                                    <label for="pdb1_id">PDB Accession</label>
+                                  </div>
+                                </div> <!-- end div row -->
+                              </div> <!-- end div card content -->
+                            </div> <!-- end div card -->
+                          </div> <!-- end div col -->
+                          <div class="col s12 m6">
+                            <div class="card hoverable">
+                              <div class="card-content">
+                                <span class="card-title">Protein 2</span>
+                                <div class="row">
+                                  <div class="col s12 m6">
+                                    <div class="file-field input-field">
+                                        <div class="btn-small lbt-gris">
+                                            <i class="material-icons right">file_upload</i>
+                                            <span>Upload</span>
+                                            {{ form.pdb2_file}}
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text">
+
+                                        </div>
+                                        <span class="helper-text">Submit a molecule in <a href="https://www.wwpdb.org/documentation/file-format">PDB format</a></span>
+                                      <!-- ##  {% if form.pdb2_file.errors %}
+                                        <span class="helper-text" style="color: #F44336;">{{form.pdb2_file.errors}}</span>
+                                      ##{% endif %} -->
+                                    </div>
+                                  </div>
+                                  <div class="col s12 m4 input-field">
+                                    {{ form.pdb2_id(class_="validate", placeholder="1KX2")}}
+                                    <label for="pdb2_id">PDB Accession</label>
+                                  </div>
+                                </div> <!-- end div row -->
+                              </div> <!-- end div card content -->
+                            </div> <!-- end div card -->
+                          </div> <!-- end div col -->
+
+                      </div>  <!-- end div rpw -->
+                      <div class="row">
+                        <div class="col s12" style="margin-bottom: 10px;">
+                            <p><b style="font-size: 18px;">Construction Details</b></p>
+                        </div>
+                        <div class="input-field col s12 m2">
+                          {{ form.n_mer(class_="validate", placeholder="10")}}
+                          <label>Number of Monomers</label>
+                          {% if form.n_mer.errors %}
+                            <span class="helper-text" style="color: #F44336;">{{form.n_mer.errors}}</span>
+                          {% else %}
+                            <span class="helper-text" data-error="Number only" data-success="">Number only</span>
+                          {% endif %}
+                        </div>
+                        <div class="input-field col s12 m3">
+                            <label for="z_align">
+                              {{ form.z_align }}
+                              <span>Alignment on Z-axis?</span>
+                            </label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <ul class="collapsible" style="box-shadow: none; border:none;">
+                          <li>
+                            <div class="collapsible-header" style="border-bottom: 2px solid #02aab3; padding-left:0.75rem;"><b style="font-size: 18px;">Advanced Parameters</b><i class="material-icons">arrow_drop_down</i></div>
+                            <div class="collapsible-body" style="border-bottom: none;"><span>Lorem ipsum dolor sit amet.</span></div>
+                          </li>
+                        </ul>
+                      </div>
+                  </div> <!--  end div card content -->
+                  <div class="card-action">
+                      <button class="waves-effect btn lbt-bleu" type="submit">Submit<i class="material-icons right">send</i></button>
+                  </div>
+              </div>
+          </form>
+        <br />
+
+  </div>
+</div>
+  {% endblock %}
