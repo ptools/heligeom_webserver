@@ -1,0 +1,21 @@
+image: "python:3.6"
+
+before_script:
+  - python --version
+  - pip install pipenv
+  - pipenv install --dev
+
+  #Ptools part
+  - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.galaxy.ibpc.fr/laurent/ptools-python
+  - pipenv install -r ptools-python/requirements/base.txt
+  - pipenv run pip install -e ptools-python/
+
+
+stages:
+  - Test
+
+
+unit_test:
+  stage: Test
+  script:
+  - pipenv run python -m pytest -v --ignore=ptools-python
