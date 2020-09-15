@@ -1,8 +1,7 @@
 #! /usr/bin/env python
 
-from heligeom import app, db
+from heligeom import create_app
 
 if __name__ == "__main__":
-    db.drop_all()
-    db.create_all()
+    app = create_app()
     app.run(debug=True,host="0.0.0.0")

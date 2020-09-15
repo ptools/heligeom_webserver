@@ -1,17 +1,17 @@
 <nav class="lbt-bleu" role="navigation">
-    <div class="nav-wrapper container"><a id="logo-container" href="{{ url_for('homepage')}}" class="brand-logo">Heligeom</a>
+    <div class="nav-wrapper container"><a id="logo-container" href="{{ url_for('heligeom_bp.homepage')}}" class="brand-logo">Heligeom</a>
     <ul class="nav-left hide-on-med-and-down">
-        <li><a href="{{ url_for('homepage')}}">Home</a></li>
-        <li><a href="{{ url_for('runpage')}}">Run</a></li>
-        <li><a href="{{ url_for('help')}}">Help</a></li>
-        <li><a href="{{ url_for('contact')}}">Contact</a></li>
+        <li><a href="{{ url_for('heligeom_bp.homepage')}}">Home</a></li>
+        <li><a href="{{ url_for('heligeom_bp.runpage')}}">Run</a></li>
+        <li><a href="{{ url_for('heligeom_bp.help')}}">Help</a></li>
+        <li><a href="{{ url_for('heligeom_bp.contact')}}">Contact</a></li>
     </ul>
 
     <ul id="nav-mobile" class="sidenav">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Run</a></li>
-        <li><a href="#">Help</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="{{ url_for('heligeom_bp.homepage')}}">Home</a></li>
+        <li><a href="{{ url_for('heligeom_bp.runpage')}}">Run</a></li>
+        <li><a href="{{ url_for('heligeom_bp.help')}}">Help</a></li>
+        <li><a href="{{ url_for('heligeom_bp.contact')}}">Contact</a></li>
     </ul>
     <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
     </div>
