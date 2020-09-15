@@ -29,13 +29,13 @@ def validate_input_structure(pdb_file, pdb_id, folder_name):
         pdb_filename = secure_filename(pdb_file.filename)
         if pdb_filename == '':
             return None
-        pdb_file.save(os.path.join(current_app.config["IMAGE_UPLOADS"], folder_name, pdb_filename))
+        pdb_file.save(os.path.join(current_app.config["DATA_UPLOADS"], folder_name, pdb_filename))
         return pdb_filename
     # or PDB id ?
     else:
         pdb_filename = pdb_id.data + ".pdb"
         url = current_app.config["PDB_SERVER"] + pdb_filename
-        path = os.path.join(current_app.config["IMAGE_UPLOADS"], folder_name, pdb_filename)
+        path = os.path.join(current_app.config["DATA_UPLOADS"], folder_name, pdb_filename)
         try:
             urllib.request.urlretrieve(url, path)
             return pdb_filename
@@ -60,7 +60,7 @@ def runpage():
             #Generate UUID for page results
             uniq_id = uuid.uuid4().hex
             # Create result folder
-            pathlib.Path(current_app.config['IMAGE_UPLOADS'], uniq_id).mkdir(exist_ok=True)
+            pathlib.Path(current_app.config['DATA_UPLOADS'], uniq_id).mkdir(exist_ok=True)
 
 
             pdb1_filename = validate_input_structure(form.pdb1_file, form.pdb1_id, uniq_id)
@@ -91,10 +91,10 @@ def results(results_id):
 
     #Ptools part
     pdb_out_name = "out.pdb"
-    pdb_out_abs_path = os.path.join(current_app.config["IMAGE_UPLOADS"], results_id, pdb_out_name)
+    pdb_out_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], results_id, pdb_out_name)
 
-    pdb1_abs_path = os.path.join(current_app.config["IMAGE_UPLOADS"], results_id, pdb1_filename)
-    pdb2_abs_path = os.path.join(current_app.config["IMAGE_UPLOADS"], results_id, pdb2_filename)
+    pdb1_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], results_id, pdb1_filename)
+    pdb2_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], results_id, pdb2_filename)
     #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
     # Return the helicoidal parameters
     hp, pitch, nb_monomers, direction = run(pdb1_abs_path, pdb2_abs_path, n_mer, pdb_out_abs_path)

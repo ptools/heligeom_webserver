@@ -14,10 +14,7 @@ def client():
     """
     Configure the application for testing
     """
-    flask_app = create_app()
-    flask_app.config['TESTING'] = True
-    flask_app.config['WTF_CSRF_ENABLED'] = False
-    flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+    flask_app = create_app('config.TestConfig')
 
     with flask_app.test_client() as client:
         yield client
