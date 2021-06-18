@@ -16,8 +16,8 @@ def client():
     """
     flask_app = create_app('config.TestConfig')
 
-    with flask_app.test_client() as client:
-        yield client
+    with flask_app.test_client() as c:
+        yield c
 
 @pytest.fixture(scope='module')
 def init_database():
