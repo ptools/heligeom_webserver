@@ -8,7 +8,7 @@ class Config:
     """Base config."""
     SECRET_KEY = os.environ.get('SECRET_KEY')
     STATIC_FOLDER = 'static'
-    DATA_UPLOADS =  os.path.join(basedir, "static/data/")
+    DATA_UPLOADS =  os.path.join(basedir, "heligeom/static/data/")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAX_CONTENT_LENGTH = 10000 * 10000
     PDB_SERVER = "https://files.rcsb.org/download/"

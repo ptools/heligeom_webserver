@@ -4,11 +4,12 @@ import pathlib
 import uuid
 import math
 import urllib.request
+
 from flask import Blueprint, current_app, render_template, redirect, url_for, request
 from werkzeug.utils import secure_filename
 
 from .forms import TestForm
-from .models import db, User_Inputs
+from .models import db, UserInputs
 from .tool import run
 
 # Blueprint Configuration
@@ -60,6 +61,8 @@ def runpage():
             #Generate UUID for page results
             uniq_id = uuid.uuid4().hex
             # Create result folder
+
+            print("path :", current_app.config['DATA_UPLOADS'], uniq_id)
             pathlib.Path(current_app.config['DATA_UPLOADS'], uniq_id).mkdir(exist_ok=True)
 
 
@@ -70,8 +73,9 @@ def runpage():
                 # Save to the database the form inputs
                 # Only way for now to pass the form data to another page.
                 # We could use session or flash messages but neither seems to fit the need.
-                user_inputs = User_Inputs(request_id=uniq_id, pdb1_filename=pdb1_filename, pdb2_filename=pdb2_filename,
-                                        n_mer=form.n_mer.data, z_align=form.z_align.data)
+                user_inputs = UserInputs(request_id=uniq_id,
+                                         pdb1_filename=pdb1_filename, pdb2_filename=pdb2_filename,
+                                         n_mer=form.n_mer.data, z_align=form.z_align.data)
                 db.session.add(user_inputs)
                 db.session.commit()
 
@@ -83,7 +87,7 @@ def runpage():
 def results(results_id):
 
     # Query the database to retrieve the form inputs
-    query_result = db.session.query(User_Inputs).filter(User_Inputs.request_id == results_id).first()
+    query_result = db.session.query(UserInputs).filter(UserInputs.request_id == results_id).first()
     pdb1_filename = query_result.pdb1_filename
     pdb2_filename = query_result.pdb2_filename
     n_mer = query_result.n_mer

@@ -2,7 +2,7 @@
 from . import db
 
 
-class User_Inputs(db.Model):
+class UserInputs(db.Model):
     request_id = db.Column(db.String(32), unique=True, primary_key=True)
     pdb1_filename = db.Column(db.String(100), nullable=False)
     pdb2_filename = db.Column(db.String(100), nullable=False)

@@ -2,15 +2,18 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import IntegerField, BooleanField, StringField, validators
-from markupsafe import Markup
+
 
 class TestForm(FlaskForm):
 
     pdb1_file = FileField('pdb1_file', validators=[FileAllowed(['pdb'], 'Only a PDB file')])
     pdb2_file = FileField('pdb2_file', validators=[FileAllowed(['pdb'], 'Only a PDB file')])
-    pdb1_id = StringField('pdb1_id', validators=[validators.Optional(),validators.length(min=4, max=4)])
-    pdb2_id = StringField('pdb1_id', validators=[validators.Optional(), validators.length(min=4, max=4)])
-    n_mer = IntegerField("n_mer", validators=[validators.InputRequired(message=""),validators.NumberRange(0, message="Only a Number")])
+    pdb1_id = StringField('pdb1_id', validators=[validators.Optional(),
+                                                 validators.length(min=4, max=4)])
+    pdb2_id = StringField('pdb1_id', validators=[validators.Optional(),
+                                                 validators.length(min=4, max=4)])
+    n_mer = IntegerField("n_mer", validators=[validators.InputRequired(message=""),
+                                              validators.NumberRange(0, message="Only a Number")])
     z_align = BooleanField("z_align")
 
 

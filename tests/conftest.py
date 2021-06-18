@@ -6,7 +6,7 @@ Instantiate app and db variables through fixtures
 import pytest
 
 from heligeom import create_app, db
-from heligeom.models import User_Inputs
+from heligeom.models import UserInputs
 
 
 @pytest.fixture(scope='module')
@@ -29,7 +29,7 @@ def init_database():
     db.create_all()
 
     # Insert user data
-    data = User_Inputs("32300a0108a84a26afb3f23eb6bafba2","1kx2.pdb","1bta.pdb", 5)
+    data = UserInputs("32300a0108a84a26afb3f23eb6bafba2","1kx2.pdb","1bta.pdb", 5)
     db.session.add(data)
 
     # Commit the changes for the users

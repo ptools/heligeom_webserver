@@ -7,8 +7,6 @@ db = SQLAlchemy()
 
 def create_app(config_object=None):
 
-    basedir = os.path.abspath(os.path.dirname(__file__))
-
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_object)
@@ -18,7 +16,7 @@ def create_app(config_object=None):
     with app.app_context():
 
         #Clear database
-        db.drop_all(app=app)
+        db.drop_all()
         db.create_all(app=app)
 
         # Include Routes

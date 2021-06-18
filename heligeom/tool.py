@@ -5,7 +5,7 @@ Ptools module for the calculations
 import math
 
 from ptools import RigidBody
-from ptools.heligeom import extend, heli_analyze, heli_construct
+from ptools.heligeom import heli_analyze, heli_construct
 
 
 def move_rigidbody(rb, x=0, y=0, z=0):
@@ -35,4 +35,3 @@ def run(pdb1_file, pdb2_file, n_mer, pdb_out):
     direction = "right-handed" if hp.angle * hp.normtranslation > 0 else "left-handed"
 
     return (hp, pitch, monomers_per_turn, direction)
-
