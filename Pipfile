@@ -6,12 +6,14 @@ verify_ssl = true
 [dev-packages]
 pylint = "*"
 pytest = "*"
+pylint-flask-sqlalchemy = "*"
 
 [packages]
 flask = "*"
 sqlalchemy = "*"
 flask-wtf = "*"
 flask-sqlalchemy = "*"
+
 
 [requires]
 python_version = "3.6"

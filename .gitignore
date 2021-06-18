@@ -47,4 +47,4 @@ docs/_build/
 #Heligeom part
 **/data/*
 /*.pdb
-heligeom.db
+*.db
