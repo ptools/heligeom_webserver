@@ -4,6 +4,7 @@ before_script:
   - python --version
   - pip install pipenv
   - pipenv install --dev
+  - pipenv install numpy scipy #should be automatically done within ptools-python but fails on CI
 
 stages:
   - Test
