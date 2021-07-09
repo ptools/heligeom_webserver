@@ -13,7 +13,7 @@ flask = "*"
 sqlalchemy = "*"
 flask-wtf = "*"
 flask-sqlalchemy = "*"
-
+ptools = {editable = true, path = "./ptools-python"}
 
 [requires]
 python_version = "3.6"
