@@ -88,7 +88,7 @@
             </div>
             <div class="row">
               <p class="center-align">
-                <a class="waves-effect btn-small lbt-gris" data-tooltip="Download PDB file" href="http://sablons.lbt.ibpc.fr:5000/{{ data.pdb_path }}">
+                <a class="waves-effect btn-small lbt-gris" data-tooltip="Download PDB file" href="{{ url_for('heligeom_bp.download', results_id=data.results_id)}}">
                   <i class="material-icons right">file_download</i><span class="hide-on-med-and-down">Download</span>
                 </a>
               </p>
@@ -113,7 +113,7 @@
 
               plugin.loadMolecule({
                   id: 'custom',
-                  url: 'http://sablons.lbt.ibpc.fr:5000/{{ data.pdb_path }}',
+                  url: "{{ url_for('heligeom_bp.download', results_id=data.results_id) }}",
                   format: 'pdb' // default
               });
             </script>

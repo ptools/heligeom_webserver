@@ -5,7 +5,7 @@ import uuid
 import math
 import urllib.request
 
-from flask import Blueprint, current_app, render_template, redirect, url_for, request
+from flask import Blueprint, current_app, render_template, redirect, url_for, request, send_from_directory
 from werkzeug.utils import secure_filename
 
 from .forms import TestForm
@@ -99,6 +99,7 @@ def results(results_id):
     z_align      = query_result.z_align
 
     #Ptools part
+    # Name of the constructed PDB (used also in download function)
     pdb_out_name = "out.pdb"
     pdb_out_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], results_id, pdb_out_name)
 
@@ -108,12 +109,10 @@ def results(results_id):
     hp, pitch, nb_monomers, direction = run(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
                                             n_mer, pdb_out_abs_path)
 
-    # Construct a relative path for the pdb result to be givent to the liteMol plugin on the html page.
-    pdb_out_webpath = pathlib.Path('static/data', results_id, pdb_out_name)
 
     # Create dict of data to pass to render_template
     data = {
-        "pdb_path" : pdb_out_webpath,
+        "results_id": results_id,
         "n_mer": n_mer,
         "z_align": z_align,
         "pitch": f"{pitch:3.2f}",
@@ -126,6 +125,12 @@ def results(results_id):
     }
 
     return render_template('results.html',data=data)
+
+# Create a route for the generated PDB. Use to download it and in the LiteMol plugin
+@heligeom_bp.route('/results/<results_id>"/<path:filename>', defaults={'filename':'out.pdb'}, methods=['GET', 'POST'])
+def download(results_id, filename):
+    return send_from_directory(pathlib.Path(current_app.config["DATA_UPLOADS"], results_id), filename, as_attachment=True)
+
 
 @heligeom_bp.route('/help')
 def help():
