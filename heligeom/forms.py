@@ -6,18 +6,24 @@ from wtforms import IntegerField, BooleanField, StringField, validators
 
 class TestForm(FlaskForm):
 
-    pdb1_file = FileField('pdb1_file', validators=[FileAllowed(['pdb'], 'Only a PDB file')])
-    pdb2_file = FileField('pdb2_file', validators=[FileAllowed(['pdb'], 'Only a PDB file')])
-    pdb1_id = StringField('pdb1_id', validators=[validators.Optional(),
+    input_file = FileField('input_file', validators=[FileAllowed(['pdb'], 'Only a PDB file can be uploaded')])
+    pdb_id = StringField('pdb_id', validators=[validators.Optional(),
                                                  validators.length(min=4, max=4)])
-    pdb2_id = StringField('pdb1_id', validators=[validators.Optional(),
-                                                 validators.length(min=4, max=4)])
+    chain1_id = StringField('chain1_id', validators=[validators.Optional(),
+                                                 validators.length(min=1, max=2)])
+    chain2_id = StringField('chain2_id', validators=[validators.Optional(),
+                                                 validators.length(min=1, max=2)])
+    res_range1 = StringField('res_range1', validators=[validators.Optional(),
+                                                 validators.length(min=1, max=50)])
+    res_range2 = StringField('res_range2', validators=[validators.Optional(),
+                                                 validators.length(min=1, max=50)])
+
     n_mer = IntegerField("n_mer", validators=[validators.InputRequired(message=""),
                                               validators.NumberRange(0, message="Only a Number")])
     z_align = BooleanField("z_align")
 
 
-    #Overload validate() method of the FlaskForm
+    # Overload validate() method of the FlaskForm
     def validate(self, extra_validators=None):
 
         # Start by calling the parent method
@@ -25,11 +31,8 @@ class TestForm(FlaskForm):
             return False
 
         # Now, check for each structure, if the users filled the upload part or the pdb id
-        if self.pdb1_file.data is None and self.pdb1_id.data == '':
-            self.pdb1_file.errors =  self.pdb1_id.errors = "No Data specified"
-            return False
-        if self.pdb2_file.data is None and self.pdb2_id.data == '':
-            self.pdb2_file.errors =  self.pdb2_id.errors = "No Data specified"
+        if self.input_file.data is None and self.pdb_id.data == '':
+            self.input_file.errors =  self.pdb_id.errors = "No Data specified"
             return False
 
         return True

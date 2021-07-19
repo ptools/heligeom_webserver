@@ -41,7 +41,7 @@ def validate_input_structure(pdb_file, pdb_id, folder_name):
             urllib.request.urlretrieve(url, path)
             return pdb_filename
         except urllib.error.URLError:
-            pdb_id.errors = "PDB id unknown"
+            pdb_id.errors = "PDB ID unknown"
             return None
 
 
@@ -61,20 +61,22 @@ def runpage():
             #Generate UUID for page results
             uniq_id = uuid.uuid4().hex
             # Create result folder
-
             print("path :", current_app.config['DATA_UPLOADS'], uniq_id)
             pathlib.Path(current_app.config['DATA_UPLOADS'], uniq_id).mkdir(exist_ok=True)
 
 
-            pdb1_filename = validate_input_structure(form.pdb1_file, form.pdb1_id, uniq_id)
-            pdb2_filename = validate_input_structure(form.pdb2_file, form.pdb2_id, uniq_id)
-            if pdb1_filename and pdb2_filename:
+            pdb_filename = validate_input_structure(form.input_file, form.pdb_id, uniq_id)
+            if pdb_filename:
 
                 # Save to the database the form inputs
                 # Only way for now to pass the form data to another page.
                 # We could use session or flash messages but neither seems to fit the need.
                 user_inputs = UserInputs(request_id=uniq_id,
-                                         pdb1_filename=pdb1_filename, pdb2_filename=pdb2_filename,
+                                         pdb_filename=pdb_filename,
+                                         chain1_id=form.chain1_id.data,
+                                         chain2_id=form.chain2_id.data,
+                                         res_range1=form.res_range1.data,
+                                         res_range2=form.res_range2.data,
                                          n_mer=form.n_mer.data, z_align=form.z_align.data)
                 db.session.add(user_inputs)
                 db.session.commit()
@@ -88,20 +90,23 @@ def results(results_id):
 
     # Query the database to retrieve the form inputs
     query_result = db.session.query(UserInputs).filter(UserInputs.request_id == results_id).first()
-    pdb1_filename = query_result.pdb1_filename
-    pdb2_filename = query_result.pdb2_filename
-    n_mer = query_result.n_mer
-    z_align = query_result.z_align
+    pdb_filename = query_result.pdb_filename
+    chain1_id    = query_result.chain1_id
+    chain2_id    = query_result.chain2_id
+    res_range1   = query_result.res_range1
+    res_range2   = query_result.res_range2
+    n_mer        = query_result.n_mer
+    z_align      = query_result.z_align
 
     #Ptools part
     pdb_out_name = "out.pdb"
     pdb_out_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], results_id, pdb_out_name)
 
-    pdb1_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], results_id, pdb1_filename)
-    pdb2_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], results_id, pdb2_filename)
+    pdb_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], results_id, pdb_filename)
     #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
     # Return the helicoidal parameters
-    hp, pitch, nb_monomers, direction = run(pdb1_abs_path, pdb2_abs_path, n_mer, pdb_out_abs_path)
+    hp, pitch, nb_monomers, direction = run(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
+                                            n_mer, pdb_out_abs_path)
 
     # Construct a relative path for the pdb result to be givent to the liteMol plugin on the html page.
     pdb_out_webpath = pathlib.Path('static/data', results_id, pdb_out_name)

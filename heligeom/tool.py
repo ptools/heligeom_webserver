@@ -8,18 +8,19 @@ from ptools import RigidBody
 from ptools.heligeom import heli_analyze, heli_construct
 
 
-def move_rigidbody(rb, x=0, y=0, z=0):
-    out = rb.copy()
-    out.moveby([x, y, z])
-    return out
+def run(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_mer, pdb_out):
+    input_structure = RigidBody(pdb_file)
 
-def run(pdb1_file, pdb2_file, n_mer, pdb_out):
-    mono1 = RigidBody(pdb1_file)
-    mono2 = RigidBody(pdb2_file)
+    if chain_id_M1 != "" and chain_id_M2 != "":
+        monomere1 = input_structure.select_chain(chain_id_M1)
+        monomere2 = input_structure.select_chain(chain_id_M2)
+    else:
+        monomere1 = input_structure.select_residue_range(res_range_M1)
+        monomere2 = input_structure.select_residue_range(res_range_M2)
 
-    hp = heli_analyze(mono1, mono2)
+    hp = heli_analyze(monomere1, monomere2)
     print(hp.point, hp.angle, hp.normtranslation)
-    result = heli_construct(mono1, hp, N=n_mer)
+    result = heli_construct(monomere1, hp, N=n_mer)
 
     result.writepdb(pdb_out)
 

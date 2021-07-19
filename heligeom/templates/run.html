@@ -18,36 +18,50 @@
                   <div class="card-content">
                       <div class="row">
                           <div class="col s12">
-                              <p><b style="font-size: 18px;">Structural Information</b></p>
+                              <p><b style="font-size: 20px;">Structural Information</b></p>
                           </div>
                           <div class="col s12 light" style="margin:12px">
-                            <p>Either upload 2 PDB files or provide 2 PDB ids</p>
+                            <p>Upload a PDB file containing the two monomeres or enter a PDB accession number.</p>
+                            <div class="row">
+                              <div class="col s12 m6">
+                                <div class="file-field input-field">
+                                    <div class="btn-small lbt-gris">
+                                        <i class="material-icons right">file_upload</i>
+                                        <span>Upload</span>
+                                        {{ form.input_file}}
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                        <input class="file-path validate" type="text">
+
+                                    </div>
+                                    <span class="helper-text">Submit a molecule in <a href="https://www.wwpdb.org/documentation/file-format">PDB format</a></span>
+                                  {% if form.input_file.errors %}
+                                    <span class="helper-text" style="color: #F44336;">{{form.input_file.errors}}</span>
+                                  {% endif %}
+                                </div>
+                              </div>
+                              <div class="col s6 m2 input-field">
+                                {{ form.pdb_id(class_="validate", placeholder="2GLS")}}
+                                <label for="pdb_id">PDB Accession</label>
+                                {% if form.pdb_id.errors %}
+                                  <span class="helper-text" style="color: #F44336;">{{form.pdb_id.errors}}</span>
+                                {% endif %}
+                              </div>
+                            </div>
                           </div>
+                          <p>For each monomer, you can specify either the chain of interest or the residue range which define the monomers or both.</p>
                           <div class="col s12 m6">
                             <div class="card hoverable">
                               <div class="card-content">
-                                <span class="card-title">Protein 1</span>
+                                <span class="card-title">Monomere 1</span>
                                 <div class="row">
-                                  <div class="col s12 m6">
-                                    <div class="file-field input-field">
-                                        <div class="btn-small lbt-gris">
-                                            <i class="material-icons right">file_upload</i>
-                                            <span>Upload</span>
-                                            {{ form.pdb1_file}}
-                                        </div>
-                                        <div class="file-path-wrapper">
-                                            <input class="file-path validate" type="text">
-
-                                        </div>
-                                        <span class="helper-text">Submit a molecule in <a href="https://www.wwpdb.org/documentation/file-format">PDB format</a></span>
-                                      {% if form.pdb1_file.errors %}
-                                        <span class="helper-text" style="color: #F44336;">{{form.pdb1_file.errors}}</span>
-                                      {% endif %}
-                                    </div>
+                                  <div class="col s12 m6 input-field">
+                                    {{ form.chain1_id(class_="validate", value="A")}}
+                                    <label for="chain1_id">Chain ID</label>
                                   </div>
-                                  <div class="col s12 m4 input-field">
-                                    {{ form.pdb1_id(class_="validate", placeholder="1KX2")}}
-                                    <label for="pdb1_id">PDB Accession</label>
+                                  <div class="col s12 m6 input-field">
+                                    {{ form.res_range1(class_="validate", placeholder="1:300")}}
+                                    <label for="res_range1">Residue Range</label>
                                   </div>
                                 </div> <!-- end div row -->
                               </div> <!-- end div card content -->
@@ -56,35 +70,26 @@
                           <div class="col s12 m6">
                             <div class="card hoverable">
                               <div class="card-content">
-                                <span class="card-title">Protein 2</span>
+                                <span class="card-title">Monomere 2</span>
                                 <div class="row">
-                                  <div class="col s12 m6">
-                                    <div class="file-field input-field">
-                                        <div class="btn-small lbt-gris">
-                                            <i class="material-icons right">file_upload</i>
-                                            <span>Upload</span>
-                                            {{ form.pdb2_file}}
-                                        </div>
-                                        <div class="file-path-wrapper">
-                                            <input class="file-path validate" type="text">
-
-                                        </div>
-                                        <span class="helper-text">Submit a molecule in <a href="https://www.wwpdb.org/documentation/file-format">PDB format</a></span>
-                                      <!-- ##  {% if form.pdb2_file.errors %}
-                                        <span class="helper-text" style="color: #F44336;">{{form.pdb2_file.errors}}</span>
-                                      ##{% endif %} -->
-                                    </div>
+                                  <div class="col s12 m6 input-field">
+                                    {{ form.chain2_id(class_="validate", value="B")}}
+                                    <label for="chain2_id">Chain ID</label>
                                   </div>
-                                  <div class="col s12 m4 input-field">
-                                    {{ form.pdb2_id(class_="validate", placeholder="1KX2")}}
-                                    <label for="pdb2_id">PDB Accession</label>
+                                  <div class="col s12 m6 input-field">
+                                    {{ form.res_range2(class_="validate", placeholder="301:600")}}
+                                    <label for="res_range2">Residue Range</label>
                                   </div>
-                                </div> <!-- end div row -->
+                                </div>
                               </div> <!-- end div card content -->
                             </div> <!-- end div card -->
                           </div> <!-- end div col -->
-
-                      </div>  <!-- end div rpw -->
+                      </div>
+                  </div>
+                  <div class="card-action center">
+                    <button class="waves-effect btn lbt-bleu" type="submit">Retrieve Helocoîdal parameters?<i class="material-icons right">send</i></button>
+                  </div>
+                  <div class="card-content">
                       <div class="row">
                         <div class="col s12" style="margin-bottom: 10px;">
                             <p><b style="font-size: 18px;">Construction Details</b></p>
