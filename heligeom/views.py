@@ -3,12 +3,10 @@ import os
 import pathlib
 import uuid
 import math
-import urllib.request
 
 from flask import Blueprint, current_app, render_template, redirect, url_for, request, send_from_directory
-from werkzeug.utils import secure_filename
 
-from .forms import HeligeomForm
+from .forms import HeligeomForm, validate_input_structure
 from .models import db, UserInputs
 from .tool import construct, screw_parameters
 
@@ -18,46 +16,6 @@ heligeom_bp = Blueprint(
     template_folder='templates',
     static_folder='static'
 )
-
-def validate_input_structure(pdb_file, pdb_id, folder_name):
-    """Check for the input structure if the user submit an uploaded file or a PDB id.
-    The user uploaded file or the file downloaded corresponding to the PDB ID is stored inside.
-
-    Parameters
-    ----------
-    pdb_file : FileField
-        File Field of the Flask form which represent the upload PDB file.
-    pdb_id : StringField
-        String field of the flask form which represent the PDB ID (4 letters)
-    folder_name : str, optional
-        Name of the folder where to store the PDB file.
-
-    Returns
-    -------
-    str
-        the filename of the PDB.
-    """
-
-    # Upload ?
-    if pdb_file.data:
-        pdb_file = pdb_file.data
-        pdb_filename = secure_filename(pdb_file.filename)
-        if pdb_filename == '':
-            return None
-        pdb_file.save(os.path.join(current_app.config["DATA_UPLOADS"], folder_name, pdb_filename))
-        return pdb_filename
-    # or PDB id ?
-    else:
-        # Generate url
-        pdb_filename = pdb_id.data + ".pdb"
-        url = current_app.config["PDB_SERVER"] + pdb_filename
-        path = os.path.join(current_app.config["DATA_UPLOADS"], folder_name, pdb_filename)
-        try:
-            urllib.request.urlretrieve(url, path)
-            return pdb_filename
-        except urllib.error.URLError:
-            pdb_id.errors = "PDB ID unknown"
-            return None
 
 
 @heligeom_bp.route('/')
@@ -70,7 +28,6 @@ def runpage():
     # Initialize submission form
     form = HeligeomForm()
 
-    # Validation part
     if request.method == 'POST':
         # Check wether only the screw parameters or a construction has been requested
 
@@ -80,15 +37,17 @@ def runpage():
             #Generate UUID for storing files
             uniq_id = uuid.uuid4().hex
             # Create result folder
-            pathlib.Path(current_app.config['DATA_UPLOADS'], uniq_id).mkdir(exist_ok=True)
-            pdb_filename = validate_input_structure(form.input_file, form.pdb_id, uniq_id)
+            result_path = pathlib.Path(current_app.config['DATA_UPLOADS'], uniq_id)
+            result_path.mkdir(exist_ok=True)
 
+            pdb_filename = validate_input_structure(form.input_file, form.pdb_id, result_path)
             if pdb_filename:
 
-                pdb_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], uniq_id, pdb_filename)
+                pdb_abs_path = result_path / pdb_filename
+                # Compute Helicoidal parameters
                 hp, pitch, monomers_per_turn, direction = screw_parameters(pdb_abs_path, form.chain1_id.data, form.chain2_id.data,
                                                                           form.res_range1.data, form.res_range2.data)
-
+                # Save them to send in the template.
                 screw_data = {
                     "pitch": f"{pitch:3.2f}",
                     "nb_monomers": f"{monomers_per_turn:3.2f}",
@@ -107,10 +66,10 @@ def runpage():
             #Generate UUID for page results
             uniq_id = uuid.uuid4().hex
             # Create result folder
-            pathlib.Path(current_app.config['DATA_UPLOADS'], uniq_id).mkdir(exist_ok=True)
+            result_path = pathlib.Path(current_app.config['DATA_UPLOADS'], uniq_id)
+            result_path.mkdir(exist_ok=True)
 
-
-            pdb_filename = validate_input_structure(form.input_file, form.pdb_id, uniq_id)
+            pdb_filename = validate_input_structure(form.input_file, form.pdb_id, result_path)
             if pdb_filename:
 
                 # Save to the database the form inputs
@@ -145,19 +104,19 @@ def results(results_id):
 
     #Ptools part
     # Name of the constructed PDB (used also in download function)
-    pdb_out_name = "out.pdb"
-    pdb_out_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], results_id, pdb_out_name)
+    pdb_out_name = f"Construct_N{n_mer}_{pdb_filename}"
+    pdb_out_abs_path = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_out_name)
 
-    pdb_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], results_id, pdb_filename)
+    pdb_abs_path = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_filename)
     #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
-    # Return the helicoidal parameters
     hp, pitch, nb_monomers, direction = construct(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
-                                            n_mer, pdb_out_abs_path)
+                                                  n_mer, pdb_out_abs_path)
 
 
     # Create dict of data to pass to render_template
     data = {
         "results_id": results_id,
+        "pdb_out_name": pdb_out_name,
         "n_mer": n_mer,
         "z_align": z_align,
         "pitch": f"{pitch:3.2f}",
@@ -172,7 +131,7 @@ def results(results_id):
     return render_template('results.html',data=data)
 
 # Create a route for the generated PDB. Use to download it and in the LiteMol plugin
-@heligeom_bp.route('/results/<results_id>"/<path:filename>', defaults={'filename':'out.pdb'}, methods=['GET', 'POST'])
+@heligeom_bp.route('/results/<results_id>"/<path:filename>',  methods=['GET', 'POST'])
 def download(results_id, filename):
     return send_from_directory(pathlib.Path(current_app.config["DATA_UPLOADS"], results_id), filename, as_attachment=True)
 

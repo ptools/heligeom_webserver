@@ -1,7 +1,15 @@
+"""
+Module to handle the form to run Heligeom.
+Contains also functions which verify the field of the form.
+"""
 
+import urllib.request
+
+from flask import current_app
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import IntegerField, BooleanField, StringField, validators
+from werkzeug.utils import secure_filename
 
 
 class HeligeomForm(FlaskForm):
@@ -78,3 +86,45 @@ class HeligeomForm(FlaskForm):
             return False
 
         return True
+
+
+def validate_input_structure(pdb_file, pdb_id, path):
+    """Check for the input structure if the user submit an uploaded file or a PDB id.
+    The user uploaded file or the file downloaded corresponding to the PDB ID is stored inside.
+
+    Parameters
+    ----------
+    pdb_file : FileField
+        File Field of the Flask form which represent the upload PDB file.
+    pdb_id : StringField
+        String field of the flask form which represent the PDB ID (4 letters)
+    folder_name : str
+        Name of the folder where to store the PDB file.
+    path: pathlib.Path
+        Path to save the file.
+
+    Returns
+    -------
+    str
+        the filename of the PDB.
+    """
+
+    # Upload ?
+    if pdb_file.data:
+        pdb_file = pdb_file.data
+        pdb_filename = secure_filename(pdb_file.filename)
+        if pdb_filename == '':
+            return None
+        pdb_file.save(path/pdb_filename)
+        return pdb_filename
+
+    # PDB ID
+    # Generate url
+    pdb_filename = pdb_id.data + ".pdb"
+    url = current_app.config["PDB_SERVER"] + pdb_filename
+    try:
+        urllib.request.urlretrieve(url, path/pdb_filename)
+        return pdb_filename
+    except urllib.error.URLError:
+        pdb_id.errors = "PDB ID unknown"
+        return None
