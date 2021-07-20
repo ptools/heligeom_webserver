@@ -89,6 +89,7 @@ body {
   height: 600px;
 }
 
+/* For loader button */
 .hide{
   display: none;
 }
