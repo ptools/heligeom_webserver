@@ -8,7 +8,7 @@ import urllib.request
 from flask import Blueprint, current_app, render_template, redirect, url_for, request, send_from_directory
 from werkzeug.utils import secure_filename
 
-from .forms import TestForm
+from .forms import HeligeomForm
 from .models import db, UserInputs
 from .tool import construct, screw_parameters
 
@@ -68,7 +68,7 @@ def homepage():
 def runpage():
 
     # Initialize submission form
-    form = TestForm()
+    form = HeligeomForm()
 
     # Validation part
     if request.method == 'POST':
