@@ -16,4 +16,4 @@ flask-sqlalchemy = "*"
 ptools = {editable = true, path = "./ptools-python"}
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"
