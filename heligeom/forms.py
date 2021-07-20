@@ -18,13 +18,13 @@ class TestForm(FlaskForm):
     res_range2 = StringField('res_range2', validators=[validators.Optional(),
                                                  validators.length(min=1, max=50)])
 
-    n_mer = IntegerField("n_mer", validators=[validators.InputRequired(message=""),
-                                              validators.NumberRange(0, message="Only a Number")])
+    n_mer = IntegerField("n_mer", validators=[validators.Optional(),
+                                              validators.NumberRange(0, 50, message="Only a Number")])
     z_align = BooleanField("z_align")
 
 
-    # Overload validate() method of the FlaskForm
-    def validate(self, extra_validators=None):
+    # Custom validate method for a part of the FlaskForm
+    def validate_screw(self, extra_validators=None):
 
         # Start by calling the parent method
         if not super().validate(extra_validators=extra_validators):
@@ -33,6 +33,20 @@ class TestForm(FlaskForm):
         # Now, check for each structure, if the users filled the upload part or the pdb id
         if self.input_file.data is None and self.pdb_id.data == '':
             self.input_file.errors =  self.pdb_id.errors = "No Data specified"
+            return False
+
+        return True
+
+    # Overload validate() method of the FlaskForm
+    def validate(self, extra_validators=None):
+
+        # Call the custom one
+        if not self.validate_screw(extra_validators=extra_validators):
+            return False
+
+        # Validate the others inputs
+        if self.n_mer.data is None:
+            self.n_mer.errors = "Required to construct the filament."
             return False
 
         return True

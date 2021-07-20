@@ -9,3 +9,8 @@
 $(document).ready(function(){
   $('.collapsible').collapsible();
 });
+
+// When called, remove the "hide" class of one element id given in parameter
+function load(ElementId){
+  document.getElementById(ElementId).classList.remove("hide");
+};

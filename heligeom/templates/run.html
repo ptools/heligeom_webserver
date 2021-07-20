@@ -53,10 +53,10 @@
                           <div class="col s12 m6">
                             <div class="card hoverable">
                               <div class="card-content">
-                                <span class="card-title">Monomere 1</span>
+                                <span class="card-title">Monomer 1</span>
                                 <div class="row">
                                   <div class="col s12 m6 input-field">
-                                    {{ form.chain1_id(class_="validate", value="A")}}
+                                    {{ form.chain1_id(class_="validate", placeholder="A")}}
                                     <label for="chain1_id">Chain ID</label>
                                   </div>
                                   <div class="col s12 m6 input-field">
@@ -70,10 +70,10 @@
                           <div class="col s12 m6">
                             <div class="card hoverable">
                               <div class="card-content">
-                                <span class="card-title">Monomere 2</span>
+                                <span class="card-title">Monomer 2</span>
                                 <div class="row">
                                   <div class="col s12 m6 input-field">
-                                    {{ form.chain2_id(class_="validate", value="B")}}
+                                    {{ form.chain2_id(class_="validate", placeholder="B")}}
                                     <label for="chain2_id">Chain ID</label>
                                   </div>
                                   <div class="col s12 m6 input-field">
@@ -86,10 +86,65 @@
                           </div> <!-- end div col -->
                       </div>
                   </div>
-                  <div class="card-action center">
-                    <button class="waves-effect btn lbt-bleu" type="submit">Retrieve Helocoîdal parameters?<i class="material-icons right">send</i></button>
+                  <div class="card-action center" style="border-top: none">
+                    <button class="waves-effect btn lbt-bleu" type="submit" name="action" value="screw" onclick="load('loader1')">Retrieve Helocoîdal parameters?<i class="material-icons right">send</i></button>
                   </div>
-                  <div class="card-content">
+                  <!-- CSS Loader hidden by default. Displayed when hit the above button-->
+                  <div class="row hide" id="loader1">
+                    <div class="col s4 push-s4">
+                      <div class="progress">
+                          <div class="indeterminate"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Screw parameters displayed only if requested-->
+                  {% if screw_data %}
+                    <div class="card-content">
+                      <span class="card-title center">Helicoïdal Parameters from the Screw movement</span>
+                      <div class="row">
+                        <div class="col s12 m4">
+                          <table class="striped">
+                            <tbody>
+                              <tr>
+                                <td><b>Pitch</b></td>
+                                <td>{{ screw_data.pitch }} &#8491;</td>
+                              </tr>
+                              <tr>
+                                <td><b>Monomers per turn</b></td>
+                                <td>{{ screw_data.nb_monomers }}</td>
+                              </tr>
+                              <tr>
+                                <td><b>Helix direction</b></td>
+                                <td>{{ screw_data.direction | capitalize }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="col s12 m4">
+                          <table class="striped">
+                            <tbody>
+                              <tr>
+                                <td><b>Axis Point (O)</b></td>
+                                <td>{{ screw_data.axis_point|join(" ") }}</td>
+                              </tr>
+                              <tr>
+                                <td><b>Rotation Angle (&theta;)</b></td>
+                                <td>{{ screw_data.rotation_angle_deg }}&#176;</td>
+                              </tr>
+                              <tr>
+                                <td><b>Translation (trans) </b></td>
+                                <td> {{ screw_data.translation }} &#8491;</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="col s12 m4">
+                          <img src="{{ url_for('static', filename='img/screw.png') }}"style="width: 150px;">
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+                  <div class="card-content" style="border-top: 1px solid rgba(160, 160, 160, 0.2)">
                       <div class="row">
                         <div class="col s12" style="margin-bottom: 10px;">
                             <p><b style="font-size: 18px;">Construction Details</b></p>
@@ -110,17 +165,26 @@
                             </label>
                         </div>
                       </div>
-                      <div class="row">
+                      <!-- Remove Drop down menu for now -->
+                      <!-- <div class="row">
                         <ul class="collapsible" style="box-shadow: none; border:none;">
                           <li>
                             <div class="collapsible-header" style="border-bottom: 2px solid #02aab3; padding-left:0.75rem;"><b style="font-size: 18px;">Advanced Parameters</b><i class="material-icons">arrow_drop_down</i></div>
                             <div class="collapsible-body" style="border-bottom: none;"><span>Lorem ipsum dolor sit amet.</span></div>
                           </li>
                         </ul>
-                      </div>
+                      </div> -->
                   </div> <!--  end div card content -->
-                  <div class="card-action">
-                      <button class="waves-effect btn lbt-bleu" type="submit">Submit<i class="material-icons right">send</i></button>
+                  <div class="card-action center">
+                      <button class="waves-effect btn lbt-bleu" type="submit" name="action" value="construct" onclick="load('loader2')">Construct<i class="material-icons right">send</i></button>
+                  </div>
+                  <!-- CSS Loader hidden by default. Displayed when hit the above button-->
+                  <div class="row hide" id="loader2">
+                    <div class="col s4 push-s4">
+                      <div class="progress">
+                          <div class="indeterminate"></div>
+                      </div>
+                    </div>
                   </div>
               </div>
           </form>

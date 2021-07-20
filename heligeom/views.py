@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 
 from .forms import TestForm
 from .models import db, UserInputs
-from .tool import run
+from .tool import construct, screw_parameters
 
 # Blueprint Configuration
 heligeom_bp = Blueprint(
@@ -20,11 +20,25 @@ heligeom_bp = Blueprint(
 )
 
 def validate_input_structure(pdb_file, pdb_id, folder_name):
-    """
-    Check for the input structure if the user submit an uploaded file or a PDB id.
+    """Check for the input structure if the user submit an uploaded file or a PDB id.
+    The user uploaded file or the file downloaded corresponding to the PDB ID is stored inside.
+
+    Parameters
+    ----------
+    pdb_file : FileField
+        File Field of the Flask form which represent the upload PDB file.
+    pdb_id : StringField
+        String field of the flask form which represent the PDB ID (4 letters)
+    folder_name : str, optional
+        Name of the folder where to store the PDB file.
+
+    Returns
+    -------
+    str
+        the filename of the PDB.
     """
 
-    # Upload
+    # Upload ?
     if pdb_file.data:
         pdb_file = pdb_file.data
         pdb_filename = secure_filename(pdb_file.filename)
@@ -34,6 +48,7 @@ def validate_input_structure(pdb_file, pdb_id, folder_name):
         return pdb_filename
     # or PDB id ?
     else:
+        # Generate url
         pdb_filename = pdb_id.data + ".pdb"
         url = current_app.config["PDB_SERVER"] + pdb_filename
         path = os.path.join(current_app.config["DATA_UPLOADS"], folder_name, pdb_filename)
@@ -54,14 +69,44 @@ def runpage():
 
     # Initialize submission form
     form = TestForm()
+
     # Validation part
-    if form.validate():
-        if request.method == 'POST':
+    if request.method == 'POST':
+        # Check wether only the screw parameters or a construction has been requested
+
+        # Screw parameters asked
+        if request.form.get("action") == "screw" and form.validate_screw():
+
+            #Generate UUID for storing files
+            uniq_id = uuid.uuid4().hex
+            # Create result folder
+            pathlib.Path(current_app.config['DATA_UPLOADS'], uniq_id).mkdir(exist_ok=True)
+            pdb_filename = validate_input_structure(form.input_file, form.pdb_id, uniq_id)
+
+            if pdb_filename:
+
+                pdb_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], uniq_id, pdb_filename)
+                hp, pitch, monomers_per_turn, direction = screw_parameters(pdb_abs_path, form.chain1_id.data, form.chain2_id.data,
+                                                                          form.res_range1.data, form.res_range2.data)
+
+                screw_data = {
+                    "pitch": f"{pitch:3.2f}",
+                    "nb_monomers": f"{monomers_per_turn:3.2f}",
+                    "direction": direction,
+                    "rotation_angle": f"{hp.angle:3.2f}",
+                    "rotation_angle_deg": f"{math.degrees(hp.angle):3.2f}",
+                    "axis_point": [f"{coord:3.2f}" for coord in hp.point],
+                    "translation": f"{hp.normtranslation:3.2f}"
+                }
+
+                return render_template('run.html', form=form, screw_data=screw_data)
+
+        # Construction requested
+        elif request.form.get("action") == "construct" and form.validate():
 
             #Generate UUID for page results
             uniq_id = uuid.uuid4().hex
             # Create result folder
-            print("path :", current_app.config['DATA_UPLOADS'], uniq_id)
             pathlib.Path(current_app.config['DATA_UPLOADS'], uniq_id).mkdir(exist_ok=True)
 
 
@@ -106,7 +151,7 @@ def results(results_id):
     pdb_abs_path = os.path.join(current_app.config["DATA_UPLOADS"], results_id, pdb_filename)
     #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
     # Return the helicoidal parameters
-    hp, pitch, nb_monomers, direction = run(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
+    hp, pitch, nb_monomers, direction = construct(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
                                             n_mer, pdb_out_abs_path)
 
 
