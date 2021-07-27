@@ -2,11 +2,11 @@
 Ptools module for the calculations
 """
 
+from . import utils
 import math
 
 from ptools import RigidBody
 from ptools.heligeom import heli_analyze, heli_construct
-
 
 def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
     """Return the 2 monomers exracted from the `pdb_file` with the correct extracted atoms
@@ -20,10 +20,10 @@ def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
         Chain of the 1st monomer
     chain_id_M2 : str
         Chain of the 2nd monomer
-    res_range_M1 : [type]
-        [description]
-    res_range_M2 : [type]
-        [description]
+    res_range_M1 : str
+        string of the form 'X-Y' where X and Y are the residue ID minimal and maximal
+    res_range_M2 : str
+        string of the form 'X-Y' where X and Y are the residue ID minimal and maximal
 
     Returns
     -------
@@ -33,13 +33,25 @@ def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
 
     input_structure = RigidBody(pdb_file)
 
-    if chain_id_M1 != "" and chain_id_M2 != "":
+    # Monomer 1:
+    if chain_id_M1:
         monomer1 = input_structure.select_chain(chain_id_M1)
-        monomer2 = input_structure.select_chain(chain_id_M2)
+        if res_range_M1:
+            min_res1, max_res1 = utils.parse_resrange(res_range_M1)
+            monomer1 = monomer1.select_residue_range(min_res1, max_res1)
     else:
-        monomer1 = input_structure.select_residue_range(res_range_M1)
-        monomer2 = input_structure.select_residue_range(res_range_M2)
+        min_res1, max_res1 = utils.parse_resrange(res_range_M1)
+        monomer1 = input_structure.select_residue_range(min_res1, max_res1)
 
+    # Monomer 2:
+    if chain_id_M2:
+        monomer2 = input_structure.select_chain(chain_id_M2)
+        if res_range_M2:
+            min_res2, max_res2 = utils.parse_resrange(res_range_M2)
+            monomer2 = monomer2.select_residue_range(min_res2, max_res2)
+    else:
+        min_res2, max_res2 = utils.parse_resrange(res_range_M2)
+        monomer2 = input_structure.select_residue_range(min_res2, max_res2)
 
     return (monomer1, monomer2)
 

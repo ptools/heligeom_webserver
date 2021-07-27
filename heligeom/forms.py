@@ -11,46 +11,56 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms import IntegerField, BooleanField, StringField, validators
 from werkzeug.utils import secure_filename
 
+from . import utils
 
 class HeligeomForm(FlaskForm):
     """Class to handle the form to run Heligeom."""
 
     # Input Structure: either a PDB file or a PDB ID
-    input_file = FileField('input_file', validators=[FileAllowed(['pdb'], 'Only a PDB file can be uploaded.')])
-    pdb_id = StringField('pdb_id', validators=[validators.Optional(),
-                                                 validators.length(min=4, max=4)])
+    input_file = FileField('input_file', validators=[
+        FileAllowed(['pdb'], 'Only a PDB file can be uploaded.')])
+    pdb_id = StringField('pdb_id', validators=[
+        validators.Optional(),
+        validators.length(min=4, max=4)])
 
     # Chain ID to select a 1st monomer
-    chain1_id = StringField('chain1_id', validators=[validators.Optional(),
-                                                 validators.length(min=1, max=2)])
+    chain1_id = StringField('chain1_id', validators=[
+        validators.Optional(),
+        validators.Regexp('^[A-Za-z]+$', message="Chain ID must contain only letters."),
+        validators.length(min=1, max=2)])
     # Chain ID to select a 2nd monomer
-    chain2_id = StringField('chain2_id', validators=[validators.Optional(),
-                                                 validators.length(min=1, max=2)])
+    chain2_id = StringField('chain2_id', validators=[
+        validators.Optional(),
+        validators.Regexp('^[A-Za-z]+$', message="Chain ID must contain only letters."),
+        validators.length(min=1, max=2)])
 
     # A residue range to select a 1st monomer
-    res_range1 = StringField('res_range1', validators=[validators.Optional(),
-                                                 validators.length(min=1, max=50)])
+    res_range1 = StringField('res_range1', validators=[
+        validators.Optional(),
+        validators.length(min=1, max=50)])
     # A residue range to select a 2nd monomer
-    res_range2 = StringField('res_range2', validators=[validators.Optional(),
-                                                 validators.length(min=1, max=50)])
+    res_range2 = StringField('res_range2', validators=[
+        validators.Optional(),
+        validators.length(min=1, max=50)])
 
     # Number of copy/monomers requested to create the filament.
-    n_mer = IntegerField("n_mer", validators=[validators.Optional(),
-                                              validators.NumberRange(0, 50, message="Only a Number.")])
+    n_mer = IntegerField("n_mer", validators=[
+        validators.Optional(),
+        validators.NumberRange(0, 50, message="Only a Number.")])
     # If the filament will be align on Z.
     z_align = BooleanField("z_align")
 
 
     def validate_screw(self, extra_validators=None):
-        """Custom validate method for a part of the FlaskForm.
+        """Custom validate method for a part of the HeligeomForm.
         It checks only the field needed to retrieve the screw parameters.
 
-        Fill the `error` attribute of a field with a erro message if it's not valid.
+        Fill the `error` attribute of a field with an error message if it's not valid.
 
         Returns
         -------
         Bool
-            True if the needed field are valid. False otherwise.
+            True if the needed fields are valid. False otherwise.
         """
 
         # Start by calling the parent method
@@ -62,7 +72,23 @@ class HeligeomForm(FlaskForm):
             self.input_file.errors =  self.pdb_id.errors = "No Data specified"
             return False
 
-        return True
+        # Validation of the monomer selections
+        # For each monomer, a valid selection is either a chain attribute or/and a residue range
+        monomer_validation = True # Use a boolean to test both monomer selections at the same time
+        for chain_id, res_range in zip([self.chain1_id, self.chain2_id], [self.res_range1, self.res_range2]):
+            # Check at least one type of selection is chosen
+            if not chain_id.data and not res_range.data:
+                chain_id.errors = res_range.errors = "No Data specified"
+                monomer_validation = False
+            elif res_range.data:
+                # Check if the residue range is consistent
+                try:
+                    utils.parse_resrange(res_range.data)
+                except SyntaxError as e:
+                    res_range.errors = e.msg
+                    monomer_validation = False
+
+        return monomer_validation
 
 
     def validate(self, extra_validators=None):

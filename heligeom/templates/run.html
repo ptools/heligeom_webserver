@@ -58,10 +58,16 @@
                                   <div class="col s12 m6 input-field">
                                     {{ form.chain1_id(class_="validate", placeholder="A")}}
                                     <label for="chain1_id">Chain ID</label>
+                                    {% if form.chain1_id.errors %}
+                                      <span class="helper-text" style="color: #F44336;">{{form.chain1_id.errors}}</span>
+                                    {% endif %}
                                   </div>
                                   <div class="col s12 m6 input-field">
                                     {{ form.res_range1(class_="validate", placeholder="1-300")}}
                                     <label for="res_range1">Residue Range</label>
+                                    {% if form.res_range1.errors %}
+                                      <span class="helper-text" style="color: #F44336;">{{form.res_range1.errors}}</span>
+                                    {% endif %}
                                   </div>
                                 </div> <!-- end div row -->
                               </div> <!-- end div card content -->
@@ -75,10 +81,16 @@
                                   <div class="col s12 m6 input-field">
                                     {{ form.chain2_id(class_="validate", placeholder="B")}}
                                     <label for="chain2_id">Chain ID</label>
+                                    {% if form.chain2_id.errors %}
+                                      <span class="helper-text" style="color: #F44336;">{{form.chain2_id.errors}}</span>
+                                    {% endif %}
                                   </div>
                                   <div class="col s12 m6 input-field">
                                     {{ form.res_range2(class_="validate", placeholder="301-600")}}
                                     <label for="res_range2">Residue Range</label>
+                                    {% if form.res_range2.errors %}
+                                      <span class="helper-text" style="color: #F44336;">{{form.res_range2.errors}}</span>
+                                    {% endif %}
                                   </div>
                                 </div>
                               </div> <!-- end div card content -->
