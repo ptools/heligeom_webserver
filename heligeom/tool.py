@@ -60,6 +60,10 @@ def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range
 
 
     monomer1, monomer2 = get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
+    print("monomer1 : ", monomer1.size(), " ; ")
+    print(monomer1.writepdb("monomer1.pdb"))
+    print("monomer2 : ", monomer2.size(), " ; ")
+    print(monomer2.writepdb("monomer2.pdb"))
 
     hp = heli_analyze(monomer1, monomer2)
 

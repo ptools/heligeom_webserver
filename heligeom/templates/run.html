@@ -18,7 +18,7 @@
                   <div class="card-content">
                       <div class="row">
                           <div class="col s12">
-                              <p><b style="font-size: 20px;">Structural Information</b></p>
+                              <p><b style="font-size: 20px;">1st Oligomeric form</b></p>
                           </div>
                           <div class="col s12 light" style="margin:12px">
                             <p>Upload a PDB file containing the two monomeres or enter a PDB accession number.</p>
@@ -49,7 +49,7 @@
                               </div>
                             </div>
                           </div>
-                          <p>For each monomer, you can specify either the chain of interest or the residue range which define the monomers or both.</p>
+                          <p>For each monomer, you can specify either the chain of interest or/and the residue range which define the monomers or both.</p>
                           <div class="col s12 m6">
                             <div class="card hoverable">
                               <div class="card-content">
@@ -96,10 +96,104 @@
                               </div> <!-- end div card content -->
                             </div> <!-- end div card -->
                           </div> <!-- end div col -->
+                          <div class="row">
+                            <ul class="collapsible" style="box-shadow: none; border:none;">
+                              <li>
+                                <p>You can specify a second couple of monomers to define another interface and compare it to the first one.</p>
+                                <div class="collapsible-header"><b style="font-size: 20px;">2nd Oligomeric form?</b><i class="material-icons">arrow_drop_down</i></div>
+                                <!-- Keep the collapsible extended when the user selected a 2nd assembly and ask for helical parameters -->
+                                {% if screw_data_bis or form.input_file_2nd.errors or form.pdb_id_2nd.errors or form.chain1bis_id.errors or form.chain2bis_id.errors
+                                   or form.res_range1bis.errors or form.res_range2bis.errors %}
+                                  <div class="collapsible-body" style="border-bottom: none; display: block;">
+                                {% else %}
+                                  <div class="collapsible-body" style="border-bottom: none;">
+                                {% endif %}
+                                <div class="col s12 light" style="margin:12px">
+                                  <p>Upload a PDB file containing the two monomeres or enter a PDB accession number.</p>
+                                  <p class="orange-text text-darken-3"><b>Leave it blanck to use the structure defined in the first oligomeric form.</b></p>
+                                  <div class="row">
+                                    <div class="col s12 m6">
+                                      <div class="file-field input-field">
+                                          <div class="btn-small lbt-gris">
+                                              <i class="material-icons right">file_upload</i>
+                                              <span>Upload</span>
+                                              {{ form.input_file_2nd}}
+                                          </div>
+                                          <div class="file-path-wrapper">
+                                              <input class="file-path validate" type="text">
+
+                                          </div>
+                                          <span class="helper-text">Submit a molecule in <a href="https://www.wwpdb.org/documentation/file-format">PDB format</a></span>
+                                        {% if form.input_file_2nd.errors %}
+                                          <span class="helper-text" style="color: #F44336;">{{form.input_file_2nd.errors}}</span>
+                                        {% endif %}
+                                      </div>
+                                    </div>
+                                    <div class="col s6 m2 input-field">
+                                      {{ form.pdb_id_2nd(class_="validate", placeholder="2GLS")}}
+                                      <label for="pdb_id">PDB Accession</label>
+                                      {% if form.pdb_id_2nd.errors %}
+                                        <span class="helper-text" style="color: #F44336;">{{form.pdb_id_2nd.errors}}</span>
+                                      {% endif %}
+                                    </div>
+                                  </div>
+                                </div>
+                                <p>For each monomer, you can specify either the chain of interest or/and the residue range which define the monomers or both.</p>
+                                  <div class="col s12 m6">
+                                    <div class="card hoverable">
+                                      <div class="card-content">
+                                        <span class="card-title">Monomer 1 bis</span>
+                                        <div class="row">
+                                          <div class="col s12 m6 input-field">
+                                            {{ form.chain1bis_id(class_="validate", placeholder="C")}}
+                                            <label for="chain1bis_id">Chain ID</label>
+                                            {% if form.chain1bis_id.errors %}
+                                              <span class="helper-text" style="color: #F44336;">{{form.chain1bis_id.errors}}</span>
+                                            {% endif %}
+                                          </div>
+                                          <div class="col s12 m6 input-field">
+                                            {{ form.res_range1bis(class_="validate", placeholder="20-200")}}
+                                            <label for="res_range1bis">Residue Range</label>
+                                            {% if form.res_range1bis.errors %}
+                                              <span class="helper-text" style="color: #F44336;">{{form.res_range1bis.errors}}</span>
+                                            {% endif %}
+                                          </div>
+                                        </div> <!-- end div row -->
+                                      </div> <!-- end div card content -->
+                                    </div> <!-- end div card -->
+                                  </div> <!-- end div col -->
+                                  <div class="col s12 m6">
+                                    <div class="card hoverable">
+                                      <div class="card-content">
+                                        <span class="card-title">Monomer 2 bis</span>
+                                        <div class="row">
+                                          <div class="col s12 m6 input-field">
+                                            {{ form.chain2bis_id(class_="validate", placeholder="D")}}
+                                            <label for="chain2bis_id">Chain ID</label>
+                                            {% if form.chain2bis_id.errors %}
+                                              <span class="helper-text" style="color: #F44336;">{{form.chain2bis_id.errors}}</span>
+                                            {% endif %}
+                                          </div>
+                                          <div class="col s12 m6 input-field">
+                                            {{ form.res_range2bis(class_="validate", placeholder="220-400")}}
+                                            <label for="res_range2bis">Residue Range</label>
+                                            {% if form.res_range2bis.errors %}
+                                              <span class="helper-text" style="color: #F44336;">{{form.res_range2bis.errors}}</span>
+                                            {% endif %}
+                                          </div>
+                                        </div>
+                                      </div> <!-- end div card content -->
+                                    </div> <!-- end div card -->
+                                  </div> <!-- end div col -->
+
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
                       </div>
                   </div>
                   <div class="card-action center" style="border-top: none">
-                    <button class="waves-effect btn lbt-bleu" type="submit" name="action" value="screw" onclick="load('loader1')">Retrieve Helocoîdal parameters?<i class="material-icons right">send</i></button>
+                    <button class="waves-effect btn lbt-bleu" type="submit" name="action" value="screw" onclick="load('loader1')">Retrieve Helical parameters?<i class="material-icons right">send</i></button>
                   </div>
                   <!-- CSS Loader hidden by default. Displayed when hit the above button-->
                   <div class="row hide" id="loader1">
@@ -112,7 +206,7 @@
                   <!-- Screw parameters displayed only if requested-->
                   {% if screw_data %}
                     <div class="card-content">
-                      <span class="card-title center">Helical parameters for the screw transformation</span>
+                      <span class="card-title center"><b>Helical parameters for the screw transformation of the <div class="red-text">1st Assembly</div></b></span>
                       <div class="row">
                         <div class="col s12 m4">
                           <table class="striped">
@@ -155,6 +249,52 @@
                         </div>
                       </div>
                     </div>
+                    {% if screw_data_bis %}
+                      <div class="card-content">
+                        <span class="card-title center"><b>Helical parameters for the screw transformation of the <div class="red-text">2nd Assembly</div></b></span>
+                        <div class="row">
+                          <div class="col s12 m4">
+                            <table class="striped">
+                              <tbody>
+                                <tr>
+                                  <td><b>Pitch</b></td>
+                                  <td>{{ screw_data_bis.pitch }} &#8491;</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Monomers per turn</b></td>
+                                  <td>{{ screw_data_bis.nb_monomers }}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Handedness</b></td>
+                                  <td>{{ screw_data_bis.direction | capitalize }}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <div class="col s12 m4">
+                            <table class="striped">
+                              <tbody>
+                                <tr>
+                                  <td><b>Axis Point (O)</b></td>
+                                  <td>{{ screw_data_bis.axis_point|join(" ") }}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Rotation Angle (&theta;)</b></td>
+                                  <td>{{ screw_data_bis.rotation_angle_deg }}&#176;</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Translation (trans) </b></td>
+                                  <td> {{ screw_data_bis.translation }} &#8491;</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <div class="col s12 m4">
+                            <img src="{{ url_for('static', filename='img/screw.png') }}"style="width: 200px;">
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
                   {% endif %}
                   <div class="card-content" style="border-top: 1px solid rgba(160, 160, 160, 0.2)">
                       <div class="row">
@@ -177,15 +317,7 @@
                             </label>
                         </div>
                       </div>
-                      <!-- Remove Drop down menu for now -->
-                      <!-- <div class="row">
-                        <ul class="collapsible" style="box-shadow: none; border:none;">
-                          <li>
-                            <div class="collapsible-header" style="border-bottom: 2px solid #02aab3; padding-left:0.75rem;"><b style="font-size: 18px;">Advanced Parameters</b><i class="material-icons">arrow_drop_down</i></div>
-                            <div class="collapsible-body" style="border-bottom: none;"><span>Lorem ipsum dolor sit amet.</span></div>
-                          </li>
-                        </ul>
-                      </div> -->
+
                   </div> <!--  end div card content -->
                   <div class="card-action center">
                       <button class="waves-effect btn lbt-bleu" type="submit" name="action" value="construct" onclick="load('loader2')">Construct<i class="material-icons right">send</i></button>

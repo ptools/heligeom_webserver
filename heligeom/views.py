@@ -32,7 +32,7 @@ def runpage():
         # Check wether only the screw parameters or a construction has been requested
 
         # Screw parameters asked
-        if request.form.get("action") == "screw" and form.validate_screw():
+        if request.form.get("action") == "screw" and form.validate_screw() and form.validate_2nd_oligomer():
 
             #Generate UUID for storing files
             uniq_id = uuid.uuid4().hex
@@ -48,7 +48,7 @@ def runpage():
                     # Compute Helicoidal parameters
                     hp, pitch, monomers_per_turn, direction = screw_parameters(pdb_abs_path, form.chain1_id.data, form.chain2_id.data,
                                                                             form.res_range1.data, form.res_range2.data)
-                    # Save them to send in the template.
+
                     screw_data = {
                         "pitch": f"{pitch:3.2f}",
                         "nb_monomers": f"{monomers_per_turn:3.2f}",
@@ -59,7 +59,33 @@ def runpage():
                         "translation": f"{hp.normtranslation:3.2f}"
                     }
 
-                    return render_template('run.html', form=form, screw_data=screw_data)
+
+                    # Does the user input for a 2nd assembly ?
+                    if form.has_2nd_oligomer():
+
+                        # A second structure has been provided?
+                        # If not, use the pdbfile from the first oligomeric form
+                        pdb_filename_2nd = validate_input_structure(form.input_file_2nd, form.pdb_id_2nd, result_path)
+                        if(pdb_filename_2nd):
+                            pdb_abs_path = result_path / pdb_filename_2nd
+
+                        # Compute Helicoidal parameters for 2nd assembly
+                        hp_bis, pitch_bis, monomers_per_turn_bis, direction_bis = screw_parameters(pdb_abs_path, form.chain1bis_id.data, form.chain2bis_id.data,
+                                                                                                   form.res_range1bis.data, form.res_range2bis.data)
+
+                        data_bis = {
+                            "pitch": f"{pitch_bis:3.2f}",
+                            "nb_monomers": f"{monomers_per_turn_bis:3.2f}",
+                            "direction": direction_bis,
+                            "rotation_angle": f"{hp_bis.angle:3.2f}",
+                            "rotation_angle_deg": f"{math.degrees(hp_bis.angle):3.2f}",
+                            "axis_point": [f"{coord:3.2f}" for coord in hp_bis.point],
+                            "translation": f"{hp_bis.normtranslation:3.2f}"
+                        }
+                    else:
+                        data_bis = None
+
+                    return render_template('run.html', form=form, screw_data=screw_data, screw_data_bis=data_bis)
                 except:
                     return render_template('error.html',error_log=traceback.format_exc())
 
