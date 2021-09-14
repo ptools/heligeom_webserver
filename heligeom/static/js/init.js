@@ -14,3 +14,12 @@ $(document).ready(function(){
 function load(ElementId){
   document.getElementById(ElementId).classList.remove("hide");
 };
+
+function showErrorLogs() {
+  var text = document.getElementById("logs");
+  if (text.style.display === "none") {
+    text.style.display = "block";
+  } else {
+    text.style.display = "none";
+  }
+}

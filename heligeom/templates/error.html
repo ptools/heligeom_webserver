@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Heligeom - Run{% endblock %}
+
+{% block content %}
+
+
+  <div class="container">
+    <div class="section">
+
+        <br>
+        <br>
+
+        <h5 class="header center red-text">Something went wrong during processing data</h5>
+
+    <div>
+      <button class="btn waves-effect waves-light" onclick="showErrorLogs()">Show Error</button>
+      <pre id="logs" style="display: none;">
+        <code>
+          {{ error_log}}
+        </code>
+    </pre>
+    </div>
+    </div>
+  </div>
+
+
+
+  {% endblock %}

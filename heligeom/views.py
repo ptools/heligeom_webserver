@@ -1,8 +1,8 @@
 
-import os
 import pathlib
 import uuid
 import math
+import traceback
 
 from flask import Blueprint, current_app, render_template, redirect, url_for, request, send_from_directory
 
@@ -43,22 +43,25 @@ def runpage():
             pdb_filename = validate_input_structure(form.input_file, form.pdb_id, result_path)
             if pdb_filename:
 
-                pdb_abs_path = result_path / pdb_filename
-                # Compute Helicoidal parameters
-                hp, pitch, monomers_per_turn, direction = screw_parameters(pdb_abs_path, form.chain1_id.data, form.chain2_id.data,
-                                                                          form.res_range1.data, form.res_range2.data)
-                # Save them to send in the template.
-                screw_data = {
-                    "pitch": f"{pitch:3.2f}",
-                    "nb_monomers": f"{monomers_per_turn:3.2f}",
-                    "direction": direction,
-                    "rotation_angle": f"{hp.angle:3.2f}",
-                    "rotation_angle_deg": f"{math.degrees(hp.angle):3.2f}",
-                    "axis_point": [f"{coord:3.2f}" for coord in hp.point],
-                    "translation": f"{hp.normtranslation:3.2f}"
-                }
+                try:
+                    pdb_abs_path = result_path / pdb_filename
+                    # Compute Helicoidal parameters
+                    hp, pitch, monomers_per_turn, direction = screw_parameters(pdb_abs_path, form.chain1_id.data, form.chain2_id.data,
+                                                                            form.res_range1.data, form.res_range2.data)
+                    # Save them to send in the template.
+                    screw_data = {
+                        "pitch": f"{pitch:3.2f}",
+                        "nb_monomers": f"{monomers_per_turn:3.2f}",
+                        "direction": direction,
+                        "rotation_angle": f"{hp.angle:3.2f}",
+                        "rotation_angle_deg": f"{math.degrees(hp.angle):3.2f}",
+                        "axis_point": [f"{coord:3.2f}" for coord in hp.point],
+                        "translation": f"{hp.normtranslation:3.2f}"
+                    }
 
-                return render_template('run.html', form=form, screw_data=screw_data)
+                    return render_template('run.html', form=form, screw_data=screw_data)
+                except:
+                    return render_template('error.html',error_log=traceback.format_exc())
 
         # Construction requested
         elif request.form.get("action") == "construct" and form.validate():
@@ -89,46 +92,52 @@ def runpage():
                 return redirect(url_for('heligeom_bp.results', results_id=uniq_id))
     return render_template('run.html', form=form)
 
+
 @heligeom_bp.route("/results/<results_id>", methods=['GET', 'POST'])
 def results(results_id):
 
-    # Query the database to retrieve the form inputs
-    query_result = db.session.query(UserInputs).filter(UserInputs.request_id == results_id).first()
-    pdb_filename = query_result.pdb_filename
-    chain1_id    = query_result.chain1_id
-    chain2_id    = query_result.chain2_id
-    res_range1   = query_result.res_range1
-    res_range2   = query_result.res_range2
-    n_mer        = query_result.n_mer
-    z_align      = query_result.z_align
+    try:
+        # Query the database to retrieve the form inputs
+        query_result = db.session.query(UserInputs).filter(UserInputs.request_id == results_id).first()
+        pdb_filename = query_result.pdb_filename
+        chain1_id    = query_result.chain1_id
+        chain2_id    = query_result.chain2_id
+        res_range1   = query_result.res_range1
+        res_range2   = query_result.res_range2
+        n_mer        = query_result.n_mer
+        z_align      = query_result.z_align
 
-    #Ptools part
-    # Name of the constructed PDB (used also in download function)
-    pdb_out_name = f"Construct_N{n_mer}_{pdb_filename}"
-    pdb_out_abs_path = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_out_name)
+        #Ptools part
+        # Name of the constructed PDB (used also in download function)
+        pdb_out_name = f"Construct_N{n_mer}_{pdb_filename}"
+        pdb_out_abs_path = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_out_name)
 
-    pdb_abs_path = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_filename)
-    #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
-    hp, pitch, nb_monomers, direction = construct(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
-                                                  n_mer, pdb_out_abs_path)
+        pdb_abs_path = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_filename)
+        #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
+        hp, pitch, nb_monomers, direction = construct(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
+                                                    n_mer, pdb_out_abs_path)
 
 
-    # Create dict of data to pass to render_template
-    data = {
-        "results_id": results_id,
-        "pdb_out_name": pdb_out_name,
-        "n_mer": n_mer,
-        "z_align": z_align,
-        "pitch": f"{pitch:3.2f}",
-        "nb_monomers": f"{nb_monomers:3.2f}",
-        "direction": direction,
-        "rotation_angle": f"{hp.angle:3.2f}",
-        "rotation_angle_deg": f"{math.degrees(hp.angle):3.2f}",
-        "axis_point": [f"{coord:3.2f}" for coord in hp.point],
-        "translation": f"{hp.normtranslation:3.2f}"
-    }
+        # Create dict of data to pass to render_template
+        data = {
+            "results_id": results_id,
+            "pdb_out_name": pdb_out_name,
+            "n_mer": n_mer,
+            "z_align": z_align,
+            "pitch": f"{pitch:3.2f}",
+            "nb_monomers": f"{nb_monomers:3.2f}",
+            "direction": direction,
+            "rotation_angle": f"{hp.angle:3.2f}",
+            "rotation_angle_deg": f"{math.degrees(hp.angle):3.2f}",
+            "axis_point": [f"{coord:3.2f}" for coord in hp.point],
+            "translation": f"{hp.normtranslation:3.2f}"
+        }
 
-    return render_template('results.html',data=data)
+        return render_template('results.html',data=data)
+
+    except Exception:
+        return render_template('error.html',error_log=traceback.format_exc())
+
 
 # Create a route for the generated PDB. Use to download it and in the LiteMol plugin
 @heligeom_bp.route('/results/<results_id>"/<path:filename>',  methods=['GET', 'POST'])
@@ -144,3 +153,6 @@ def help():
 def contact():
     return render_template('contact.html')
 
+@heligeom_bp.route('/error')
+def error():
+    return render_template('error.html')

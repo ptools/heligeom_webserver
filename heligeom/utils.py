@@ -32,10 +32,7 @@ def parse_resrange(res_range):
     min_res = int(res.group(1))
     max_res = int(res.group(2))
 
-    print("min, max :", min_res, max_res)
-
     if min_res >= max_res:
-        print("toto")
         raise SyntaxError("Residue min is superior to residue max")
 
     return (min_res, max_res)
