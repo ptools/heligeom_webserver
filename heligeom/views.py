@@ -159,6 +159,11 @@ def results(results_id):
         # Create dict of data to pass to render_template
         data = {
             "results_id": results_id,
+            "pdb_input": pdb_filename,
+            "chain1_id": chain1_id,
+            "chain2_id": chain2_id,
+            "res_range1": res_range1,
+            "res_range2": res_range2,
             "pdb_out_name": pdb_out_name,
             "n_mer": n_mer,
             "z_align": z_align,
@@ -195,7 +200,11 @@ def results(results_id):
 
             # Create dict of data to pass to render_template
             data_bis = {
-                "results_id": results_id,
+                "pdb_input": pdb_filename2,
+                "chain1_id": chain1bis_id,
+                "chain2_id": chain2bis_id,
+                "res_range1": res_range1bis,
+                "res_range2": res_range2bis,
                 "pdb_out_name": pdb_out_name2,
                 "n_mer": n_mer,
                 "z_align": z_align,
