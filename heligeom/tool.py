@@ -6,7 +6,7 @@ from . import utils
 import math
 
 from ptools import RigidBody
-from ptools.heligeom import heli_analyze, heli_construct
+from ptools.heligeom import heli_analyze, heli_construct, distAxis
 
 def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
     """Return the 2 monomers exracted from the `pdb_file` with the correct extracted atoms
@@ -78,7 +78,9 @@ def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range
         monomers_per_turn = 0.0
     direction = "right-handed" if hp.angle * hp.normtranslation > 0 else "left-handed"
 
-    return (hp, pitch, monomers_per_turn, direction)
+    dmin, dmax = distAxis(monomer1, hp)
+
+    return (hp, pitch, monomers_per_turn, direction, dmin, dmax)
 
 
 def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_mer, pdb_out):
@@ -105,4 +107,6 @@ def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_
         monomers_per_turn = 0.0
     direction = "right-handed" if hp.angle * hp.normtranslation > 0 else "left-handed"
 
-    return (hp, pitch, monomers_per_turn, direction)
+    dmin, dmax = distAxis(monomer1, hp)
+
+    return (hp, pitch, monomers_per_turn, direction, dmin, dmax)

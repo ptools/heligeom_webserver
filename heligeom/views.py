@@ -46,7 +46,7 @@ def runpage():
                 try:
                     pdb_abs_path = result_path / pdb_filename
                     # Compute Helicoidal parameters
-                    hp, pitch, monomers_per_turn, direction = screw_parameters(pdb_abs_path, form.chain1_id.data, form.chain2_id.data,
+                    hp, pitch, monomers_per_turn, direction, dmin, dmax = screw_parameters(pdb_abs_path, form.chain1_id.data, form.chain2_id.data,
                                                                             form.res_range1.data, form.res_range2.data)
 
                     screw_data = {
@@ -56,7 +56,9 @@ def runpage():
                         "rotation_angle": f"{hp.angle:3.2f}",
                         "rotation_angle_deg": f"{math.degrees(hp.angle):3.2f}",
                         "axis_point": [f"{coord:3.2f}" for coord in hp.point],
-                        "translation": f"{hp.normtranslation:3.2f}"
+                        "translation": f"{hp.normtranslation:3.2f}",
+                        "dmin"      : f"{dmin:3.2f}",
+                        "dmax"       : f"{dmax:3.2f}"
                     }
 
 
@@ -70,7 +72,7 @@ def runpage():
                             pdb_abs_path = result_path / pdb_filename_2nd
 
                         # Compute Helicoidal parameters for 2nd assembly
-                        hp_bis, pitch_bis, monomers_per_turn_bis, direction_bis = screw_parameters(pdb_abs_path, form.chain1bis_id.data, form.chain2bis_id.data,
+                        hp_bis, pitch_bis, monomers_per_turn_bis, direction_bis, dminbis, dmaxbis = screw_parameters(pdb_abs_path, form.chain1bis_id.data, form.chain2bis_id.data,
                                                                                                    form.res_range1bis.data, form.res_range2bis.data)
 
                         data_bis = {
@@ -80,7 +82,9 @@ def runpage():
                             "rotation_angle": f"{hp_bis.angle:3.2f}",
                             "rotation_angle_deg": f"{math.degrees(hp_bis.angle):3.2f}",
                             "axis_point": [f"{coord:3.2f}" for coord in hp_bis.point],
-                            "translation": f"{hp_bis.normtranslation:3.2f}"
+                            "translation": f"{hp_bis.normtranslation:3.2f}",
+                            "dmin"      : f"{dminbis:3.2f}",
+                            "dmax"       : f"{dmaxbis:3.2f}"
                         }
                     else:
                         data_bis = None
@@ -152,8 +156,8 @@ def results(results_id):
 
         pdb_abs_path = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_filename)
         #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
-        hp, pitch, nb_monomers, direction = construct(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
-                                                    n_mer, pdb_out_abs_path)
+        hp, pitch, nb_monomers, direction, dmin, dmax = construct(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
+                                                                  n_mer, pdb_out_abs_path)
 
 
         # Create dict of data to pass to render_template
@@ -173,7 +177,9 @@ def results(results_id):
             "rotation_angle": f"{hp.angle:3.2f}",
             "rotation_angle_deg": f"{math.degrees(hp.angle):3.2f}",
             "axis_point": [f"{coord:3.2f}" for coord in hp.point],
-            "translation": f"{hp.normtranslation:3.2f}"
+            "translation": f"{hp.normtranslation:3.2f}",
+            "dmin"      : f"{dmin:3.2f}",
+            "dmax"       : f"{dmax:3.2f}"
         }
 
         if not query_result.second_oligomer:
@@ -194,9 +200,9 @@ def results(results_id):
 
             pdb_abs_path2 = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_filename2)
             #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
-            hp2, pitch2, nb_monomers2, direction2 = construct(pdb_abs_path2, chain1bis_id, chain2bis_id,
-                                                          res_range1bis, res_range2bis,
-                                                        n_mer, pdb_out_abs_path2)
+            hp2, pitch2, nb_monomers2, direction2, dminbis, dmaxbis = construct(pdb_abs_path2, chain1bis_id, chain2bis_id,
+                                                                                res_range1bis, res_range2bis,
+                                                                                n_mer, pdb_out_abs_path2)
 
             # Create dict of data to pass to render_template
             data_bis = {
@@ -214,7 +220,9 @@ def results(results_id):
                 "rotation_angle": f"{hp2.angle:3.2f}",
                 "rotation_angle_deg": f"{math.degrees(hp2.angle):3.2f}",
                 "axis_point": [f"{coord:3.2f}" for coord in hp2.point],
-                "translation": f"{hp2.normtranslation:3.2f}"
+                "translation": f"{hp2.normtranslation:3.2f}",
+                "dmin"      : f"{dminbis:3.2f}",
+                "dmax"       : f"{dmaxbis:3.2f}"
             }
 
             return render_template('results_2_oligomers.html',data=data, data_bis=data_bis)
