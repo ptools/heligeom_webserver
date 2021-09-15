@@ -134,6 +134,9 @@ class HeligeomForm(FlaskForm):
         if not self.validate_screw(extra_validators=extra_validators):
             return False
 
+        if not self.validate_2nd_oligomer(extra_validators=extra_validators):
+            return False
+
         # Validate the others inputs
         if self.n_mer.data is None:
             self.n_mer.errors = "Required to construct the filament."
@@ -141,9 +144,13 @@ class HeligeomForm(FlaskForm):
 
         return True
 
-    def validate_2nd_oligomer(self):
+    def validate_2nd_oligomer(self, extra_validators=None):
         """Check if the form inputs for a 2nd assembly (a different selection of 2 monomers) is valide.
         """
+
+        # Start by calling the parent method
+        if not super().validate(extra_validators=extra_validators):
+            return False
 
         # Validation of the monomer selections
         # For each monomer, a valid selection is either a chain attribute or/and a residue range

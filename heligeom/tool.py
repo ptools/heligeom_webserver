@@ -60,12 +60,12 @@ def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range
 
 
     monomer1, monomer2 = get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
-    print("monomer1 : ", monomer1.size(), " ; ")
-    print(monomer1.writepdb("monomer1.pdb"))
-    print("monomer2 : ", monomer2.size(), " ; ")
-    print(monomer2.writepdb("monomer2.pdb"))
 
-    hp = heli_analyze(monomer1, monomer2)
+    # Use CA for computating parameters
+    monomer1_CA = monomer1.select_atom_type("CA")
+    monomer2_CA = monomer2.select_atom_type("CA")
+
+    hp = heli_analyze(monomer1_CA, monomer2_CA)
 
     #Retrieve N & Pitch
     rotation_angle_degrees = math.degrees(hp.angle)
@@ -85,7 +85,11 @@ def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_
 
     monomer1, monomer2 = get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
 
-    hp = heli_analyze(monomer1, monomer2)
+    # Use CA for computating parameters
+    monomer1_CA = monomer1.select_atom_type("CA")
+    monomer2_CA = monomer2.select_atom_type("CA")
+
+    hp = heli_analyze(monomer1_CA, monomer2_CA)
     result = heli_construct(monomer1, hp, N=n_mer)
 
     result.writepdb(pdb_out)
