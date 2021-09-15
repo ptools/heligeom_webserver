@@ -47,8 +47,8 @@
             <div class="col s12 m6">
               <h6>Construction Parameters</h6>
               <ul>
-                <li>Z-align : <b>{% if data.z_align %}Yes {% else %}No {%endif %}</b></li>
                 <li>Number of monomers to construct : <b>{{data.n_mer}}</b></li>
+                <li>Z-align : <b>{% if data.z_align %}Yes {% else %}No {%endif %}</b></li>
                 </ul>
             </div>
           </div>
@@ -82,8 +82,8 @@
             <div class="col s12 m6">
               <h6>Construction Parameters</h6>
               <ul>
-                <li>Z-align : <b>{% if data.z_align %}Yes {% else %}No {%endif %}</b></li>
                 <li>Number of monomers to construct : <b>{{data.n_mer}}</b></li>
+                <li>Z-align : <b>{% if data.z_align %}Yes {% else %}No {%endif %}</b></li>
                 </ul>
             </div>
           </div>
@@ -217,18 +217,27 @@
       <div class="card">
         <div class="card-content">
           <span class="card-title"><b>Visualisation</b></span>
-          <link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}" type="text/css" />
-          <script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
-          <div id="litemol_2">
-            <script>
-              var plugin = LiteMol.Plugin.create({ target: '#litemol_2' , viewportBackground: '#ffffff'});
+          <div class="row">
+            <p class="center-align">
+              <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file" href="{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_out_name)}}">
+                <i class="material-icons right">file_download</i><span class="hide-on-med-and-down">Download Oligomer</span>
+              </a>
+            </p>
+          </div>
+          <div class="row">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}" type="text/css" />
+            <script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
+            <div id="litemol_2">
+              <script>
+                var plugin = LiteMol.Plugin.create({ target: '#litemol_2' , viewportBackground: '#ffffff'});
 
-              plugin.loadMolecule({
-                  id: 'custom',
-                  url: "{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_out_name) }}",
-                  format: 'pdb' // default
-              });
-            </script>
+                plugin.loadMolecule({
+                    id: 'custom',
+                    url: "{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_out_name) }}",
+                    format: 'pdb' // default
+                });
+              </script>
+            </div>
           </div>
         </div>
       </div>
@@ -237,18 +246,27 @@
       <div class="card">
         <div class="card-content">
           <span class="card-title"><b>Visualisation</b></span>
-          <link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}" type="text/css" />
-          <script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
-          <div id="litemol_3">
-            <script>
-              var plugin = LiteMol.Plugin.create({ target: '#litemol_3' , viewportBackground: '#ffffff'});
+          <div class="row">
+            <p class="center-align">
+              <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file" href="{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data_bis.pdb_out_name)}}">
+                <i class="material-icons right">file_download</i><span class="hide-on-med-and-down">Download Oligomer</span>
+              </a>
+            </p>
+          </div>
+          <div class="row">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}" type="text/css" />
+            <script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
+            <div id="litemol_3">
+              <script>
+                var plugin = LiteMol.Plugin.create({ target: '#litemol_3' , viewportBackground: '#ffffff'});
 
-              plugin.loadMolecule({
-                  id: 'custom',
-                  url: "{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data_bis.pdb_out_name) }}",
-                  format: 'pdb' // default
-              });
-            </script>
+                plugin.loadMolecule({
+                    id: 'custom',
+                    url: "{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data_bis.pdb_out_name) }}",
+                    format: 'pdb' // default
+                });
+              </script>
+            </div>
           </div>
         </div>
       </div>

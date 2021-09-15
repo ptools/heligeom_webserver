@@ -14,49 +14,36 @@
       <div class="col s12 m12">
         <div class="card">
           <div class="card-content">
-            <span class="card-title">General</span>
+            <span class="card-title"><b>General</b></span>
             <div class="row">
-              <div class="col s12 m4">
-                <h6>Input Parameters</h3>
+              <div class="col s12 m6">
+                <h6>Input Parameters</h6>
+                <ul>
+                  <li>Input structure: <b>{{data.pdb_input}}</b></li>
+                  <li><b>Monomer 1</b>
+                    <ul>
+                      <li>Chain        : <b>{% if data.chain1_id %} {{ data.chain1_id }} {% else %} Unspecified{% endif %}</b></li>
+                      <li>Residue range: <b>{% if data.res_range1 %} {{ data.res_range1 }} {% else %} Unspecified{% endif %}</b></li>
+                    </ul>
+                  </li>
+                  <li><b>Monomer 2</b>
+                    <ul>
+                      <li>Chain        : <b>{% if data.chain2_id %} {{ data.chain2_id }} {% else %} Unspecified{% endif %}</b></li>
+                      <li>Residue range: <b>{% if data.res_range2 %} {{ data.res_range2 }} {% else %} Unspecified{% endif %}</b></li>
+                    </ul>
+                  </li>
+
+                </ul>
               </div>
-              <div class="col s12 m4">
-                <h6>Helical Parameters from the Screw movement</h3>
+              <div class="col s12 m6">
+                <h6>Construction Parameters</h6>
+                <ul>
+                  <li>Number of monomers to construct : <b>{{data.n_mer}}</b></li>
+                  <li>Z-align : <b>{% if data.z_align %}Yes {% else %}No {%endif %}</b></li>
+                  </ul>
               </div>
             </div>
-
-            <div class="row">
-              <div class="col s12 m4">
-                <p>
-                  Its heligeom construct with N= {{data.n_mer}} :
-                </p>
-                <p>
-                  Z-align ? {% if data.z_align %}Yes {% else %}No {%endif %}
-                </p>
-              </div>
-              <div class="col s12 m4">
-                <table class="striped centered">
-                  <tbody>
-                    <tr>
-                      <td><b>Axis Point (O)</b></td>
-                      <td>{{ data.axis_point|join(" ") }}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Rotation Angle (&theta;)</b></td>
-                      <td>{{ data.rotation_angle_deg }}&#176;</td>
-                    </tr>
-                    <tr>
-                      <td><b>Translation (trans) </b></td>
-                      <td> {{ data.translation }} &#8491;</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="col s12 m4 center">
-                <img src="{{ url_for('static', filename='img/screw.png') }}"style="width: 150px;">
-              </div>
-
-            </div>
-          </div> <!-- end card content-->
+          </div><!-- end card content-->
         </div> <!-- end card -->
       </div> <!-- end col -->
     </div> <!-- end row -->
@@ -65,10 +52,10 @@
       <div class="col s12 m12">
         <div class="card">
           <div class="card-content">
-            <span class="card-title">Construction Results</span>
+            <span class="card-title"><b>Helical parameters for the screw transformation</b></span>
             <div class="row">
               <div class="col s12 m4">
-                <table class="striped centered">
+                <table class="striped">
                   <tbody>
                     <tr>
                       <td><b>Pitch</b></td>
@@ -85,13 +72,27 @@
                   </tbody>
                 </table>
               </div>
-            </div>
-            <div class="row">
-              <p class="center-align">
-                <a class="waves-effect btn-small lbt-gris" data-tooltip="Download PDB file" href="{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_out_name)}}">
-                  <i class="material-icons right">file_download</i><span class="hide-on-med-and-down">Download</span>
-                </a>
-              </p>
+              <div class="col s12 m4">
+                <table class="striped">
+                  <tbody>
+                    <tr>
+                      <td><b>Axis Point (O)</b></td>
+                      <td>{{ data.axis_point|join(" ") }}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Rotation Angle (&theta;) </b></td>
+                      <td>{{ data.rotation_angle_deg }}&#176;</td>
+                    </tr>
+                    <tr>
+                      <td><b>Translation (trans) </b></td>
+                      <td> {{ data.translation }} &#8491;</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col s12 m4">
+                <img src="{{ url_for('static', filename='img/screw.png') }}"style="width: 200px;">
+              </div>
             </div>
           </div> <!-- end card content-->
         </div> <!-- end card -->
@@ -103,20 +104,28 @@
       <div class="col s12 m12 center-align ">
         <div class="card">
           <div class="card-content">
-            <span class="card-title">View</span>
+            <span class="card-title"><b>Visualisation</b></span>
+            <div class="row">
+              <p class="center-align">
+                <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file" href="{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_out_name)}}">
+                  <i class="material-icons right">file_download</i><span class="hide-on-med-and-down">Download Oligomer</span>
+                </a>
+              </p>
+            </div>
+            <div class="row">
+              <link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}" type="text/css" />
+              <script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
+              <div id="litemol" />
+              <script>
+                var plugin = LiteMol.Plugin.create({ target: '#litemol' , viewportBackground: '#ffffff'});
 
-            <link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}" type="text/css" />
-            <script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
-            <div id="litemol" />
-            <script>
-              var plugin = LiteMol.Plugin.create({ target: '#litemol' , viewportBackground: '#ffffff'});
-
-              plugin.loadMolecule({
-                  id: 'custom',
-                  url: "{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_out_name) }}",
-                  format: 'pdb' // default
-              });
-            </script>
+                plugin.loadMolecule({
+                    id: 'custom',
+                    url: "{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_out_name) }}",
+                    format: 'pdb' // default
+                });
+              </script>
+            </div>
           </div>
         </div>
       </div>
