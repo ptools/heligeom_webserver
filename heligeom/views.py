@@ -8,7 +8,7 @@ from flask import Blueprint, current_app, render_template, redirect, url_for, re
 
 from .forms import HeligeomForm, validate_input_structure
 from .models import db, UserInputs
-from .tool import construct, screw_parameters
+from .tool import construct, screw_parameters, analyze_fnat
 
 # Blueprint Configuration
 heligeom_bp = Blueprint(
@@ -160,6 +160,7 @@ def results(results_id):
                                                                   n_mer, pdb_out_abs_path)
 
 
+
         # Create dict of data to pass to render_template
         data = {
             "results_id": results_id,
@@ -204,6 +205,10 @@ def results(results_id):
                                                                                 res_range1bis, res_range2bis,
                                                                                 n_mer, pdb_out_abs_path2)
 
+            # compute FNAT
+            fnat = analyze_fnat(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
+                                pdb_abs_path2, chain1bis_id, chain2bis_id, res_range1bis, res_range2bis)
+
             # Create dict of data to pass to render_template
             data_bis = {
                 "pdb_input": pdb_filename2,
@@ -222,7 +227,8 @@ def results(results_id):
                 "axis_point": [f"{coord:3.2f}" for coord in hp2.point],
                 "translation": f"{hp2.normtranslation:3.2f}",
                 "dmin"      : f"{dminbis:3.2f}",
-                "dmax"       : f"{dmaxbis:3.2f}"
+                "dmax"       : f"{dmaxbis:3.2f}",
+                "fnat"       : f"{fnat:3.2f}"
             }
 
             return render_template('results_2_oligomers.html',data=data, data_bis=data_bis)
