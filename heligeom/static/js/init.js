@@ -27,7 +27,7 @@ function showErrorLogs() {
 
 // Limit file input size
 function checkSize(){
-  if(this.files[0].size > 1097152){
+  if(this.files[0].size > 10097152){
     alert("Maximum size accepted is 10Mb.");
     this.value = "";
  };
