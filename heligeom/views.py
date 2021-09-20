@@ -90,8 +90,8 @@ def runpage():
                         data_bis = None
 
                     return render_template('run.html', form=form, screw_data=screw_data, screw_data_bis=data_bis)
-                except:
-                    return render_template('error.html',error_log=traceback.format_exc())
+                except Exception as e:
+                    return render_template('error.html',summary=str(e), error_log=traceback.format_exc())
 
         # Construction requested
         elif request.form.get("action") == "construct" and form.validate():
