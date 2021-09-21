@@ -228,7 +228,7 @@ def results(results_id):
                 "translation": f"{hp2.normtranslation:3.2f}",
                 "dmin"      : f"{dminbis:3.2f}",
                 "dmax"       : f"{dmaxbis:3.2f}",
-                "fnat"       : f"{fnat:3.2f}"
+                "fnat"       : f"{fnat:3.4f}"
             }
 
             return render_template('results_2_oligomers.html',data=data, data_bis=data_bis)
