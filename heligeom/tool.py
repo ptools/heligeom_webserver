@@ -71,13 +71,17 @@ def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range
     print("monomer2 size :", monomer2.size())
 
 
+    try:
     # Retrieve the offset between the first resid of the 2 monomers
-    min_res1, _ = utils.parse_resrange(res_range_M1)
-    min_res2, _ = utils.parse_resrange(res_range_M2)
-    delta_resid = min_res2 - min_res1
-    print("delta resid :", delta_resid)
-    # Handle missing residues with an intersection
-    rb1, rb2 = chain_intersect(monomer1, monomer2, delta_resid=delta_resid)
+        min_res1, _ = utils.parse_resrange(res_range_M1)
+        min_res2, _ = utils.parse_resrange(res_range_M2)
+        delta_resid = min_res2 - min_res1
+        print("delta resid :", delta_resid)
+        # Handle missing residues with an intersection
+        rb1, rb2 = chain_intersect(monomer1, monomer2, delta_resid=delta_resid)
+    except SyntaxError:
+        rb1 = monomer1
+        rb2 = monomer2
 
     print("rb1 size :", rb1.size())
     print("rb2 size :", rb2.size())
@@ -109,14 +113,24 @@ def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range
     return (hp, pitch, monomers_per_turn, direction, dmin, dmax)
 
 
-def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_mer, pdb_out):
+def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_mer, z_align, pdb_out):
 
     # Create monomers from input data
     monomer1, monomer2 = get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
     # Retrieve the offset between the first resid of the 2 monomers
     delta_resid = monomer1[0].resid-monomer2[0].resid
-    # Handle missing residues with an intersection
-    rb1, rb2 = chain_intersect(monomer1, monomer2, delta_resid=delta_resid)
+
+    try:
+    # Retrieve the offset between the first resid of the 2 monomers
+        min_res1, _ = utils.parse_resrange(res_range_M1)
+        min_res2, _ = utils.parse_resrange(res_range_M2)
+        delta_resid = min_res2 - min_res1
+        print("delta resid :", delta_resid)
+        # Handle missing residues with an intersection
+        rb1, rb2 = chain_intersect(monomer1, monomer2, delta_resid=delta_resid)
+    except SyntaxError:
+        rb1 = monomer1
+        rb2 = monomer2
 
     if rb1.size() == 0:
         raise ValueError("Monomer 1 has a size of 0.")
@@ -129,7 +143,7 @@ def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_
     monomer2_CA = rb2.select_atom_type("CA")
 
     hp = heli_analyze(monomer1_CA, monomer2_CA)
-    result = heli_construct(monomer1, hp, N=n_mer)
+    result = heli_construct(monomer1, hp, N=n_mer,Z=z_align)
 
     result.writepdb(pdb_out)
 

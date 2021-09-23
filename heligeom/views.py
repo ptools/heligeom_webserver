@@ -151,13 +151,16 @@ def results(results_id):
 
         #Ptools part
         # Name of the constructed PDB (used also in download function)
-        pdb_out_name = f"Construct_N{n_mer}_{pdb_filename}"
+        if z_align:
+            pdb_out_name = f"Construct_N{n_mer}_Z_{pdb_filename}"
+        else:
+            pdb_out_name = f"Construct_N{n_mer}_{pdb_filename}"
         pdb_out_abs_path = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_out_name)
 
         pdb_abs_path = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_filename)
         #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
         hp, pitch, nb_monomers, direction, dmin, dmax = construct(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
-                                                                  n_mer, pdb_out_abs_path)
+                                                                  n_mer, z_align, pdb_out_abs_path)
 
 
 
@@ -196,14 +199,22 @@ def results(results_id):
 
             #Ptools part
             # Name of the constructed PDB (used also in download function)
-            pdb_out_name2 = f"Construct_2nd_N{n_mer}_{pdb_filename2}"
+            if z_align:
+                pdb_out_name2 = f"Construct_2nd_N{n_mer}_Z_{pdb_filename2}"
+            else:
+                pdb_out_name2 = f"Construct_2nd_N{n_mer}_{pdb_filename2}"
+
             pdb_out_abs_path2 = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_out_name2)
 
             pdb_abs_path2 = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_filename2)
+
+            print(pdb_filename2)
+            print(pdb_out_abs_path2)
+            print(z_align)
             #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
             hp2, pitch2, nb_monomers2, direction2, dminbis, dmaxbis = construct(pdb_abs_path2, chain1bis_id, chain2bis_id,
                                                                                 res_range1bis, res_range2bis,
-                                                                                n_mer, pdb_out_abs_path2)
+                                                                                n_mer,  z_align, pdb_out_abs_path2)
 
             # compute FNAT
             fnat = analyze_fnat(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
