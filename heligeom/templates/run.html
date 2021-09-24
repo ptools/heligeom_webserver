@@ -336,9 +336,9 @@
                           <p>From the helical parameters calculated from the 2 monomers, you can construct a filament made of copies of Monomer 1.</p>
                           <p></p>
                         </div>
-                        <div class="input-field col s12 m2">
+                        <div class="input-field col s12 m3">
                           {{ form.n_mer(class_="validate", placeholder="10")}}
-                          <label>Number of Monomers</label>
+                          <label>Number of Monomers (100 maximum)</label>
                           {% if form.n_mer.errors %}
                             <span class="helper-text error-input">{{form.n_mer.errors}}</span>
                           {% else %}
