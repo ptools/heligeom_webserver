@@ -11,7 +11,7 @@ def test_index(client):
     response = client.get('/')
     assert response.status_code == 200
     assert b"Heligeom" in response.data
-    assert b"A tool to create filaments" in response.data
+    assert b"Relating interfaces with 3D architectures" in response.data
 
 
 def test_help(client):

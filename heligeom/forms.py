@@ -74,7 +74,7 @@ class HeligeomForm(FlaskForm):
     # Number of copy/monomers requested to create the filament.
     n_mer = IntegerField("n_mer", validators=[
         validators.Optional(),
-        validators.NumberRange(0, 50, message="Only number is accepted.")])
+        validators.NumberRange(0, 100, message="Only number is accepted.")])
     # If the filament will be align on Z.
     z_align = BooleanField("z_align")
 

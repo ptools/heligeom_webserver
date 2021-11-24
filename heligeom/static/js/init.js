@@ -37,3 +37,19 @@ var uploadField = document.getElementById("input_file");
 uploadField.onchange = checkSize;
 var uploadField2 = document.getElementById("input_file_2nd");
 uploadField2.onchange = checkSize;
+
+
+
+// Pre populate form with JS
+document.getElementById("example").onclick = function() {
+
+  //Fill PDBid
+  document.getElementById("pdb_id").value="2GLS";
+  //Fill Chains
+  document.getElementById("chain1_id").value="A";
+  document.getElementById("chain2_id").value="B";
+  //Fill number of monomers
+  document.getElementById("n_mer").value = "6";
+  document.getElementById("z_align").checked = true;
+
+}

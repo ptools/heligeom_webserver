@@ -8,7 +8,7 @@ from flask import Blueprint, current_app, render_template, redirect, url_for, re
 
 from .forms import HeligeomForm, validate_input_structure
 from .models import db, UserInputs
-from .tool import construct, screw_parameters
+from .tool import construct, screw_parameters, analyze_fnat
 
 # Blueprint Configuration
 heligeom_bp = Blueprint(
@@ -90,8 +90,8 @@ def runpage():
                         data_bis = None
 
                     return render_template('run.html', form=form, screw_data=screw_data, screw_data_bis=data_bis)
-                except:
-                    return render_template('error.html',error_log=traceback.format_exc())
+                except Exception as e:
+                    return render_template('error.html',summary=str(e), error_log=traceback.format_exc())
 
         # Construction requested
         elif request.form.get("action") == "construct" and form.validate():
@@ -151,13 +151,17 @@ def results(results_id):
 
         #Ptools part
         # Name of the constructed PDB (used also in download function)
-        pdb_out_name = f"Construct_N{n_mer}_{pdb_filename}"
+        if z_align:
+            pdb_out_name = f"Construct_N{n_mer}_Z_{pdb_filename}"
+        else:
+            pdb_out_name = f"Construct_N{n_mer}_{pdb_filename}"
         pdb_out_abs_path = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_out_name)
 
         pdb_abs_path = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_filename)
         #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
         hp, pitch, nb_monomers, direction, dmin, dmax = construct(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
-                                                                  n_mer, pdb_out_abs_path)
+                                                                  n_mer, z_align, pdb_out_abs_path)
+
 
 
         # Create dict of data to pass to render_template
@@ -195,14 +199,26 @@ def results(results_id):
 
             #Ptools part
             # Name of the constructed PDB (used also in download function)
-            pdb_out_name2 = f"Construct_2nd_N{n_mer}_{pdb_filename2}"
+            if z_align:
+                pdb_out_name2 = f"Construct_2nd_N{n_mer}_Z_{pdb_filename2}"
+            else:
+                pdb_out_name2 = f"Construct_2nd_N{n_mer}_{pdb_filename2}"
+
             pdb_out_abs_path2 = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_out_name2)
 
             pdb_abs_path2 = pathlib.Path(current_app.config['DATA_UPLOADS'], results_id, pdb_filename2)
+
+            print(pdb_filename2)
+            print(pdb_out_abs_path2)
+            print(z_align)
             #Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
             hp2, pitch2, nb_monomers2, direction2, dminbis, dmaxbis = construct(pdb_abs_path2, chain1bis_id, chain2bis_id,
                                                                                 res_range1bis, res_range2bis,
-                                                                                n_mer, pdb_out_abs_path2)
+                                                                                n_mer,  z_align, pdb_out_abs_path2)
+
+            # compute FNAT
+            fnat = analyze_fnat(pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2,
+                                pdb_abs_path2, chain1bis_id, chain2bis_id, res_range1bis, res_range2bis)
 
             # Create dict of data to pass to render_template
             data_bis = {
@@ -222,7 +238,8 @@ def results(results_id):
                 "axis_point": [f"{coord:3.2f}" for coord in hp2.point],
                 "translation": f"{hp2.normtranslation:3.2f}",
                 "dmin"      : f"{dminbis:3.2f}",
-                "dmax"       : f"{dmaxbis:3.2f}"
+                "dmax"       : f"{dmaxbis:3.2f}",
+                "fnat"       : f"{fnat:3.4f}"
             }
 
             return render_template('results_2_oligomers.html',data=data, data_bis=data_bis)

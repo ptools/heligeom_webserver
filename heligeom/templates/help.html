@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Heligeom - Run{% endblock %}
+{% block title %}Heligeom - Help{% endblock %}
 
 {% block content %}
 
@@ -10,7 +10,92 @@
 
         <h2 class="header light">How to use Heligeom</h2>
 
-        <p>Write Tutorial</p>
+        <div class="divider"></div>
+
+        <h4 class="header center-align" id="1_oligo">Run Page</h4>
+
+        <div class="divider"></div>
+
+        <h4 class="header center-align" id="1_oligo">Result Page with 1 Oligomer</h4>
+
+        <div>
+          <h5 class="header">1 - Input parameters</h5>
+          <div class="center-align">
+            <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_up.png')}}"style="max-width:80%;">
+          </div>
+          <p>
+            First, <b>Heligeom</b> displays a summary of the input parameters you have entered: PDB file name (or PDB Id ), chains and/or residues range.
+            If one is not specified, the word "Unspecified" is displayed instead. <br>
+            The number of monomers required to create the oligomer and the Z-alignment are also given.
+          </p>
+        </div>
+
+        <div>
+        <h5 class="header">1 - Helical parameters</h5>
+        <b>Note: </b> This is the same values displayed when clicked on the button
+        <button class="waves-effect btn lbt-bleu">Retrieve Helical parameters?<i class="material-icons right">send</i></button>
+        on the input page.
+        <div class="center-align">
+          <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_mid.png')}}"style="max-width:80%;">
+        </div>
+        <p>
+          Then, <b>Heligeom</b> displays the helical parameters computed from the 2 monomers given.
+          It refers to the <a href="{{ url_for('heligeom_bp.homepage', _anchor='screw') }}">screw calculation</a>.<br>
+          See the image below for a visual explanation of those parameters.<br>
+          The <b>pitch</b> is the distance of one helix turn along the helix axis. <br>
+          The <b>monomer per turn</b> is the number of monomers needed for <b>1</b> turn of the helix.<br>
+          The <b>Handedness</b> is the direction of rotation around the axis.<br>
+          The 2 distances (<b>IntR</b> and <b>ExtR</b>) are the minimal and maximal distances between the screw axis and the atoms of oligomer.<br>
+          On the right, it is the parameters of the screw axis, defined in the image next to it.
+        </p>
+        <div class="center-align">
+          <img class="responsive-img" src="{{ url_for('static', filename='img/helical_parameters_sketch.png')}}"style="max-width:25%;">
+        </div>
+        </div>
+
+        <div>
+          <h5 class="header">3 - Visualisation</h5>
+          <div class="center-align">
+            <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_bot.png')}}"style="max-width:80%;">
+          </div>
+          <p>
+            Finally, <b>Heligeom</b> offers an interative view of the constructed oligomer. By default, the coloration is made by monomers.<br>
+            The plugin use is <a href="http://webchemdev.ncbr.muni.cz/Litemol/">LiteMol</a>, here a <a href="https://webchem.ncbr.muni.cz/Wiki/LiteMol:UserManual">link</a> to its documentation if needed. <br>
+            You can download the PDB file of the oligomer with the orange button.<br>
+          </p>
+        </div>
+
+
+        <div class="divider"></div>
+
+        <h4 class="header center-align">Result Page with 2 Oligomers</h4>
+
+
+        <div>
+          <h5 class="header">Results</h5>
+          <div class="center-align">
+            <img class="responsive-img" src="{{ url_for('static', filename='img/result_2_up.png')}}"style="max-width:80%;">
+          </div>
+          <p>
+            For a couple of oligmers, <b>Heligeom</b> displays the same content that for <a href="{{ url_for('heligeom_bp.help', _anchor='1_oligo') }}">1 Oligomer</a> with a <b>side by side </b> view.
+          </p>
+        </div>
+
+        <div>
+          <h5 class="header">Comparison of the interface</h5>
+          <div class="center-align">
+            <img class="responsive-img" src="{{ url_for('static', filename='img/result_2_mid.png')}}"style="max-width:80%;">
+          </div>
+          <p>
+            On the Result page, <b>Heligeom</b> displays some analyzis of the comparison of the 2 interfaces.<br>
+            <b><font size="+1">FNAT</font></b><br>
+            The Fnat is the fraction of residue pairs of the 1st interface present in the 2nd interface, as defined
+            <a href="{{ url_for('heligeom_bp.homepage', _anchor='interfaces') }}">here</a>.<br>
+            Value of 1.0: <b>All</b> of the residue pairs of the 1st interface are present in the 2nd one.<br>
+            Value of 0.0: <b>None</b> of the residue pairs of the 1st interface are present in the 2nd one.<br>
+          </p>
+        </div>
+
     </div>
   </div>
 

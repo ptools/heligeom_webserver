@@ -1,6 +1,8 @@
 image: "python:3.8"
 
 before_script:
+  - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.galaxy.ibpc.fr/".insteadOf "https://gitlab.galaxy.ibpc.fr/"
+  - git submodule sync && git submodule update --init
   - python --version
   - pip install pipenv
   - pipenv install --dev

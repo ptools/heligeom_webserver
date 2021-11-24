@@ -13,6 +13,10 @@
 
         <h5 class="header center red-text">Something went wrong during processing data</h5>
 
+        {% if summary %}
+          <h6 class="header center red-text">{{ summary }} </h6>
+        {%endif %}
+
     <div>
       <button class="btn waves-effect waves-light" onclick="showErrorLogs()">Show Error</button>
       <pre id="logs" style="display: none;">
