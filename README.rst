@@ -16,7 +16,7 @@ Requirements
 
 This Web server requires:
 
-* Python >= 3.6
+* Python >= 3.9
 * Python modules: Flask, flask-sqlalchemy, flask-wtf
 * the new Ptools version, rewritten in full Python.
 
