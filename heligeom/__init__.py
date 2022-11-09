@@ -18,7 +18,7 @@ def create_app(config_object=None):
         #Clear database
         db.drop_all()
         from .models import UserInputs
-        db.create_all(app=app)
+        db.create_all()
 
         # Include Routes
         from . import views

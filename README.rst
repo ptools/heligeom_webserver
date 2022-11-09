@@ -8,7 +8,7 @@ This is the implementation of a Web Server for the tool **Heligeom**.
 Heligeom relies on the structures of monomer-monomer interfaces both for deriving the transformations and for filament construction.
 For the latter it is thus complementary to other packages that apply known space group symmetries to obtain the structures of supra-assemblies [1].
 
-The Web server is based on `Flask <https://flask.palletsprojects.com/en/1.1.x/>`_ for the backend and `Materialize <https://materializecss.com/>`_ for the frontend.
+The Web server is based on `Flask v2.2 <https://flask.palletsprojects.com/en/2.2.x/>`_ for the backend and `Materialize v1.1.0 <https://materializecss.github.io/materialize/>`_ for the frontend.
 
 
 Requirements
