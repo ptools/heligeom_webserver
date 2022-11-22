@@ -15,6 +15,7 @@ flask-wtf = "*"
 flask-sqlalchemy = "*"
 ptools = {editable = true, path = "./ptools-python"}
 pytest = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.9"
