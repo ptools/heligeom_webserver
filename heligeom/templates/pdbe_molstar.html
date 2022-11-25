@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Heligeom - Run{% endblock %}
+
+{% block content %}
+
+
+<style>
+  #app {
+    position: relative;
+    margin-top: 80px;
+    margin-bottom: 400px;
+    width: 1200px;
+    height: 600px;
+  }
+</style>
+
+<div class="container">
+  <div class="section">
+
+    <div class="row">
+      <div class="col s12 m12 center-align ">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title"><b>Visualisation</b></span>
+            <div class="row">
+              <p class="center-align">
+                Test
+              </p>
+            <div class="row">
+              <div class="controlsSection">
+
+                <h5>Interaction</h3>
+
+                <div class="controlBox">
+                  <strong>Set Background</strong><br>
+                  <button onclick="viewerInstance.canvas.setBgColor({r:255, g:255, b:255})">White</button>&nbsp;
+                  <button onclick="viewerInstance.canvas.setBgColor({r:0, g:0, b:0})">Black</button><br><br>
+
+
+                  <strong>Highlights</strong><br>
+                  <button onclick="viewerInstance.visual.highlight({ data: [{struct_asym_id: 'B', color:{r:0,g:0,b:0}}]})">Highlights Chain B</button><br><br>
+
+                  <button onclick="
+                    var selectSections = [
+                      {
+                        struct_asym_id: 'A',
+                        color:{r:255,g:182,b:193}
+                      },
+                      {
+                        struct_asym_id: 'A',
+                        atom_id: [1066, 1067, 1072, 1073, 1074, 1076, 1077, 1078, 1079, 1080, 1081, 1082, 1083, 1084, 1086, 1088, 1089, 1090, 1092, 1093, 1094, 1095, 1096, 1097, 1098, 1099, 1100, 1101, 1102, 1104, 1105, 1106, 595, 1108, 1109, 1110, 1111, 601, 602, 603, 604, 605, 606, 607, 608, 609, 611, 612, 613, 614, 615, 616, 617, 618, 622, 623, 624, 625, 626, 115, 116, 119, 125, 126, 127, 128, 129, 130, 1157, 1158, 143, 144, 145, 148, 152, 154, 155, 156, 158, 627, 628, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 266, 267, 269, 270, 274, 275, 276, 288, 289, 290, 291, 297, 298, 299, 300, 641, 1862, 1863, 1864, 1866, 1869, 1885, 1886, 1887, 1888, 1889, 1890, 1891, 1892, 1893, 1894, 1898, 1899, 1900, 1901, 1915, 1916, 1917, 1918, 1919, 1921, 1923, 390, 397, 1947, 1948, 1949, 1950, 1951, 1952, 417, 418, 419, 1953, 1960, 1961, 1963, 1964, 1965, 1966, 1967, 1968, 1969, 1972, 1975, 1976, 442, 443, 444, 445, 446, 447, 448, 449, 450, 451, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 482, 483, 484, 1959, 1107],
+                        representation:'ball-and-stick',
+                        representationColor:{r:255,g:0,b:255},
+                        color:{r:255,g:182,b:193},
+                        focus:true
+                      },
+                      {
+                        struct_asym_id: 'B',
+                        color:{r:255,g:250,b:205}
+                      },
+                      {
+                        struct_asym_id: 'B',
+                        atom_id: [1548, 1549, 1550, 2592, 2594, 2595, 2596, 2597, 2598, 2599, 2600, 2601, 2602, 2603, 2604, 2605, 2606, 2607, 2608, 1585, 1587, 1588, 1589, 1590, 1591, 1592, 2617, 1594, 1595, 1596, 1597, 1598, 1599, 1600, 1602, 1603, 1604, 1605, 1606, 1607, 1608, 1609, 1610, 1611, 1612, 1613, 1614, 1615, 1616, 1617, 1622, 1623, 1625, 2655, 2656, 2657, 2658, 2659, 2680, 2614, 1726, 2775, 2776, 2777, 1244, 1245, 1246, 1247, 1248, 1249, 1250, 1251, 1252, 1253, 1257, 1258, 1319, 1262, 1263, 1264, 1266, 1267, 1268, 1269, 1270, 1271, 1294, 1295, 1296, 1297, 1298, 1299, 1300, 1301, 1302, 1304, 1305, 1306, 1307, 1308, 1309, 1310, 1311, 1312, 1313, 1314, 1315, 1316, 1317, 1318, 2609, 1321, 1326, 1327, 1328, 1329, 1330, 2613, 2619, 2621, 2615, 3640, 2618, 1378, 1379, 1380, 1381, 1382, 1384, 2620, 1386, 1389, 1390, 1391, 1392, 1393, 1394, 1395, 1396, 1397, 1398, 1399, 1400, 1401, 1402, 1403, 1404, 1405, 1406, 1407, 1408, 1409, 1411, 1412, 1413, 1414, 1415, 1416, 1418, 1419, 1420, 1421, 1422, 1425, 1426, 1427, 2622, 1439, 1440, 1441, 1458, 1459, 1460, 1461, 1462, 1463, 1464, 2623, 1466, 1467, 1468, 1469, 1470, 1487, 1489, 1491, 1492, 1493, 1494, 1495, 1496, 1497, 1500, 1501, 1502, 1503, 1504, 1465, 1517, 1518, 1519, 1523, 1524, 1525, 1526],
+                        representation:'ball-and-stick',
+                        representationColor:{r:255,g:255,b:0},
+                        color:{r:255,g:250,b:205},
+                        focus:true
+                      },
+
+                    ]
+                    viewerInstance.visual.select({ data: selectSections, nonSelectedColor: {r:255,g:255,b:255}})">Focus interface residus</button><br><br>
+
+
+                  <!-- <button onclick="viewerInstance.visual.select({ data: [{struct_asym_id: 'B', color:{r:255,g:255,b:0}, focus:true}], nonSelectedColor: {r:255,g:255,b:255} })">Select & Focus on Chain B</button><br><br> -->
+
+                  <button onclick="viewerInstance.visual.clearSelection()">Clear Selection</button><br><br>
+                </div>
+            </div>
+            </div>
+            <div class="row">
+              <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-light-3.1.0.css" />
+              <script type="text/javascript" src="https://www.ebi.ac.uk/pdbe/pdb-component-library/js/pdbe-molstar-plugin-3.1.0.js"></script>
+              <div id="app">
+                <h4>PDBe Mol* JS Plugin Demo</h4>
+
+                <!-- Molstar container -->
+                <div id="myViewer"></div>
+
+
+              </div>
+
+              <script type="text/javascript">
+                //Create plugin instance
+                var viewerInstance = new PDBeMolstarPlugin();
+
+                //Set options (Checkout available options list in the documentation)
+                var options = {
+                  customData: { url: 'http://sablons.lbt.ibpc.fr:5000/results/f571c58661414055bc5d4566b96c96ae%22/Construct_N6_Z_2GLS.pdb', format: 'pdb'},
+                  hideControls: true,
+                  bgColor: {r:250, g:250, b:250},
+                  landscape: true,
+                  sequencePanel: true,
+                  hideCanvasControls: ['animation']
+                }
+
+                //Get element from HTML/Template to place the viewer
+                var viewerContainer = document.getElementById('myViewer');
+
+                //Call render method to display the 3D view
+                viewerInstance.render(viewerContainer, options);
+              </script>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+
+
+</script>
+
+
+
+{% endblock %}
+

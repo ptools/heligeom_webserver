@@ -312,3 +312,8 @@ def contact():
 @heligeom_bp.route("/error")
 def error():
     return render_template("error.html")
+
+
+@heligeom_bp.route("/pdbe_molstar")
+def pdbe_molstar():
+    return render_template("pdbe_molstar.html")
