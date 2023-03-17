@@ -159,7 +159,7 @@ def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_
         monomers_per_turn = 0.0
     direction = "right-handed" if hp.angle * hp.normtranslation > 0 else "left-handed"
 
-    dmin, dmax = distAxis(monomer1, hp)
+    dmin, dmax = measure.minmax_distance_to_axis(monomer1, hp, center=hp.point)
 
     return (hp, pitch, monomers_per_turn, direction, dmin, dmax)
 
