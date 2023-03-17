@@ -6,7 +6,8 @@ from . import utils
 import math
 
 from ptools import RigidBody
-from ptools.heligeom import heli_analyze, heli_construct, distAxis, fnat, chain_intersect
+from ptools import measure
+from ptools.heligeom import heli_analyze, heli_construct, chain_intersect
 
 def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
     """Return the 2 monomers exracted from the `pdb_file` with the correct extracted atoms
@@ -108,7 +109,7 @@ def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range
         monomers_per_turn = 0.0
     direction = "right-handed" if hp.angle * hp.normtranslation > 0 else "left-handed"
 
-    dmin, dmax = distAxis(monomer1, hp)
+    dmin, dmax = measure.minmax_distance_to_axis(monomer1, hp, center=hp.point)
 
     return (hp, pitch, monomers_per_turn, direction, dmin, dmax)
 
@@ -170,4 +171,4 @@ def analyze_fnat(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2,
     monomer1, monomer2 = get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
     monomer1bis, monomer2bis = get_monomers(pdb_file2, chain2_id_M1, chain2_id_M2, res_range2_M1, res_range2_M2)
 
-    return fnat(monomer1, monomer2, monomer1bis, monomer2bis)
+    return measure.fnat(monomer1, monomer2, monomer1bis, monomer2bis, cutoff=5)
