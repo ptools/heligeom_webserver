@@ -8,6 +8,7 @@ import math
 from ptools import RigidBody
 from ptools import measure
 from ptools.heligeom import heli_analyze, heli_construct, chain_intersect
+from ptools import io
 
 def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
     """Return the 2 monomers exracted from the `pdb_file` with the correct extracted atoms
@@ -32,7 +33,7 @@ def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
         the 2 monomers
     """
 
-    input_structure = RigidBody(pdb_file)
+    input_structure = RigidBody.from_pdb(pdb_file)
 
     # Monomer 1:
     if chain_id_M1:
@@ -119,7 +120,7 @@ def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_
     # Create monomers from input data
     monomer1, monomer2 = get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
     # Retrieve the offset between the first resid of the 2 monomers
-    delta_resid = monomer1[0].resid-monomer2[0].resid
+    delta_resid = monomer1[0].residue_index-monomer2[0].residue_index
 
     try:
     # Retrieve the offset between the first resid of the 2 monomers
@@ -146,7 +147,7 @@ def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_
     hp = heli_analyze(monomer1_CA, monomer2_CA)
     result = heli_construct(monomer1, hp, N=n_mer,Z=z_align)
 
-    result.writepdb(pdb_out)
+    io.write_pdb(result, pdb_out)
 
     #Retrieve N & Pitch
     rotation_angle_degrees = math.degrees(hp.angle)
@@ -159,7 +160,7 @@ def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_
         monomers_per_turn = 0.0
     direction = "right-handed" if hp.angle * hp.normtranslation > 0 else "left-handed"
 
-    dmin, dmax = measure.minmax_distance_to_axis(monomer1, hp, center=hp.point)
+    dmin, dmax = measure.minmax_distance_to_axis(monomer1, hp.unit, center=hp.point)
 
     return (hp, pitch, monomers_per_turn, direction, dmin, dmax)
 

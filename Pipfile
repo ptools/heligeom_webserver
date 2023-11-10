@@ -16,6 +16,11 @@ flask-sqlalchemy = "*"
 ptools = {editable = true, path = "./ptools-python"}
 pytest = "*"
 flask-cors = "*"
+attrs = "*"
+pyyaml = "*"
+scipy = "*"
+numpy = "*"
+hypothesis = "*"
 
 [requires]
 python_version = "3.11"
