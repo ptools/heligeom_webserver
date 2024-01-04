@@ -69,24 +69,16 @@ def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range
     # Create monomers from input data
     monomer1, monomer2 = get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
 
-    print("monomer1 size :", monomer1.size())
-    print("monomer2 size :", monomer2.size())
-
-
-    try:
     # Retrieve the offset between the first resid of the 2 monomers
+    try:
         min_res1, _ = utils.parse_resrange(res_range_M1)
         min_res2, _ = utils.parse_resrange(res_range_M2)
         delta_resid = min_res2 - min_res1
-        print("delta resid :", delta_resid)
         # Handle missing residues with an intersection
         rb1, rb2 = chain_intersect(monomer1, monomer2, delta_resid=delta_resid)
     except SyntaxError:
         rb1 = monomer1
         rb2 = monomer2
-
-    print("rb1 size :", rb1.size())
-    print("rb2 size :", rb2.size())
 
     if rb1.size() == 0:
         raise ValueError("Monomer 1 has a size of 0.")
@@ -110,7 +102,7 @@ def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range
         monomers_per_turn = 0.0
     direction = "right-handed" if hp.angle * hp.normtranslation > 0 else "left-handed"
 
-    dmin, dmax = measure.minmax_distance_to_axis(monomer1, hp, center=hp.point)
+    dmin, dmax = measure.minmax_distance_to_axis(monomer1, hp.unit, center=hp.point)
 
     return (hp, pitch, monomers_per_turn, direction, dmin, dmax)
 
@@ -119,15 +111,12 @@ def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_
 
     # Create monomers from input data
     monomer1, monomer2 = get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
-    # Retrieve the offset between the first resid of the 2 monomers
-    delta_resid = monomer1[0].residue_index-monomer2[0].residue_index
 
-    try:
     # Retrieve the offset between the first resid of the 2 monomers
+    try:
         min_res1, _ = utils.parse_resrange(res_range_M1)
         min_res2, _ = utils.parse_resrange(res_range_M2)
         delta_resid = min_res2 - min_res1
-        print("delta resid :", delta_resid)
         # Handle missing residues with an intersection
         rb1, rb2 = chain_intersect(monomer1, monomer2, delta_resid=delta_resid)
     except SyntaxError:
