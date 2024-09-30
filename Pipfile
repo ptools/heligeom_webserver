@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+black = "*"
 pylint = "*"
 pytest = "*"
 pylint-flask-sqlalchemy = "*"
@@ -25,4 +26,4 @@ types-pyyaml = "*"
 ptools = {editable = true, path = "./ptools-python"}
 
 [requires]
-python_version = "3.11"
+python_version = "3.10"
