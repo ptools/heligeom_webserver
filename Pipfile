@@ -8,21 +8,20 @@ black = "*"
 pylint = "*"
 pytest = "*"
 pylint-flask-sqlalchemy = "*"
+types-flask-cors = "*"
+types-pyyaml = "*"
 
 [packages]
 flask = "*"
 sqlalchemy = "*"
 flask-wtf = "*"
 flask-sqlalchemy = "*"
-pytest = "*"
 flask-cors = "*"
 attrs = "*"
 pyyaml = "*"
 scipy = "*"
 numpy = "*"
 hypothesis = "*"
-mypy = "*"
-types-pyyaml = "*"
 ptools = {editable = true, path = "./ptools-python"}
 
 [requires]
