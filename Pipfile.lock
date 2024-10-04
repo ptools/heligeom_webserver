@@ -41,14 +41,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==8.1.7"
         },
-        "exceptiongroup": {
-            "hashes": [
-                "sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b",
-                "sha256:47c2edf7c6738fafb49fd34290706d1a1a2f4d1c6df275526b62cbb4aa5393cc"
-            ],
-            "markers": "python_version < '3.11'",
-            "version": "==1.2.2"
-        },
         "flask": {
             "hashes": [
                 "sha256:34e815dfaa43340d1d15a5c3a02b8476004037eb4840b34910c6e21679d288f3",
@@ -556,14 +548,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==2.0.35"
         },
-        "tomli": {
-            "hashes": [
-                "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
-                "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
-            ],
-            "markers": "python_version < '3.11'",
-            "version": "==2.0.1"
-        },
         "types-pyyaml": {
             "hashes": [
                 "sha256:392b267f1c0fe6022952462bf5d6523f31e37f6cea49b14cee7ad634b6301570",
@@ -657,16 +641,8 @@
                 "sha256:468dff3b89520b474c0397703366b7b95eebe6303f108adf9b19da1f702be87a",
                 "sha256:81aa267dddf68cbfe8029c42ca9ec6a4ab3b22371d1c450abc54422577b4512c"
             ],
-            "markers": "python_version < '3.11'",
+            "markers": "python_version >= '3.11'",
             "version": "==0.3.9"
-        },
-        "exceptiongroup": {
-            "hashes": [
-                "sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b",
-                "sha256:47c2edf7c6738fafb49fd34290706d1a1a2f4d1c6df275526b62cbb4aa5393cc"
-            ],
-            "markers": "python_version < '3.11'",
-            "version": "==1.2.2"
         },
         "flask": {
             "hashes": [
@@ -993,14 +969,6 @@
             "index": "pypi",
             "markers": "python_version >= '3.7'",
             "version": "==2.0.35"
-        },
-        "tomli": {
-            "hashes": [
-                "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
-                "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
-            ],
-            "markers": "python_version < '3.11'",
-            "version": "==2.0.1"
         },
         "tomlkit": {
             "hashes": [

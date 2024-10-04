@@ -1,4 +1,4 @@
-image: "python:3.11"
+image: "python:3.12"
 
 before_script:
   - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.galaxy.ibpc.fr/".insteadOf "https://gitlab.galaxy.ibpc.fr/"
