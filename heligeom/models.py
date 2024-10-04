@@ -24,7 +24,7 @@ class UserInputs(db.Model):
     # Z alignement of the filament (Yes/No)
     z_align = db.Column(db.Boolean, default=False)
 
-    #For a second oligomer
+    # For a second oligomer
     second_oligomer = db.Column(db.Boolean, default=False)
     pdb_filename_2nd = db.Column(db.String(100), default="")
     chain1bis_id = db.Column(db.String(2), default="")
@@ -32,21 +32,34 @@ class UserInputs(db.Model):
     res_range1bis = db.Column(db.String(50), default="")
     res_range2bis = db.Column(db.String(50), default="")
 
-
-    def __init__(self, request_id, pdb_filename="", chain1_id="", chain2_id="",
-                 res_range1="", res_range2="", n_mer=0, z_align=False):
+    def __init__(
+        self,
+        request_id,
+        pdb_filename="",
+        chain1_id="",
+        chain2_id="",
+        res_range1="",
+        res_range2="",
+        n_mer=0,
+        z_align=False,
+    ):
         self.request_id = request_id
         self.pdb_filename = pdb_filename
         self.chain1_id = chain1_id
         self.chain2_id = chain2_id
         self.res_range1 = res_range1
-        self.res_range2 =res_range2
+        self.res_range2 = res_range2
         self.n_mer = n_mer
         self.z_align = z_align
 
-
-    def add_2nd_oligomer(self, pdb_filename_2nd="", chain1bis_id="", chain2bis_id="",
-                         res_range1bis="", res_range2bis=""):
+    def add_2nd_oligomer(
+        self,
+        pdb_filename_2nd="",
+        chain1bis_id="",
+        chain2bis_id="",
+        res_range1bis="",
+        res_range2bis="",
+    ):
         self.second_oligomer = True
         self.pdb_filename_2nd = pdb_filename_2nd
         self.chain1bis_id = chain1bis_id
@@ -54,6 +67,7 @@ class UserInputs(db.Model):
         self.res_range1bis = res_range1bis
         self.res_range2bis = res_range2bis
 
-
     def __repr__(self):
-        return '<Id {0}, pdb_filename: {1}, n_mer: {2}, z_align: {3}>'.format(self.request_id, self.pdb_filename, self.n_mer, self.z_align)
+        return "<Id {0}, pdb_filename: {1}, n_mer: {2}, z_align: {3}>".format(
+            self.request_id, self.pdb_filename, self.n_mer, self.z_align
+        )

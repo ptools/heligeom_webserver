@@ -5,10 +5,12 @@ Ptools module for the calculations
 from . import utils
 import math
 
+
 from ptools import RigidBody
 from ptools import measure
 from ptools.heligeom import heli_analyze, heli_construct, chain_intersect
 from ptools import io
+
 
 def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
     """Return the 2 monomers exracted from the `pdb_file` with the correct extracted atoms
@@ -67,7 +69,9 @@ def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
 def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
 
     # Create monomers from input data
-    monomer1, monomer2 = get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
+    monomer1, monomer2 = get_monomers(
+        pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2
+    )
 
     # Retrieve the offset between the first resid of the 2 monomers
     try:
@@ -91,11 +95,11 @@ def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range
 
     hp = heli_analyze(monomer1_CA, monomer2_CA)
 
-    #Retrieve N & Pitch
+    # Retrieve N & Pitch
     rotation_angle_degrees = math.degrees(hp.angle)
     if abs(hp.angle) > 0.0:
-        pitch = abs(hp.normtranslation * (360. / abs(rotation_angle_degrees)))
-        monomers_per_turn = 360. / abs(rotation_angle_degrees)
+        pitch = abs(hp.normtranslation * (360.0 / abs(rotation_angle_degrees)))
+        monomers_per_turn = 360.0 / abs(rotation_angle_degrees)
     else:
         # Attention: zeros here indicate NaN (divide by zero)
         pitch = 0.0
@@ -107,10 +111,14 @@ def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range
     return (hp, pitch, monomers_per_turn, direction, dmin, dmax)
 
 
-def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_mer, z_align, pdb_out):
+def construct(
+    pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_mer, z_align, pdb_out
+):
 
     # Create monomers from input data
-    monomer1, monomer2 = get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
+    monomer1, monomer2 = get_monomers(
+        pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2
+    )
 
     # Retrieve the offset between the first resid of the 2 monomers
     try:
@@ -128,21 +136,20 @@ def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_
     if rb2.size() == 0:
         raise ValueError("Monomer 2 has a size of 0.")
 
-
     # Use CA for computating parameters
     monomer1_CA = rb1.select_atom_type("CA")
     monomer2_CA = rb2.select_atom_type("CA")
 
     hp = heli_analyze(monomer1_CA, monomer2_CA)
-    result = heli_construct(monomer1, hp, N=n_mer,Z=z_align)
+    result = heli_construct(monomer1, hp, N=n_mer, Z=z_align)
 
-    io.write_pdb(result, pdb_out)
+    io.write_pdb(result, pdb_out)  # type: ignore
 
-    #Retrieve N & Pitch
+    # Retrieve N & Pitch
     rotation_angle_degrees = math.degrees(hp.angle)
     if abs(hp.angle) > 0.0:
-        pitch = abs(hp.normtranslation * (360. / abs(rotation_angle_degrees)))
-        monomers_per_turn = 360. / abs(rotation_angle_degrees)
+        pitch = abs(hp.normtranslation * (360.0 / abs(rotation_angle_degrees)))
+        monomers_per_turn = 360.0 / abs(rotation_angle_degrees)
     else:
         # Attention: zeros here indicate NaN (divide by zero)
         pitch = 0.0
@@ -154,11 +161,24 @@ def construct(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_
     return (hp, pitch, monomers_per_turn, direction, dmin, dmax)
 
 
-def analyze_fnat(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2,
-                pdb_file2, chain2_id_M1, chain2_id_M2, res_range2_M1, res_range2_M2):
+def analyze_fnat(
+    pdb_file,
+    chain_id_M1,
+    chain_id_M2,
+    res_range_M1,
+    res_range_M2,
+    pdb_file2,
+    chain2_id_M1,
+    chain2_id_M2,
+    res_range2_M1,
+    res_range2_M2,
+):
 
-
-    monomer1, monomer2 = get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
-    monomer1bis, monomer2bis = get_monomers(pdb_file2, chain2_id_M1, chain2_id_M2, res_range2_M1, res_range2_M2)
+    monomer1, monomer2 = get_monomers(
+        pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2
+    )
+    monomer1bis, monomer2bis = get_monomers(
+        pdb_file2, chain2_id_M1, chain2_id_M2, res_range2_M1, res_range2_M2
+    )
 
     return measure.fnat(monomer1, monomer2, monomer1bis, monomer2bis, cutoff=5)

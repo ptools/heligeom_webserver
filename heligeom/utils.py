@@ -4,6 +4,7 @@ Module containing diverses useful functions.
 
 import re
 
+
 def parse_resrange(res_range):
     """Parse a string of the form x-y which defines a residue range and return the values.
 
@@ -25,7 +26,7 @@ def parse_resrange(res_range):
         If the parsing fails or the value are incorrect.
     """
 
-    res = re.match(r'([0-9]+)-([0-9]+)', res_range)
+    res = re.match(r"([0-9]+)-([0-9]+)", res_range)
     if not res:
         raise SyntaxError("Residue range is not in the form of 1-300.")
 
