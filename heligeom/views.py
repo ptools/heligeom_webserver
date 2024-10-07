@@ -33,46 +33,45 @@ def runpage():
     # Initialize submission form
     form = InputStructures()
 
-    if request.method == "POST":
-        if form.validate():
-            # Generate UUID for storing files
-            uniq_id = uuid.uuid4().hex
-            # Create result folder
-            result_path = pathlib.Path(current_app.config["DATA_UPLOADS"], uniq_id)
-            result_path.mkdir(exist_ok=True)
+    if form.validate():
+        # Generate UUID for storing files
+        uniq_id = uuid.uuid4().hex
+        # Create result folder
+        result_path = pathlib.Path(current_app.config["DATA_UPLOADS"], uniq_id)
+        result_path.mkdir(exist_ok=True)
 
-            pdb_filename = validate_input_structure(form.input_file, form.pdb_id, result_path)
-            if pdb_filename:
-                # Save to the database the form inputs
-                # Only way for now to pass the form data to another page.
-                # We could use session or flash messages but neither seems to fit the need.
-                user_inputs = UserInputs(
-                    request_id=uniq_id,
-                    pdb_filename=pdb_filename,
-                    chain1_id=form.chain1_id.data,
-                    chain2_id=form.chain2_id.data,
-                    res_range1=form.res_range1.data,
-                    res_range2=form.res_range2.data,
+        pdb_filename = validate_input_structure(form.input_file, form.pdb_id, result_path)
+        if pdb_filename:
+            # Save to the database the form inputs
+            # Only way for now to pass the form data to another page.
+            # We could use session or flash messages but neither seems to fit the need.
+            user_inputs = UserInputs(
+                request_id=uniq_id,
+                pdb_filename=pdb_filename,
+                chain1_id=form.chain1_id.data,
+                chain2_id=form.chain2_id.data,
+                res_range1=form.res_range1.data,
+                res_range2=form.res_range2.data,
+            )
+
+            # Does the user input for a 2nd assembly ?
+            pdb_filename_2nd = validate_input_structure(
+                form.input_file_2nd, form.pdb_id_2nd, result_path
+            )
+            if form.has_2nd_oligomer() and pdb_filename_2nd:
+                user_inputs.add_2nd_oligomer(
+                    pdb_filename_2nd=pdb_filename_2nd,
+                    chain1bis_id=form.chain1bis_id.data,
+                    chain2bis_id=form.chain2bis_id.data,
+                    res_range1bis=form.res_range1bis.data,
+                    res_range2bis=form.res_range2bis.data,
                 )
 
-                # Does the user input for a 2nd assembly ?
-                pdb_filename_2nd = validate_input_structure(
-                    form.input_file_2nd, form.pdb_id_2nd, result_path
-                )
-                if form.has_2nd_oligomer() and pdb_filename_2nd:
-                    user_inputs.add_2nd_oligomer(
-                        pdb_filename_2nd=pdb_filename_2nd,
-                        chain1bis_id=form.chain1bis_id.data,
-                        chain2bis_id=form.chain2bis_id.data,
-                        res_range1bis=form.res_range1bis.data,
-                        res_range2bis=form.res_range2bis.data,
-                    )
+            db.session.add(user_inputs)
+            db.session.commit()
 
-                db.session.add(user_inputs)
-                db.session.commit()
-
-                # Redirect to the results page with correct id
-                return redirect(url_for("heligeom_bp.results", results_id=uniq_id))
+            # Redirect to the results page with correct id
+            return redirect(url_for("heligeom_bp.results", results_id=uniq_id))
     return render_template("run.html", form=form)
 
 
@@ -135,7 +134,7 @@ def results(results_id):
                 current_app.config["DATA_UPLOADS"], results_id, pdb_out_name
             )
             # Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
-            hp, pitch, nb_monomers, direction, dmin, dmax = construct(
+            construct(
                 pdb_abs_path,
                 chain1_id,
                 chain2_id,
@@ -151,7 +150,6 @@ def results(results_id):
                 "pdb_out_name": pdb_out_name,
                 "n_mer": n_mer,
                 "z_align": z_align,
-                "nb_monomers": f"{nb_monomers:3.2f}",
             }
 
             return render_template(

@@ -22,14 +22,18 @@
                   <li>Input structure: <b>{{screw_data.pdb_input}}</b></li>
                   <li><b>Monomer 1</b>
                     <ul>
-                      <li>Chain        : <b>{% if screw_data.chain1_id %} {{ screw_data.chain1_id }} {% else %} Unspecified{% endif %}</b></li>
-                      <li>Residue range: <b>{% if screw_data.res_range1 %} {{ screw_data.res_range1 }} {% else %} Unspecified{% endif %}</b></li>
+                      <li>Chain : <b>{% if screw_data.chain1_id %} {{ screw_data.chain1_id }} {% else %} Unspecified{%
+                          endif %}</b></li>
+                      <li>Residue range: <b>{% if screw_data.res_range1 %} {{ screw_data.res_range1 }} {% else %}
+                          Unspecified{% endif %}</b></li>
                     </ul>
                   </li>
                   <li><b>Monomer 2</b>
                     <ul>
-                      <li>Chain        : <b>{% if screw_data.chain2_id %} {{ screw_data.chain2_id }} {% else %} Unspecified{% endif %}</b></li>
-                      <li>Residue range: <b>{% if screw_data.res_range2 %} {{ screw_data.res_range2 }} {% else %} Unspecified{% endif %}</b></li>
+                      <li>Chain : <b>{% if screw_data.chain2_id %} {{ screw_data.chain2_id }} {% else %} Unspecified{%
+                          endif %}</b></li>
+                      <li>Residue range: <b>{% if screw_data.res_range2 %} {{ screw_data.res_range2 }} {% else %}
+                          Unspecified{% endif %}</b></li>
                     </ul>
                   </li>
 
@@ -91,7 +95,7 @@
                 </table>
               </div>
               <div class="col s12 m4">
-                <img src="{{ url_for('static', filename='img/screw.png') }}"style="width: 200px;">
+                <img src="{{ url_for('static', filename='img/screw.png') }}" style="width: 200px;">
               </div>
             </div>
           </div> <!-- end card content-->
@@ -100,77 +104,87 @@
     </div> <!-- end row -->
 
 
-    <form id="" method="POST" action='' class="construct_form">
-      {{ construct_form.csrf_token }}
 
-      <div class="row">
-        <div class="card-content" style="border-top: 1px solid rgba(160, 160, 160, 0.2)">
-          <div class="row">
-            <div class="col s12" style="margin-bottom: 10px;">
-                <p><b style="font-size: 18px;">Construction Details</b></p>
-              <p>From the helical parameters calculated from the 2 monomers, you can construct a filament made of copies of Monomer 1.</p>
-              <p></p>
-            </div>
-            <div class="input-field col s12 m3">
-              {{ construct_form.n_mer(class_="validate", placeholder="10")}}
-              <label>Number of Monomers (100 maximum)</label>
-              {% if construct_form.n_mer.errors %}
-                <span class="helper-text error-input">{{construct_form.n_mer.errors}}</span>
-              {% else %}
-                <span class="helper-text" data-error="Number only" data-success="">Number only</span>
-              {% endif %}
-            </div>
-            <div class="input-field col s12 m3">
-                <label for="z_align">
-                  {{ construct_form.z_align }}
-                  <span>Alignment on Z-axis?</span>
-                </label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-action center">
-        <button class="waves-effect btn lbt-bleu" type="submit" name="action">Construct<i class="material-icons right">send</i></button>
-    </div>
-
-    </form>
-
-    <!-- Screw parameters displayed only if requested-->
-    {% if construct_data %}
     <div class="row">
-      <div class="col s12 m12 center-align ">
+      <div class="col s12 m12">
         <div class="card">
-          <div class="card-content">
-            <span class="card-title"><b>Visualisation</b></span>
-            <div class="row">
-              <p class="center-align">
-                <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file" href="{{ url_for('heligeom_bp.download', results_id=screw_data.results_id, filename=construct_data.pdb_out_name)}}">
-                  <i class="material-icons right">file_download</i><span class="hide-on-med-and-down">Download Oligomer</span>
-                </a>
-              </p>
-            </div>
-            <div class="row">
-              <link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}" type="text/css" />
-              <script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
-              <div id="litemol" />
-              <script>
-                var plugin = LiteMol.Plugin.create({ target: '#litemol' , viewportBackground: '#ffffff'});
+          <div class="card-content" style="border-top: 1px solid rgba(160, 160, 160, 0.2)">
 
-                plugin.loadMolecule({
+            <!-- Form fields -->
+            <span class="card-title"><b>Construction Details</b></span>
+            <form id="" method="POST" action='' class="construct_form">
+              {{ construct_form.csrf_token }}
+              <div class="row">
+                <div class="col s12" style="margin-bottom: 10px;">
+                  <p>From the helical parameters calculated from the 2 monomers, you can construct a filament made of
+                    copies of Monomer 1.</p>
+                  <p></p>
+                </div>
+                <div class="input-field col s12 m3">
+                  {{ construct_form.n_mer(class_="validate", placeholder="10")}}
+                  <label>Number of Monomers (100 maximum)</label>
+                  {% if construct_form.n_mer.errors %}
+                  <span class="helper-text error-input">{{construct_form.n_mer.errors}}</span>
+                  {% else %}
+                  <span class="helper-text" data-error="Number only" data-success="">Number only</span>
+                  {% endif %}
+                </div>
+                <div class="input-field col s12 m3">
+                  <label for="z_align">
+                    {{ construct_form.z_align }}
+                    <span>Alignment on Z-axis?</span>
+                  </label>
+                </div>
+              </div>
+              <div class="row">
+                <button class="waves-effect btn lbt-bleu" type="submit" name="action"
+                  onclick="load('loading_icon')">Construct<i class="material-icons right">send</i></button>
+              </div>
+              <div class="row hide" id="loading_icon">
+                <div class="col s4 push-s4">
+                  <div class="progress">
+                    <div class="indeterminate"></div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <!-- visualisation-->
+            {% if construct_data %}
+            <div class="card-action center">
+              <div class="row">
+                <div class="col s12 m12">
+                  <p class="center-align">
+                    <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file"
+                      href="{{ url_for('heligeom_bp.download', results_id=screw_data.results_id, filename=construct_data.pdb_out_name)}}">
+                      <i class="material-icons right">file_download</i>
+                        <span class="hide-on-med-and-down">Download Oligomer</span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+              <div class="row">
+                <link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}"
+                  type="text/css" />
+                <script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
+                <div id="litemol" />
+                <script>
+                  var plugin = LiteMol.Plugin.create({ target: '#litemol', viewportBackground: '#ffffff' });
+
+                  plugin.loadMolecule({
                     id: 'custom',
                     url: "{{ url_for('heligeom_bp.download', results_id=screw_data.results_id, filename=construct_data.pdb_out_name) }}",
                     format: 'pdb' // default
-                });
-              </script>
+                  });
+                </script>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
+            {% endif %}
 
-
+          </div> <!-- end card content -->
+        </div> <!-- end card -->
+      </div> <!-- end col -->
+    </div> <!-- end row -->
 
   </div> <!-- end section -->
 </div> <!-- end container -->
