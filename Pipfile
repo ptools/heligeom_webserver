@@ -23,6 +23,7 @@ scipy = "*"
 numpy = "*"
 hypothesis = "*"
 ptools = {editable = true, path = "./ptools-python"}
+ruff = "*"
 
 [requires]
 python_version = "3.12"
