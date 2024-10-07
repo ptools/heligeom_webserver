@@ -2,14 +2,12 @@
 Ptools module for the calculations
 """
 
-from . import utils
 import math
 
+from ptools import RigidBody, io, measure
+from ptools.heligeom import chain_intersect, heli_analyze, heli_construct
 
-from ptools import RigidBody
-from ptools import measure
-from ptools.heligeom import heli_analyze, heli_construct, chain_intersect
-from ptools import io
+from . import utils
 
 
 def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
@@ -67,7 +65,6 @@ def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2)
 
 
 def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
-
     # Create monomers from input data
     monomer1, monomer2 = get_monomers(
         pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2
@@ -112,9 +109,15 @@ def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range
 
 
 def construct(
-    pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2, n_mer, z_align, pdb_out
+    pdb_file,
+    chain_id_M1,
+    chain_id_M2,
+    res_range_M1,
+    res_range_M2,
+    n_mer,
+    z_align,
+    pdb_out,
 ):
-
     # Create monomers from input data
     monomer1, monomer2 = get_monomers(
         pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2
@@ -173,7 +176,6 @@ def analyze_fnat(
     res_range2_M1,
     res_range2_M2,
 ):
-
     monomer1, monomer2 = get_monomers(
         pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2
     )

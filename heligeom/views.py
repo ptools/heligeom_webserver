@@ -1,21 +1,21 @@
-import pathlib
-import uuid
 import math
+import pathlib
 import traceback
+import uuid
 
 from flask import (
     Blueprint,
     current_app,
-    render_template,
     redirect,
-    url_for,
+    render_template,
     request,
     send_from_directory,
+    url_for,
 )
 
 from .forms import HeligeomForm, validate_input_structure
-from .models import db, UserInputs
-from .tool import construct, screw_parameters, analyze_fnat
+from .models import UserInputs, db
+from .tool import analyze_fnat, construct, screw_parameters
 
 # Blueprint Configuration
 heligeom_bp = Blueprint(
@@ -30,7 +30,6 @@ def homepage():
 
 @heligeom_bp.route("/run", methods=["GET", "POST"])
 def runpage():
-
     # Initialize submission form
     form = HeligeomForm()
 
@@ -43,7 +42,6 @@ def runpage():
             and form.validate_screw()
             and form.validate_2nd_oligomer()
         ):
-
             # Generate UUID for storing files
             uniq_id = uuid.uuid4().hex
             # Create result folder
@@ -52,7 +50,6 @@ def runpage():
 
             pdb_filename = validate_input_structure(form.input_file, form.pdb_id, result_path)
             if pdb_filename:
-
                 try:
                     pdb_abs_path = result_path / pdb_filename
                     # Compute Helicoidal parameters
@@ -78,7 +75,6 @@ def runpage():
 
                     # Does the user input for a 2nd assembly ?
                     if form.has_2nd_oligomer():
-
                         # A second structure has been provided?
                         # If not, use the pdbfile from the first oligomeric form
                         pdb_filename_2nd = validate_input_structure(
@@ -127,7 +123,6 @@ def runpage():
 
         # Construction requested
         elif request.form.get("action") == "construct" and form.validate():
-
             # Generate UUID for page results
             uniq_id = uuid.uuid4().hex
             # Create result folder
@@ -136,7 +131,6 @@ def runpage():
 
             pdb_filename = validate_input_structure(form.input_file, form.pdb_id, result_path)
             if pdb_filename:
-
                 # Save to the database the form inputs
                 # Only way for now to pass the form data to another page.
                 # We could use session or flash messages but neither seems to fit the need.
@@ -156,7 +150,6 @@ def runpage():
                     form.input_file_2nd, form.pdb_id_2nd, result_path
                 )
                 if form.has_2nd_oligomer() and pdb_filename_2nd:
-
                     user_inputs.add_2nd_oligomer(
                         pdb_filename_2nd=pdb_filename_2nd,
                         chain1bis_id=form.chain1bis_id.data,
@@ -175,7 +168,6 @@ def runpage():
 
 @heligeom_bp.route("/results/<results_id>", methods=["GET", "POST"])
 def results(results_id):
-
     try:
         # Query the database to retrieve the form inputs
         query_result = UserInputs.query.filter_by(request_id=results_id).first()

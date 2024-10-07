@@ -3,14 +3,14 @@ Module to handle the form to run Heligeom.
 Contains also functions which verify the field of the form.
 """
 
-import urllib.request
 import urllib.error
+import urllib.request
 
 from flask import current_app
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
-from wtforms import IntegerField, BooleanField, StringField, validators
+from flask_wtf.file import FileAllowed, FileField
 from werkzeug.utils import secure_filename
+from wtforms import BooleanField, IntegerField, StringField, validators
 
 from . import utils
 
@@ -20,7 +20,8 @@ class HeligeomForm(FlaskForm):
 
     # Input Structure: either a PDB file or a PDB ID
     input_file = FileField(
-        "input_file", validators=[FileAllowed(["pdb"], "Only a PDB file can be uploaded.")]
+        "input_file",
+        validators=[FileAllowed(["pdb"], "Only a PDB file can be uploaded.")],
     )
     pdb_id = StringField(
         "pdb_id", validators=[validators.Optional(), validators.length(min=4, max=4)]
@@ -28,7 +29,8 @@ class HeligeomForm(FlaskForm):
 
     # Input Structure: either a PDB file or a PDB ID
     input_file_2nd = FileField(
-        "input_file", validators=[FileAllowed(["pdb"], "Only a PDB file can be uploaded.")]
+        "input_file",
+        validators=[FileAllowed(["pdb"], "Only a PDB file can be uploaded.")],
     )
     pdb_id_2nd = StringField(
         "pdb_id", validators=[validators.Optional(), validators.length(min=4, max=4)]
@@ -74,20 +76,24 @@ class HeligeomForm(FlaskForm):
 
     # A residue range to select a 1st monomer
     res_range1 = StringField(
-        "res_range1", validators=[validators.Optional(), validators.length(min=1, max=50)]
+        "res_range1",
+        validators=[validators.Optional(), validators.length(min=1, max=50)],
     )
     # A residue range to select a 2nd monomer
     res_range2 = StringField(
-        "res_range2", validators=[validators.Optional(), validators.length(min=1, max=50)]
+        "res_range2",
+        validators=[validators.Optional(), validators.length(min=1, max=50)],
     )
 
     # A residue range to select an optional variant of 1st monomer
     res_range1bis = StringField(
-        "res_range1bis", validators=[validators.Optional(), validators.length(min=1, max=50)]
+        "res_range1bis",
+        validators=[validators.Optional(), validators.length(min=1, max=50)],
     )
     # A residue range to select an optional variant of 2nd monomer
     res_range2bis = StringField(
-        "res_range2bis", validators=[validators.Optional(), validators.length(min=1, max=50)]
+        "res_range2bis",
+        validators=[validators.Optional(), validators.length(min=1, max=50)],
     )
 
     # Number of copy/monomers requested to create the filament.
@@ -126,7 +132,7 @@ class HeligeomForm(FlaskForm):
         # For each monomer, a valid selection is either a chain attribute or/and a residue range
         monomer_validation = True  # Use a boolean to test both monomer selections at the same time
         for chain_id, res_range in zip(
-            [self.chain1_id, self.chain2_id], [self.res_range1, self.res_range2]
+            [self.chain1_id, self.chain2_id], [self.res_range1, self.res_range2], strict=False
         ):
             # Check at least one type of selection is chosen
             if not chain_id.data and not res_range.data:
@@ -168,7 +174,9 @@ class HeligeomForm(FlaskForm):
         return True
 
     def validate_2nd_oligomer(self, extra_validators=None):
-        """Check if the form inputs for a 2nd assembly (a different selection of 2 monomers) is valide."""
+        """Check if the form inputs for a 2nd assembly
+        (a different selection of 2 monomers) is valid.
+        """
 
         # Start by calling the parent method
         if not super().validate(extra_validators=extra_validators):
@@ -180,7 +188,9 @@ class HeligeomForm(FlaskForm):
         monomer_data = {1: True, 2: True}
         number_monomer = 1
         for chain_id, res_range in zip(
-            [self.chain1bis_id, self.chain2bis_id], [self.res_range1bis, self.res_range2bis]
+            [self.chain1bis_id, self.chain2bis_id],
+            [self.res_range1bis, self.res_range2bis],
+            strict=False,
         ):
             # Check at least one type of selection is chosen
             if not chain_id.data and not res_range.data:
@@ -207,7 +217,8 @@ class HeligeomForm(FlaskForm):
         return monomer_validation
 
     def has_2nd_oligomer(self):
-        """Check if the form fields for a 2nd assembly (a different selection of 2 monomers) is present.
+        """Check if the form fields for a 2nd assembly
+           (a different selection of 2 monomers) is present.
 
         Returns
         -------

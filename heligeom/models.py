@@ -68,6 +68,5 @@ class UserInputs(db.Model):
         self.res_range2bis = res_range2bis
 
     def __repr__(self):
-        return "<Id {0}, pdb_filename: {1}, n_mer: {2}, z_align: {3}>".format(
-            self.request_id, self.pdb_filename, self.n_mer, self.z_align
-        )
+        return f"""<Id {self.request_id}, pdb_filename: {self.pdb_filename},
+                n_mer: {self.n_mer}, z_align: {self.z_align}>"""
