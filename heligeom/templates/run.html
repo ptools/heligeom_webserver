@@ -7,7 +7,7 @@
   <div class="container">
     <div class="section">
 
-      <form id="" method="POST" action='' class="form" enctype="multipart/form-data">
+      <form id="" method="POST" action='' class="form" enctype="multipart/form-data" target="_blank">
         {{ form.csrf_token }}
 
         <h2 class="header light center">Run Heligeom</h2>
@@ -29,7 +29,6 @@
                           </div>
                           <div class="col s12" style="margin:12px">
                             <p>Upload a PDB file containing the <b>two monomers</b> or enter a PDB accession number.</p>
-                            <p class="red-text light">If the button <i>Retrieve Helical parameters</i> is hit first, then the PDB file must be uploaded again. </p>
                             <div class="row">
                               <div class="col s12 m6">
                                 <div class="file-field input-field">
@@ -50,7 +49,7 @@
                               </div>
                               <div class="col s6 m2 input-field">
                                 {{ form.pdb_id(class_="validate", placeholder="2GLS")}}
-                                <label for="pdb_id">PDB Accession</label>
+                                <label for="pdb_id">PDB Accession number</label>
                                 {% if form.pdb_id.errors %}
                                   <span class="helper-text error-input">{{form.pdb_id.errors}}</span>
                                 {% endif %}
@@ -209,19 +208,19 @@
                           </div>
                       </div>
                   </div>
-                  <div class="card-action center" style="border-top: none">
+                  <!-- <div class="card-action center" style="border-top: none">
                     <button class="waves-effect btn lbt-bleu" type="submit" name="action" value="screw" onclick="load('loader1')">Retrieve Helical parameters?<i class="material-icons right">send</i></button>
-                  </div>
+                  </div> -->
                   <!-- CSS Loader hidden by default. Displayed when hit the above button-->
-                  <div class="row hide" id="loader1">
+                  <!-- <div class="row hide" id="loader1">
                     <div class="col s4 push-s4">
                       <div class="progress">
                           <div class="indeterminate"></div>
                       </div>
                     </div>
-                  </div>
+                  </div> -->
                   <!-- Screw parameters displayed only if requested-->
-                  {% if screw_data %}
+                  <!-- {% if screw_data %}
                     <div class="card-content">
                       <span class="card-title center"><b>Helical parameters for the screw transformation of the <div class="red-text">1st Oligomer</div></b></span>
                       <div class="row">
@@ -328,42 +327,12 @@
                         </div>
                       </div>
                     {% endif %}
-                  {% endif %}
-                  <div class="card-content" style="border-top: 1px solid rgba(160, 160, 160, 0.2)">
-                      <div class="row">
-                        <div class="col s12" style="margin-bottom: 10px;">
-                            <p><b style="font-size: 18px;">Construction Details</b></p>
-                          <p>From the helical parameters calculated from the 2 monomers, you can construct a filament made of copies of Monomer 1.</p>
-                          <p></p>
-                        </div>
-                        <div class="input-field col s12 m3">
-                          {{ form.n_mer(class_="validate", placeholder="10")}}
-                          <label>Number of Monomers (100 maximum)</label>
-                          {% if form.n_mer.errors %}
-                            <span class="helper-text error-input">{{form.n_mer.errors}}</span>
-                          {% else %}
-                            <span class="helper-text" data-error="Number only" data-success="">Number only</span>
-                          {% endif %}
-                        </div>
-                        <div class="input-field col s12 m3">
-                            <label for="z_align">
-                              {{ form.z_align }}
-                              <span>Alignment on Z-axis?</span>
-                            </label>
-                        </div>
-                      </div>
+                  {% endif %} -->
 
-                  </div> <!--  end div card content -->
                   <div class="card-action center">
-                      <button class="waves-effect btn lbt-bleu" type="submit" name="action" value="construct" onclick="load('loader2')">Analyze & Construct<i class="material-icons right">send</i></button>
+                      <button class="waves-effect btn lbt-bleu" type="submit" name="action">Analyze & Construct<i class="material-icons right">send</i></button>
                   </div>
-                  <!-- CSS Loader hidden by default. Displayed when hit the above button-->
-                  <div class="row hide" id="loader2">
-                    <div class="col s4 push-s4">
-                      <div class="progress">
-                          <div class="indeterminate"></div>
-                      </div>
-                    </div>
+
                   </div>
               </div>
           </form>

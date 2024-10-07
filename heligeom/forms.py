@@ -15,8 +15,8 @@ from wtforms import BooleanField, IntegerField, StringField, validators
 from . import utils
 
 
-class HeligeomForm(FlaskForm):
-    """Class to handle the form to run Heligeom."""
+class InputStructures(FlaskForm):
+    """Class to handle the input structures form."""
 
     # Input Structure: either a PDB file or a PDB ID
     input_file = FileField(
@@ -96,17 +96,6 @@ class HeligeomForm(FlaskForm):
         validators=[validators.Optional(), validators.length(min=1, max=50)],
     )
 
-    # Number of copy/monomers requested to create the filament.
-    n_mer = IntegerField(
-        "n_mer",
-        validators=[
-            validators.Optional(),
-            validators.NumberRange(0, 100, message="Only number is accepted."),
-        ],
-    )
-    # If the filament will be align on Z.
-    z_align = BooleanField("z_align")
-
     def validate_screw(self, extra_validators=None):
         """Custom validate method for a part of the HeligeomForm.
         It checks only the field needed to retrieve the screw parameters.
@@ -164,11 +153,6 @@ class HeligeomForm(FlaskForm):
             return False
 
         if not self.validate_2nd_oligomer(extra_validators=extra_validators):
-            return False
-
-        # Validate the others inputs
-        if self.n_mer.data is None:
-            self.n_mer.errors = "Required to construct the filament."
             return False
 
         return True
@@ -285,3 +269,36 @@ def validate_input_structure(pdb_file, pdb_id, path):
     except urllib.error.URLError:
         pdb_id.errors = "PDB ID unknown"
         return None
+
+
+class Construction(FlaskForm):
+    """Class to handle the construction parameters form."""
+
+    # Number of copy/monomers requested to create the filament.
+    n_mer = IntegerField(
+        "n_mer",
+        validators=[
+            validators.Optional(),
+            validators.NumberRange(0, 100, message="Only number is accepted."),
+        ],
+    )
+    # If the filament will be align on Z.
+    z_align = BooleanField("z_align")
+
+    def validate(self, extra_validators=None):
+        """Overload validate() method of the FlaskForm.
+        Check all fields.
+
+        Fill the `error` attribute of a field with a erro message if it's not valid.
+
+        Returns
+        -------
+        Bool
+            True if all field forms are valid. False otherwise.
+        """
+
+        if self.n_mer.data is None:
+            self.n_mer.errors = "Required to construct the filament."
+            return False
+
+        return True

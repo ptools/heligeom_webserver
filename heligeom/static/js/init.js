@@ -48,8 +48,6 @@ document.getElementById("example").onclick = function() {
   //Fill Chains
   document.getElementById("chain1_id").value="A";
   document.getElementById("chain2_id").value="B";
-  //Fill number of monomers
-  document.getElementById("n_mer").value = "6";
-  document.getElementById("z_align").checked = true;
+
 
 }
