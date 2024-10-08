@@ -108,109 +108,68 @@ class InputStructures(FlaskForm):
         render_kw={"placeholder": "220-400"},
     )
 
-    def validate_screw(self, extra_validators=None):
-        """Custom validate method for a part of the HeligeomForm.
-        It checks only the field needed to retrieve the screw parameters.
+    def validate_1st_oligomer(self):
+        """Custom validate method for InputStructures form.
+        It checks the field needed to retrieve the screw parameters.
 
         Fill the `error` attribute of a field with an error message if it's not valid.
+
+        Check only fields for the first oligomer.
 
         Returns
         -------
         Bool
             True if the needed fields are valid. False otherwise.
         """
-
-        # Start by calling the parent method
-        if not super().validate(extra_validators=extra_validators):
-            return False
-
         # Now, check for each structure, if the users filled the upload part or the pdb id
         if self.input_file.data is None and self.pdb_id.data == "":
             self.input_file.errors = self.pdb_id.errors = "No Data specified"
             return False
 
-        # Validation of the monomer selections
-        # For each monomer, a valid selection is either a chain attribute or/and a residue range
-        monomer_validation = True  # Use a boolean to test both monomer selections at the same time
-        for chain_id, res_range in zip(
-            [self.chain1_id, self.chain2_id], [self.res_range1, self.res_range2], strict=False
-        ):
-            # Check at least one type of selection is chosen
-            if not chain_id.data and not res_range.data:
-                chain_id.errors = res_range.errors = "No Data specified"
-                monomer_validation = False
-            elif res_range.data:
-                # Check if the residue range is consistent
-                try:
-                    utils.parse_resrange(res_range.data)
-                except SyntaxError as e:
-                    res_range.errors = e.msg
-                    monomer_validation = False
-
-        return monomer_validation
+        # Ensure monomer selections are correct
+        return utils.check_pair_monomers(
+            self.chain1_id, self.res_range1, self.chain2_id, self.res_range2
+        )
 
     def validate(self, extra_validators=None):
         """Overload validate() method of the FlaskForm.
         Check all fields.
 
-        Fill the `error` attribute of a field with a erro message if it's not valid.
+        Fill the `error` attribute of a field with a error message if it's not valid.
 
         Returns
         -------
         Bool
             True if all field forms are valid. False otherwise.
         """
-        # Call the custom one
-        if not self.validate_screw(extra_validators=extra_validators):
+        if not self.validate_1st_oligomer():
             return False
 
-        if not self.validate_2nd_oligomer(extra_validators=extra_validators):
-            return False
+        if self.has_2nd_oligomer():
+            if not self.validate_2nd_oligomer():
+                return False
 
         return True
 
-    def validate_2nd_oligomer(self, extra_validators=None):
+    def validate_2nd_oligomer(self):
         """Check if the form inputs for a 2nd assembly
         (a different selection of 2 monomers) is valid.
+
+        It doesn't test the PDB entry (file or ID) because blank
+        means the first entry is reused.
+
+        Returns
+        -------
+        Bool
+            True if 2nd oligomer fields forms are valid. False otherwise.
         """
-
-        # Start by calling the parent method
-        if not super().validate(extra_validators=extra_validators):
-            return False
-
-        # Validation of the monomer selections
-        # For each monomer, a valid selection is either a chain attribute or/and a residue range
-        monomer_validation = True  # Use a boolean to test both monomer selections at the same time
-        monomer_data = {1: True, 2: True}
-        number_monomer = 1
-        for chain_id, res_range in zip(
-            [self.chain1bis_id, self.chain2bis_id],
-            [self.res_range1bis, self.res_range2bis],
-            strict=False,
-        ):
-            # Check at least one type of selection is chosen
-            if not chain_id.data and not res_range.data:
-                monomer_data[number_monomer] = False
-            elif res_range.data:
-                # Check if the residue range is consistent
-                try:
-                    utils.parse_resrange(res_range.data)
-                except SyntaxError as e:
-                    res_range.errors = e.msg
-                    monomer_validation = False
-            number_monomer += 1
-
-        # Determine if data has been entered
-        if monomer_data[1] == monomer_data[2] == False:
-            monomer_validation = True
-        elif not monomer_data[1]:
-            self.chain1bis_id.errors = self.res_range1bis.errors = "No Data specified"
-            monomer_validation = False
-        elif not monomer_data[2]:
-            self.chain2bis_id.errors = self.res_range2bis.errors = "No Data specified"
-            monomer_validation = False
-
-        return monomer_validation
+        # Ensure monomer selections are correct
+        return utils.check_pair_monomers(
+            self.chain1bis_id,
+            self.res_range1bis,
+            self.chain2bis_id,
+            self.res_range2bis,
+        )
 
     def has_2nd_oligomer(self):
         """Check if the form fields for a 2nd assembly
@@ -239,7 +198,7 @@ class InputStructures(FlaskForm):
 
 def validate_input_structure(pdb_file, pdb_id, path):
     """Check for the input structure if the user submit an uploaded file or a PDB id.
-    The user uploaded file or the file downloaded corresponding to the PDB ID is stored inside.
+    The user uploaded file or the file downloaded corresponding to the PDB ID is stored.
 
     Parameters
     ----------
@@ -255,7 +214,7 @@ def validate_input_structure(pdb_file, pdb_id, path):
     Returns
     -------
     str
-        the filename of the PDB.
+        the filename of the PDB. None otherwise
     """
 
     # If there is no data in the fields.
@@ -298,15 +257,15 @@ class Construction(FlaskForm):
     z_align = BooleanField("z_align")
 
     def validate(self, extra_validators=None):
-        """Overload validate() method of the FlaskForm.
-        Check all fields.
+        """Overload validate() method of the Construction FlaskForm.
+        Check the n_mer field.
 
         Fill the `error` attribute of a field with a erro message if it's not valid.
 
         Returns
         -------
         Bool
-            True if all field forms are valid. False otherwise.
+            True if the fields forms are valid. False otherwise.
         """
 
         if self.n_mer.data is None:

@@ -33,7 +33,7 @@ def runpage():
     # Initialize submission form
     form = InputStructures()
 
-    if form.validate():
+    if request.method == "POST" and form.validate():
         # Generate UUID for storing files
         uniq_id = uuid.uuid4().hex
         # Create result folder
@@ -55,10 +55,14 @@ def runpage():
             )
 
             # Does the user input for a 2nd assembly ?
-            pdb_filename_2nd = validate_input_structure(
-                form.input_file_2nd, form.pdb_id_2nd, result_path
-            )
-            if form.has_2nd_oligomer() and pdb_filename_2nd:
+            if form.has_2nd_oligomer():
+                pdb_filename_2nd = validate_input_structure(
+                    form.input_file_2nd, form.pdb_id_2nd, result_path
+                )
+                # If no new structure is provided, use the first one
+                if pdb_filename_2nd is None:
+                    pdb_filename_2nd = pdb_filename
+
                 user_inputs.add_2nd_oligomer(
                     pdb_filename_2nd=pdb_filename_2nd,
                     chain1bis_id=form.chain1bis_id.data,

@@ -37,3 +37,43 @@ def parse_resrange(res_range):
         raise SyntaxError("Residue min is superior to residue max")
 
     return (min_res, max_res)
+
+
+def check_pair_monomers(chain1, res_range1, chain2, res_range2):
+    """Ensure the selection for the pair of monomers is valid.
+
+    A valid selection for one monomer is either a chain attribute
+    or/and a residue range.
+
+    Parameters
+    ----------
+    chain1 : StringField
+        Chain value of the 1st monomer
+    res_range1 : StringField
+        The residue range ("X-Y") for the 1st monomer
+    chain2 : StringField
+        Chain value of the 2nd monomer
+    res_range2 : StringField
+        The residue range ("X-Y") for the 2nd monomer
+
+    Returns
+    -------
+    Bool
+        True if both selections are valid. False otherwise
+    """
+    valid = True
+    # Use a zip to test both monomer selections at the same time
+    for chain, res_range in zip([chain1, chain2], [res_range1, res_range2], strict=False):
+        # Check at least one type of selection is chosen
+        if not chain.data and not res_range.data:
+            chain.errors = res_range.errors = "No Data specified"
+            valid = False
+        elif res_range.data:
+            # Check if the residue range is consistent
+            try:
+                parse_resrange(res_range.data)
+            except SyntaxError as e:
+                res_range.errors = e.msg
+                valid = False
+
+    return valid
