@@ -24,7 +24,9 @@ class InputStructures(FlaskForm):
         validators=[FileAllowed(["pdb"], "Only a PDB file can be uploaded.")],
     )
     pdb_id = StringField(
-        "pdb_id", validators=[validators.Optional(), validators.length(min=4, max=4)]
+        "pdb_id",
+        validators=[validators.Optional(), validators.length(min=4, max=4)],
+        render_kw={"placeholder": "2GLS"},
     )
 
     # Input Structure: either a PDB file or a PDB ID
@@ -33,7 +35,9 @@ class InputStructures(FlaskForm):
         validators=[FileAllowed(["pdb"], "Only a PDB file can be uploaded.")],
     )
     pdb_id_2nd = StringField(
-        "pdb_id", validators=[validators.Optional(), validators.length(min=4, max=4)]
+        "pdb_id",
+        validators=[validators.Optional(), validators.length(min=4, max=4)],
+        render_kw={"placeholder": "2GLS"},
     )
 
     # Chain ID to select a 1st monomer
@@ -44,6 +48,7 @@ class InputStructures(FlaskForm):
             validators.Regexp("^[A-Za-z]+$", message="Chain ID must contain only letters."),
             validators.length(min=1, max=2, message="Chain ID must be between 1 or 2 letters."),
         ],
+        render_kw={"placeholder": "A"},
     )
     # Chain ID to select a 2nd monomer
     chain2_id = StringField(
@@ -53,6 +58,7 @@ class InputStructures(FlaskForm):
             validators.Regexp("^[A-Za-z]+$", message="Chain ID must contain only letters."),
             validators.length(min=1, max=2, message="Chain ID must be between 1 or 2 letters."),
         ],
+        render_kw={"placeholder": "B"},
     )
 
     # Chain ID to select an optional variant of 1st monomer
@@ -63,6 +69,7 @@ class InputStructures(FlaskForm):
             validators.Regexp("^[A-Za-z]+$", message="Chain ID must contain only letters."),
             validators.length(min=1, max=2, message="Chain ID must be between 1 or 2 letters."),
         ],
+        render_kw={"placeholder": "C"},
     )
     # Chain ID to select an optional variant of 2nd monomer
     chain2bis_id = StringField(
@@ -72,28 +79,33 @@ class InputStructures(FlaskForm):
             validators.Regexp("^[A-Za-z]+$", message="Chain ID must contain only letters."),
             validators.length(min=1, max=2, message="Chain ID must be between 1 or 2 letters."),
         ],
+        render_kw={"placeholder": "D"},
     )
 
     # A residue range to select a 1st monomer
     res_range1 = StringField(
         "res_range1",
         validators=[validators.Optional(), validators.length(min=1, max=50)],
+        render_kw={"placeholder": "1-300"},
     )
     # A residue range to select a 2nd monomer
     res_range2 = StringField(
         "res_range2",
         validators=[validators.Optional(), validators.length(min=1, max=50)],
+        render_kw={"placeholder": "301-600"},
     )
 
     # A residue range to select an optional variant of 1st monomer
     res_range1bis = StringField(
         "res_range1bis",
         validators=[validators.Optional(), validators.length(min=1, max=50)],
+        render_kw={"placeholder": "20-200"},
     )
     # A residue range to select an optional variant of 2nd monomer
     res_range2bis = StringField(
         "res_range2bis",
         validators=[validators.Optional(), validators.length(min=1, max=50)],
+        render_kw={"placeholder": "220-400"},
     )
 
     def validate_screw(self, extra_validators=None):

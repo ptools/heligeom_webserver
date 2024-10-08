@@ -47,7 +47,7 @@
                         </div>
                       </div>
                       <div class="col s6 m2 input-field">
-                        {{ form.pdb_id(class_="validate", placeholder="2GLS")}}
+                        {{ form.pdb_id }}
                         <label for="pdb_id">PDB Accession number</label>
                         {% if form.pdb_id.errors %}
                           <span class="helper-text error-input">{{form.pdb_id.errors}}</span>
@@ -65,14 +65,14 @@
                         <span class="card-title">Monomer 1</span>
                         <div class="row">
                           <div class="col s12 m6 input-field">
-                            {{ form.chain1_id(class_="validate", placeholder="A")}}
+                            {{ form.chain1_id }}
                             <label for="chain1_id">Chain ID</label>
                             {% if form.chain1_id.errors %}
                               <span class="helper-text error-input">{{form.chain1_id.errors}}</span>
                             {% endif %}
                           </div>
                           <div class="col s12 m6 input-field">
-                            {{ form.res_range1(class_="validate", placeholder="1-300")}}
+                            {{ form.res_range1 }}
                             <label for="res_range1">Residue Range</label>
                             {% if form.res_range1.errors %}
                               <span class="helper-text error-input">{{form.res_range1.errors}}</span>
@@ -88,14 +88,14 @@
                         <span class="card-title">Monomer 2</span>
                         <div class="row">
                           <div class="col s12 m6 input-field">
-                            {{ form.chain2_id(class_="validate", placeholder="B")}}
+                            {{ form.chain2_id }}
                             <label for="chain2_id">Chain ID</label>
                             {% if form.chain2_id.errors %}
                               <span class="helper-text error-input">{{form.chain2_id.errors}}</span>
                             {% endif %}
                           </div>
                           <div class="col s12 m6 input-field">
-                            {{ form.res_range2(class_="validate", placeholder="301-600")}}
+                            {{ form.res_range2 }}
                             <label for="res_range2">Residue Range</label>
                             {% if form.res_range2.errors %}
                               <span class="helper-text error-input">{{form.res_range2.errors}}</span>
@@ -129,7 +129,7 @@
                                   <div class="btn-small lbt-gris">
                                       <i class="material-icons right">file_upload</i>
                                       <span>Upload</span>
-                                      {{ form.input_file_2nd}}
+                                      {{ form.input_file_2nd }}
                                   </div>
                                   <div class="file-path-wrapper">
                                       <input class="file-path validate" type="text">
@@ -142,7 +142,7 @@
                               </div>
                             </div>
                             <div class="col s6 m2 input-field">
-                              {{ form.pdb_id_2nd(class_="validate", placeholder="2GLS")}}
+                              {{ form.pdb_id_2nd }}
                               <label for="pdb_id">PDB Accession</label>
                               {% if form.pdb_id_2nd.errors %}
                                 <span class="helper-text error-input">{{form.pdb_id_2nd.errors}}</span>
@@ -160,14 +160,14 @@
                                 <span class="card-title">Monomer 1 bis</span>
                                 <div class="row">
                                   <div class="col s12 m6 input-field">
-                                    {{ form.chain1bis_id(class_="validate", placeholder="C")}}
+                                    {{ form.chain1bis_id }}
                                     <label for="chain1bis_id">Chain ID</label>
                                     {% if form.chain1bis_id.errors %}
                                       <span class="helper-text error-input">{{form.chain1bis_id.errors}}</span>
                                     {% endif %}
                                   </div>
                                   <div class="col s12 m6 input-field">
-                                    {{ form.res_range1bis(class_="validate", placeholder="20-200")}}
+                                    {{ form.res_range1bis }}
                                     <label for="res_range1bis">Residue Range</label>
                                     {% if form.res_range1bis.errors %}
                                       <span class="helper-text error-input">{{form.res_range1bis.errors}}</span>
@@ -183,14 +183,14 @@
                                 <span class="card-title">Monomer 2 bis</span>
                                 <div class="row">
                                   <div class="col s12 m6 input-field">
-                                    {{ form.chain2bis_id(class_="validate", placeholder="D")}}
+                                    {{ form.chain2bis_id }}
                                     <label for="chain2bis_id">Chain ID</label>
                                     {% if form.chain2bis_id.errors %}
                                       <span class="helper-text error-input">{{form.chain2bis_id.errors}}</span>
                                     {% endif %}
                                   </div>
                                   <div class="col s12 m6 input-field">
-                                    {{ form.res_range2bis(class_="validate", placeholder="220-400")}}
+                                    {{ form.res_range2bis }}
                                     <label for="res_range2bis">Residue Range</label>
                                     {% if form.res_range2bis.errors %}
                                       <span class="helper-text error-input">{{form.res_range2bis.errors}}</span>
