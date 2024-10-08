@@ -9,6 +9,7 @@
 
     <form method="POST" class="form">
       {{ form.csrf_token }}
+      {% import 'chunks/forms.html' as forms_macro %}
 
       <h2 class="header light center">Run Heligeom</h2>
       <div class="row" style="margin-bottom:0px">
@@ -27,83 +28,18 @@
                   <div class="col s12">
                       <p><b style="font-size: 20px;">1st Oligomeric form</b></p>
                   </div>
-                  <div class="col s12" style="margin:12px">
-                    <p>Upload a PDB file containing the <b>two monomers</b> or enter a PDB accession number.</p>
-                    <div class="row">
-                      <div class="col s12 m6">
-                        <div class="file-field input-field">
-                            <div class="btn-small lbt-gris">
-                                <i class="material-icons right">file_upload</i>
-                                <span>Upload</span>
-                                {{ form.input_file}}
-                            </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate" type="text">
-                            </div>
-                            <span class="helper-text">Submit a molecule in <a href="https://www.wwpdb.org/documentation/file-format">PDB format</a></span>
-                          {% if form.input_file.errors %}
-                            <span class="helper-text error-input">{{form.input_file.errors}}</span>
-                          {% endif %}
-                        </div>
-                      </div>
-                      <div class="col s6 m2 input-field">
-                        {{ form.pdb_id }}
-                        <label for="pdb_id">PDB Accession number</label>
-                        {% if form.pdb_id.errors %}
-                          <span class="helper-text error-input">{{form.pdb_id.errors}}</span>
-                        {% endif %}
-                      </div>
-                    </div>
-                  </div>
+
+                    {{ forms_macro.input_structure(form.input_file, form.pdb_id)}}
+
                   <p>For each monomer, you can specify either the <b>chain of interest</b> or/and the <b>residue range</b> which define the monomers or <b>both</b>.</p>
                   <p><b>Note:</b> The tool can handle missing residues within the selection (to manage flexible/unstructured sections).</p>
                     <p>In this case, The 2 monomers <b>must</b> have a residue range filled with the same gap (i.e <i>1-300</i> and <i>301-600</i>).</p>
                   <br>
                   <div class="col s12 m6">
-                    <div class="card hoverable">
-                      <div class="card-content">
-                        <span class="card-title">Monomer 1</span>
-                        <div class="row">
-                          <div class="col s12 m6 input-field">
-                            {{ form.chain1_id }}
-                            <label for="chain1_id">Chain ID</label>
-                            {% if form.chain1_id.errors %}
-                              <span class="helper-text error-input">{{form.chain1_id.errors}}</span>
-                            {% endif %}
-                          </div>
-                          <div class="col s12 m6 input-field">
-                            {{ form.res_range1 }}
-                            <label for="res_range1">Residue Range</label>
-                            {% if form.res_range1.errors %}
-                              <span class="helper-text error-input">{{form.res_range1.errors}}</span>
-                            {% endif %}
-                          </div>
-                        </div> <!-- end div row -->
-                      </div> <!-- end div card content -->
-                    </div> <!-- end div card -->
+                    {{ forms_macro.monomer_card(1, form.chain1_id, form.res_range1) }}
                   </div> <!-- end div col -->
                   <div class="col s12 m6">
-                    <div class="card hoverable">
-                      <div class="card-content">
-                        <span class="card-title">Monomer 2</span>
-                        <div class="row">
-                          <div class="col s12 m6 input-field">
-                            {{ form.chain2_id }}
-                            <label for="chain2_id">Chain ID</label>
-                            {% if form.chain2_id.errors %}
-                              <span class="helper-text error-input">{{form.chain2_id.errors}}</span>
-                            {% endif %}
-                          </div>
-                          <div class="col s12 m6 input-field">
-                            {{ form.res_range2 }}
-                            <label for="res_range2">Residue Range</label>
-                            {% if form.res_range2.errors %}
-                              <span class="helper-text error-input">{{form.res_range2.errors}}</span>
-                            {% endif %}
-                          </div>
-                        </div>
-                      </div> <!-- end div card content -->
-                    </div> <!-- end div card -->
+                    {{ forms_macro.monomer_card(2, form.chain2_id, form.res_range2) }}
                   </div> <!-- end div col -->
                   <div class="row">
                     <ul class="collapsible" style="box-shadow: none; border:none;" >
@@ -115,92 +51,24 @@
                         <!-- Keep the collapsible extended when the user selected a 2nd assembly and ask for helical parameters -->
                         {% if screw_data_bis or form.input_file_2nd.errors or form.pdb_id_2nd.errors or form.chain1bis_id.errors or form.chain2bis_id.errors
                             or form.res_range1bis.errors or form.res_range2bis.errors %}
-                          <div class="collapsible-body" style="border-bottom: none; display: block;">
+                          <div class="collapsible-body" style="padding-left: 0px; border-bottom: none; display: block;">
                         {% else %}
-                          <div class="collapsible-body" style="border-bottom: none;">
+                          <div class="collapsible-body" style="padding-left: 0px; border-bottom: none;">
                         {% endif %}
-                        <div class="col s12" style="margin:12px">
-                          <p>Upload a PDB file containing the two monomeres or enter a PDB accession number.</p>
-                          <p class="red-text light">If the button <i>Retrieve Helical parameters</i> is hit first, then the PDB file must be uploaded again. </p>
-                          <p class="orange-text text-darken-3"><b>Leave it blanck to use the structure defined in the first oligomeric form.</b></p>
-                          <div class="row">
-                            <div class="col s12 m6">
-                              <div class="file-field input-field">
-                                  <div class="btn-small lbt-gris">
-                                      <i class="material-icons right">file_upload</i>
-                                      <span>Upload</span>
-                                      {{ form.input_file_2nd }}
-                                  </div>
-                                  <div class="file-path-wrapper">
-                                      <input class="file-path validate" type="text">
 
-                                  </div>
-                                  <span class="helper-text">Submit a molecule in <a href="https://www.wwpdb.org/documentation/file-format">PDB format</a></span>
-                                {% if form.input_file_2nd.errors %}
-                                  <span class="helper-text error-input">{{form.input_file_2nd.errors}}</span>
-                                {% endif %}
-                              </div>
-                            </div>
-                            <div class="col s6 m2 input-field">
-                              {{ form.pdb_id_2nd }}
-                              <label for="pdb_id">PDB Accession</label>
-                              {% if form.pdb_id_2nd.errors %}
-                                <span class="helper-text error-input">{{form.pdb_id_2nd.errors}}</span>
-                              {% endif %}
-                            </div>
-                          </div>
-                        </div>
+                        <p class="red-text light"><b>Leave it blanck to use the structure defined in the first oligomeric form.</b></p>
+                        {{ forms_macro.input_structure(form.input_file_2nd, form.pdb_id_2nd)}}
+
                         <p>For each monomer, you can specify either the <b>chain of interest</b> or/and the <b>residue range</b> which define the monomers or <b>both</b>.</p>
                         <p><b>Note:</b> The tool can handle missing residues within the selection (to manage flexible/unstructured sections).</p>
                           <p>In this case, The 2 monomers <b>must</b> have a residue range filled with the same gap (i.e <i>1-300</i> and <i>301-600</i>).</p>
                         <br>
                           <div class="col s12 m6">
-                            <div class="card hoverable">
-                              <div class="card-content">
-                                <span class="card-title">Monomer 1 bis</span>
-                                <div class="row">
-                                  <div class="col s12 m6 input-field">
-                                    {{ form.chain1bis_id }}
-                                    <label for="chain1bis_id">Chain ID</label>
-                                    {% if form.chain1bis_id.errors %}
-                                      <span class="helper-text error-input">{{form.chain1bis_id.errors}}</span>
-                                    {% endif %}
-                                  </div>
-                                  <div class="col s12 m6 input-field">
-                                    {{ form.res_range1bis }}
-                                    <label for="res_range1bis">Residue Range</label>
-                                    {% if form.res_range1bis.errors %}
-                                      <span class="helper-text error-input">{{form.res_range1bis.errors}}</span>
-                                    {% endif %}
-                                  </div>
-                                </div> <!-- end div row -->
-                              </div> <!-- end div card content -->
-                            </div> <!-- end div card -->
+                            {{ forms_macro.monomer_card("1 bis", form.chain1bis_id, form.res_range1bis) }}
                           </div> <!-- end div col -->
                           <div class="col s12 m6">
-                            <div class="card hoverable">
-                              <div class="card-content">
-                                <span class="card-title">Monomer 2 bis</span>
-                                <div class="row">
-                                  <div class="col s12 m6 input-field">
-                                    {{ form.chain2bis_id }}
-                                    <label for="chain2bis_id">Chain ID</label>
-                                    {% if form.chain2bis_id.errors %}
-                                      <span class="helper-text error-input">{{form.chain2bis_id.errors}}</span>
-                                    {% endif %}
-                                  </div>
-                                  <div class="col s12 m6 input-field">
-                                    {{ form.res_range2bis }}
-                                    <label for="res_range2bis">Residue Range</label>
-                                    {% if form.res_range2bis.errors %}
-                                      <span class="helper-text error-input">{{form.res_range2bis.errors}}</span>
-                                    {% endif %}
-                                  </div>
-                                </div>
-                              </div> <!-- end div card content -->
-                            </div> <!-- end div card -->
+                            {{ forms_macro.monomer_card("2 bis", form.chain2bis_id, form.res_range2bis) }}
                           </div> <!-- end div col -->
-
                         </div>
                       </li>
                     </ul>
