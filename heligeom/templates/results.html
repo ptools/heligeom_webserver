@@ -151,7 +151,7 @@
 
             <!-- visualisation-->
             {% if construct_data %}
-            <div class="card-action center">
+            <div id="visualisation" class="card-action center">
               <div class="row">
                 <div class="col s12 m12">
                   <p class="center-align">
@@ -179,6 +179,9 @@
                 </script>
               </div>
             </div>
+            <script> // Snippet to scroll down to the visualisation section once the form is validated.
+              document.location.hash = '#visualisation';
+            </script>
             {% endif %}
 
           </div> <!-- end card content -->
