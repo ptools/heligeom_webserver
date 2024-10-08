@@ -104,6 +104,10 @@ def results(results_id):
         screw_data = {
             "results_id": results_id,
             "pdb_input": pdb_filename,
+            "chain1_id": chain1_id,
+            "chain2_id": chain2_id,
+            "res_range1": res_range1,
+            "res_range2": res_range2,
             "pitch": f"{pitch:3.2f}",
             "nb_monomers": f"{monomers_per_turn:3.2f}",
             "direction": direction,
