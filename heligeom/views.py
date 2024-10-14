@@ -123,9 +123,70 @@ def results(results_id):
             "dmax": f"{dmax:3.2f}",
         }
 
+        # 2nd Oligomer
+        has_2nd_oligo = False
+        screw_data_bis = dict()
+
+        pdb_filename2 = query_result.pdb_filename_2nd
+        if pdb_filename2:
+            has_2nd_oligo = True
+            chain1bis_id = query_result.chain1bis_id
+            chain2bis_id = query_result.chain2bis_id
+            res_range1bis = query_result.res_range1bis
+            res_range2bis = query_result.res_range2bis
+
+            # Different input structure ?
+            if pdb_filename2 != pdb_filename:
+                pdb_abs_path2 = pathlib.Path(
+                    current_app.config["DATA_UPLOADS"], results_id, pdb_filename2
+                )
+            else:
+                pdb_abs_path2 = pdb_abs_path
+
+            # Compute Helicoidal parameters
+            hp2, pitch2, nb_monomers2, direction2, dminbis, dmaxbis = screw_parameters(
+                pdb_abs_path2,
+                chain1bis_id,
+                chain2bis_id,
+                res_range1bis,
+                res_range2bis,
+            )
+
+            # Compute FNAT
+            fnat = analyze_fnat(
+                pdb_abs_path,
+                chain1_id,
+                chain2_id,
+                res_range1,
+                res_range2,
+                pdb_abs_path2,
+                chain1bis_id,
+                chain2bis_id,
+                res_range1bis,
+                res_range2bis,
+            )
+
+            # Create dict of data to pass to render_template
+            screw_data_bis = {
+                "pdb_input": pdb_filename2,
+                "chain1_id": chain1bis_id,
+                "chain2_id": chain2bis_id,
+                "res_range1": res_range1bis,
+                "res_range2": res_range2bis,
+                "pitch": f"{pitch2:3.2f}",
+                "nb_monomers": f"{nb_monomers2:3.2f}",
+                "direction": direction2,
+                "rotation_angle": f"{hp2.angle:3.2f}",
+                "rotation_angle_deg": f"{math.degrees(hp2.angle):3.2f}",
+                "axis_point": [f"{coord:3.2f}" for coord in hp2.point],
+                "translation": f"{hp2.normtranslation:3.2f}",
+                "dmin": f"{dminbis:3.2f}",
+                "dmax": f"{dmaxbis:3.2f}",
+                "fnat": f"{fnat:3.4f}",
+            }
+
         # Initialize construction form
         construct_form = Construction()
-
         if construct_form.validate():
             # Retrieve form values
             n_mer = construct_form.n_mer.data
@@ -160,14 +221,73 @@ def results(results_id):
                 "z_align": z_align,
             }
 
+            # 2nd Oligomer
+            if has_2nd_oligo:
+                # Different input structure ?
+                if pdb_filename2 != pdb_filename:
+                    pdb_abs_path2 = pathlib.Path(
+                        current_app.config["DATA_UPLOADS"], results_id, pdb_filename2
+                    )
+                else:
+                    pdb_abs_path2 = pdb_abs_path
+
+                # Name of the constructed PDB (used also in download function)
+                if z_align:
+                    pdb_out_name2 = f"Construct_2nd_N{n_mer}_Z_{pdb_filename2}"
+                else:
+                    pdb_out_name2 = f"Construct_2nd_N{n_mer}_{pdb_filename2}"
+
+                pdb_out_abs_path2 = pathlib.Path(
+                    current_app.config["DATA_UPLOADS"], results_id, pdb_out_name2
+                )
+
+                # Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
+                construct(
+                    pdb_abs_path2,
+                    query_result.chain1bis_id,
+                    query_result.chain2bis_id,
+                    query_result.res_range1bis,
+                    query_result.res_range2bis,
+                    n_mer,
+                    z_align,
+                    pdb_out_abs_path2,
+                )
+
+                # Create dict of construction details to pass to render_template
+                construct_data_bis = {
+                    "pdb_out_name": pdb_out_name2,
+                    "n_mer": n_mer,
+                    "z_align": z_align,
+                }
+
+                return render_template(
+                    "results_2_oligomers.html",
+                    construct_form=construct_form,
+                    screw_data=screw_data,
+                    screw_data_bis=screw_data_bis,
+                    construct_data=construct_data,
+                    construct_data_bis=construct_data_bis,
+                )
+
+            else:
+                return render_template(
+                    "results.html",
+                    construct_form=construct_form,
+                    screw_data=screw_data,
+                    construct_data=construct_data,
+                )
+
+        if has_2nd_oligo:
             return render_template(
-                "results.html",
+                "results_2_oligomers.html",
                 construct_form=construct_form,
                 screw_data=screw_data,
-                construct_data=construct_data,
+                screw_data_bis=screw_data_bis,
             )
-
-        return render_template("results.html", construct_form=construct_form, screw_data=screw_data)
+        else:
+            return render_template(
+                "results.html", construct_form=construct_form, screw_data=screw_data
+            )
 
     except Exception:
         return render_template("error.html", error_log=traceback.format_exc())

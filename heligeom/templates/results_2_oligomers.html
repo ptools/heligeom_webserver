@@ -28,28 +28,21 @@
             <div class="col s12 m6">
               <h6>Input Parameters</h6>
               <ul>
-                <li>Input structure: <b>{{data.pdb_input}}</b></li>
+                <li>Input structure: <b>{{screw_data.pdb_input}}</b></li>
                 <li><b>Monomer 1</b>
                   <ul>
-                    <li>Chain        : <b>{% if data.chain1_id %} {{ data.chain1_id }} {% else %} Unspecified{% endif %}</b></li>
-                    <li>Residue range: <b>{% if data.res_range1 %} {{ data.res_range1 }} {% else %} Unspecified{% endif %}</b></li>
+                    <li>Chain        : <b>{% if screw_data.chain1_id %} {{ screw_data.chain1_id }} {% else %} Unspecified{% endif %}</b></li>
+                    <li>Residue range: <b>{% if screw_data.res_range1 %} {{ screw_data.res_range1 }} {% else %} Unspecified{% endif %}</b></li>
                   </ul>
                 </li>
                 <li><b>Monomer 2</b>
                   <ul>
-                    <li>Chain        : <b>{% if data.chain2_id %} {{ data.chain2_id }} {% else %} Unspecified{% endif %}</b></li>
-                    <li>Residue range: <b>{% if data.res_range2 %} {{ data.res_range2 }} {% else %} Unspecified{% endif %}</b></li>
+                    <li>Chain        : <b>{% if screw_data.chain2_id %} {{ screw_data.chain2_id }} {% else %} Unspecified{% endif %}</b></li>
+                    <li>Residue range: <b>{% if screw_data.res_range2 %} {{ screw_data.res_range2 }} {% else %} Unspecified{% endif %}</b></li>
                   </ul>
                 </li>
 
               </ul>
-            </div>
-            <div class="col s12 m6">
-              <h6>Construction Parameters</h6>
-              <ul>
-                <li>Number of monomers to construct : <b>{{data.n_mer}}</b></li>
-                <li>Z-align : <b>{% if data.z_align %}Yes {% else %}No {%endif %}</b></li>
-                </ul>
             </div>
           </div>
         </div>
@@ -63,28 +56,21 @@
             <div class="col s12 m6">
               <h6>Input Parameters</h6>
               <ul>
-                <li>Input structure: <b>{{data_bis.pdb_input}}</b></li>
+                <li>Input structure: <b>{{screw_data_bis.pdb_input}}</b></li>
                 <li><b>Monomer 1</b>
                   <ul>
-                    <li>Chain        : <b>{% if data_bis.chain1_id %} {{ data_bis.chain1_id }} {% else %} Unspecified{% endif %}</b></li>
-                    <li>Residue range: <b>{% if data_bis.res_range1 %} {{ data_bis.res_range1 }} {% else %} Unspecified{% endif %}</b></li>
+                    <li>Chain        : <b>{% if screw_data_bis.chain1_id %} {{ screw_data_bis.chain1_id }} {% else %} Unspecified{% endif %}</b></li>
+                    <li>Residue range: <b>{% if screw_data_bis.res_range1 %} {{ screw_data_bis.res_range1 }} {% else %} Unspecified{% endif %}</b></li>
                   </ul>
                 </li>
                 <li><b>Monomer 2</b>
                   <ul>
-                    <li>Chain        : <b>{% if data_bis.chain2_id %} {{ data_bis.chain2_id }} {% else %} Unspecified{% endif %}</b></li>
-                    <li>Residue range: <b>{% if data_bis.res_range2 %} {{ data_bis.res_range2 }} {% else %} Unspecified{% endif %}</b></li>
+                    <li>Chain        : <b>{% if screw_data_bis.chain2_id %} {{ screw_data_bis.chain2_id }} {% else %} Unspecified{% endif %}</b></li>
+                    <li>Residue range: <b>{% if screw_data_bis.res_range2 %} {{ screw_data_bis.res_range2 }} {% else %} Unspecified{% endif %}</b></li>
                   </ul>
                 </li>
 
               </ul>
-            </div>
-            <div class="col s12 m6">
-              <h6>Construction Parameters</h6>
-              <ul>
-                <li>Number of monomers to construct : <b>{{data.n_mer}}</b></li>
-                <li>Z-align : <b>{% if data.z_align %}Yes {% else %}No {%endif %}</b></li>
-                </ul>
             </div>
           </div>
         </div>
@@ -103,23 +89,23 @@
                 <tbody>
                   <tr>
                     <td><b>Pitch</b></td>
-                    <td>{{ data.pitch }} &#8491;</td>
+                    <td>{{ screw_data.pitch }} &#8491;</td>
                   </tr>
                   <tr>
                     <td><b>Monomers per turn</b></td>
-                    <td>{{ data.nb_monomers }}</td>
+                    <td>{{ screw_data.nb_monomers }}</td>
                   </tr>
                   <tr>
                     <td><b>Handedness</b></td>
-                    <td>{{ data.direction | capitalize }}</td>
+                    <td>{{ screw_data.direction | capitalize }}</td>
                   </tr>
                   <tr>
                     <td><b>Distance minimal between screw axis and oligomer (IntR)</b></td>
-                    <td>{{ data.dmin }}</td>
+                    <td>{{ screw_data.dmin }}</td>
                   </tr>
                   <tr>
                     <td><b>Distance maximal between screw axis and oligomer (ExtR)</b></td>
-                    <td>{{ data.dmax }}</td>
+                    <td>{{ screw_data.dmax }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -129,15 +115,15 @@
                 <tbody>
                   <tr>
                     <td><b>Axis Point (O)</b></td>
-                    <td>{{ data.axis_point|join(" ") }}</td>
+                    <td>{{ screw_data.axis_point|join(" ") }}</td>
                   </tr>
                   <tr>
                     <td><b>Rotation Angle (&theta;)</b></td>
-                    <td>{{ data.rotation_angle_deg }}&#176;</td>
+                    <td>{{ screw_data.rotation_angle_deg }}&#176;</td>
                   </tr>
                   <tr>
                     <td><b>Translation (trans) </b></td>
-                    <td> {{ data.translation }} &#8491;</td>
+                    <td> {{ screw_data.translation }} &#8491;</td>
                   </tr>
                 </tbody>
               </table>
@@ -166,23 +152,23 @@
                 <tbody>
                   <tr>
                     <td><b>Pitch</b></td>
-                    <td>{{ data_bis.pitch }} &#8491;</td>
+                    <td>{{ screw_data_bis.pitch }} &#8491;</td>
                   </tr>
                   <tr>
                     <td><b>Monomers per turn</b></td>
-                    <td>{{ data_bis.nb_monomers }}</td>
+                    <td>{{ screw_data_bis.nb_monomers }}</td>
                   </tr>
                   <tr>
                     <td><b>Handedness</b></td>
-                    <td>{{ data_bis.direction | capitalize }}</td>
+                    <td>{{ screw_data_bis.direction | capitalize }}</td>
                   </tr>
                   <tr>
                     <td><b>Distance minimal between screw axis and oligomer (IntR)</b></td>
-                    <td>{{ data_bis.dmin }}</td>
+                    <td>{{ screw_data_bis.dmin }}</td>
                   </tr>
                   <tr>
                     <td><b>Distance maximal between screw axis and oligomer (ExtR)</b></td>
-                    <td>{{ data_bis.dmax }}</td>
+                    <td>{{ screw_data_bis.dmax }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -192,15 +178,15 @@
                 <tbody>
                   <tr>
                     <td><b>Axis Point (O)</b></td>
-                    <td>{{ data_bis.axis_point|join(" ") }}</td>
+                    <td>{{ screw_data_bis.axis_point|join(" ") }}</td>
                   </tr>
                   <tr>
                     <td><b>Rotation Angle (&theta;) </b></td>
-                    <td>{{ data_bis.rotation_angle_deg }}&#176;</td>
+                    <td>{{ screw_data_bis.rotation_angle_deg }}&#176;</td>
                   </tr>
                   <tr>
                     <td><b>Translation (trans) </b></td>
-                    <td> {{ data_bis.translation }} &#8491;</td>
+                    <td> {{ screw_data_bis.translation }} &#8491;</td>
                   </tr>
                 </tbody>
               </table>
@@ -219,7 +205,7 @@
         <div class="card-content">
           <span class="card-title center"><b>Comparison of the two interfaces</b></span>
           <ul class="center">
-            <li>FNAT: <b>{{data_bis.fnat }}</b></li>
+            <li>FNAT: <b>{{screw_data_bis.fnat }}</b></li>
           </ul>
           </div>
         </div>
@@ -228,13 +214,64 @@
   </div>
 
   <div class="row">
+    <div class="col s12 m12">
+      <div class="card">
+        <div class="card-content center " style="border-top: 1px solid rgba(160, 160, 160, 0.2)">
+          <!-- Form fields -->
+          <span class="card-title"><b>Construction Details</b></span>
+          <form id="" method="POST" action='' class="construct_form">
+            {{ construct_form.csrf_token }}
+            <div class="row">
+              <div class="col s12" style="margin-bottom: 10px;">
+                <p>From the helical parameters calculated from the 2 monomers, you can construct a filament made of
+                  copies of Monomer 1.</p>
+                <p></p>
+              </div>
+              <div class="input-field col s12 m3">
+                {{ construct_form.n_mer(class_="validate", placeholder="10")}}
+                <label>Number of Monomers (100 maximum)</label>
+                {% if construct_form.n_mer.errors %}
+                <span class="helper-text error-input">{{construct_form.n_mer.errors}}</span>
+                {% else %}
+                <span class="helper-text" data-error="Number only" data-success="">Number only</span>
+                {% endif %}
+              </div>
+              <div class="input-field col s12 m3">
+                <label for="z_align">
+                  {{ construct_form.z_align }}
+                  <span>Alignment on Z-axis?</span>
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <button class="waves-effect btn lbt-bleu" type="submit" name="action"
+                onclick="load('loading_icon')">Construct<i class="material-icons right">send</i></button>
+            </div>
+            <div class="row hide" id="loading_icon">
+              <div class="col s4 push-s4">
+                <div class="progress">
+                  <div class="indeterminate"></div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div> <!-- end card content-->
+      </div> <!-- end card -->
+    </div> <!-- end col -->
+  </div> <!-- end row -->
+
+
+  <!-- visualisation-->
+  {% if construct_data %}
+  <div class="row" id="visualisation">
     <div class="col s12 m6">
       <div class="card">
         <div class="card-content">
-          <span class="card-title"><b>Visualisation</b></span>
+          <span class="card-title center"><b>Visualisation</b></span>
           <div class="row">
             <p class="center-align">
-              <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file" href="{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_out_name)}}">
+              <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file"
+                 href="{{ url_for('heligeom_bp.download', results_id=screw_data.results_id, filename=construct_data.pdb_out_name)}}">
                 <i class="material-icons right">file_download</i><span class="hide-on-med-and-down">Download Oligomer</span>
               </a>
             </p>
@@ -248,7 +285,7 @@
 
                 plugin.loadMolecule({
                     id: 'custom',
-                    url: "{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_out_name) }}",
+                    url: "{{ url_for('heligeom_bp.download', results_id=screw_data.results_id, filename=construct_data.pdb_out_name) }}",
                     format: 'pdb' // default
                 });
               </script>
@@ -257,13 +294,15 @@
         </div>
       </div>
     </div>
+
     <div class="col s12 m6">
       <div class="card">
         <div class="card-content">
-          <span class="card-title"><b>Visualisation</b></span>
+          <span class="card-title center"><b>Visualisation</b></span>
           <div class="row">
             <p class="center-align">
-              <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file" href="{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data_bis.pdb_out_name)}}">
+              <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file"
+                  href="{{ url_for('heligeom_bp.download', results_id=screw_data.results_id, filename=construct_data_bis.pdb_out_name)}}">
                 <i class="material-icons right">file_download</i><span class="hide-on-med-and-down">Download Oligomer</span>
               </a>
             </p>
@@ -277,7 +316,7 @@
 
                 plugin.loadMolecule({
                     id: 'custom',
-                    url: "{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data_bis.pdb_out_name) }}",
+                    url: "{{ url_for('heligeom_bp.download', results_id=screw_data.results_id, filename=construct_data_bis.pdb_out_name) }}",
                     format: 'pdb' // default
                 });
               </script>
@@ -286,7 +325,12 @@
         </div>
       </div>
     </div>
+    <script> // Snippet to scroll down to the visualisation section once the form is validated.
+      document.location.hash = '#visualisation';
+    </script>
+    {% endif %}
   </div>
+
 
 
 </div>
