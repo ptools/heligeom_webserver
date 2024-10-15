@@ -294,7 +294,7 @@ def results(results_id):
 
 
 # Create a route for the generated PDB. Use to download it and in the LiteMol plugin
-@heligeom_bp.route('/results/<results_id>"/<path:filename>', methods=["GET", "POST"])
+@heligeom_bp.route("/results/<results_id>/<path:filename>", methods=["GET", "POST"])
 def download(results_id, filename):
     return send_from_directory(
         pathlib.Path(current_app.config["DATA_UPLOADS"], results_id), filename, as_attachment=True

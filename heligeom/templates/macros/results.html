@@ -1,0 +1,146 @@
+<!-- List of reusable macros for the result page. Avoid code duplication. -->
+
+<!-- Macro to display input parameters -->
+{% macro display_input_params(data) -%}
+<div class="row">
+  <div class="col s12 m6">
+      <h6>Input Parameters</h6>
+      <ul>
+        <li>Input structure: <b>{{data.pdb_input}}</b></li>
+        <li><b>Monomer 1</b>
+            <ul>
+            <li>Chain : <b>{% if data.chain1_id %} {{ data.chain1_id }} {% else %} Unspecified{%
+                endif %}</b></li>
+            <li>Residue range: <b>{% if data.res_range1 %} {{ data.res_range1 }} {% else %}
+                Unspecified{% endif %}</b></li>
+            </ul>
+        </li>
+        <li><b>Monomer 2</b>
+          <ul>
+          <li>Chain : <b>{% if data.chain2_id %} {{ data.chain2_id }} {% else %} Unspecified{%
+              endif %}</b></li>
+          <li>Residue range: <b>{% if data.res_range2 %} {{ data.res_range2 }} {% else %}
+              Unspecified{% endif %}</b></li>
+          </ul>
+        </li>
+      </ul>
+  </div>
+</div>
+{%- endmacro %}
+
+<!-- Macro to display screw parameters -->
+{% macro display_screw_params(data) -%}
+<table class="striped">
+  <tbody>
+    <tr>
+      <td><b>Pitch</b></td>
+      <td>{{ data.pitch }} &#8491;</td>
+    </tr>
+    <tr>
+      <td><b>Monomers per turn</b></td>
+      <td>{{ data.nb_monomers }}</td>
+    </tr>
+    <tr>
+      <td><b>Handedness</b></td>
+      <td>{{ data.direction | capitalize }}</td>
+    </tr>
+    <tr>
+      <td><b>Distance minimal between screw axis and oligomer (IntR)</b></td>
+      <td>{{ data.dmin }}</td>
+    </tr>
+    <tr>
+      <td><b>Distance maximal between screw axis and oligomer (ExtR)</b></td>
+      <td>{{ data.dmax }}</td>
+  </tbody>
+</table>
+{%- endmacro %}
+
+<!-- Macro to display axis parameters -->
+{% macro display_axis_params(data) -%}
+<table class="striped">
+  <tbody>
+    <tr>
+      <td><b>Axis Point (O)</b></td>
+      <td>{{ data.axis_point|join(" ") }}</td>
+    </tr>
+    <tr>
+      <td><b>Rotation Angle (&theta;) </b></td>
+      <td>{{ data.rotation_angle_deg }}&#176;</td>
+    </tr>
+    <tr>
+      <td><b>Translation (trans) </b></td>
+      <td> {{ data.translation }} &#8491;</td>
+    </tr>
+  </tbody>
+</table>
+{%- endmacro %}
+
+
+
+<!-- Macro to display construction form -->
+{% macro display_construction_form(form) -%}
+<div class="row">
+  <div class="col s12" style="margin-bottom: 10px;">
+    <p>From the helical parameters calculated from the 2 monomers, you can construct a filament made of
+      copies of Monomer 1.</p>
+    <p></p>
+  </div>
+  <div class="input-field col s12 m3">
+    {{ form.n_mer(class_="validate", placeholder="10") }}
+    <label>Number of Monomers (100 maximum)</label>
+    {% if form.n_mer.errors %}
+    <span class="helper-text error-input">{{form.n_mer.errors}}</span>
+    {% else %}
+    <span class="helper-text" data-error="Number only" data-success="">Number only</span>
+    {% endif %}
+  </div>
+  <div class="input-field col s12 m3">
+    <label for="z_align">
+      {{ form.z_align }}
+      <span>Alignment on Z-axis?</span>
+    </label>
+  </div>
+</div>
+<div class="row">
+  <button class="waves-effect btn lbt-bleu" type="submit" name="action"
+    onclick="load('loading_icon')">Construct<i class="material-icons right">send</i></button>
+</div>
+<div class="row hide" id="loading_icon">
+  <div class="col s4 push-s4">
+    <div class="progress">
+      <div class="indeterminate"></div>
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+
+
+<!-- Macro to display the download button for one oligomer -->
+{% macro button_download_oligomer(results_id, oligo_filename) -%}
+<p class="center-align">
+  <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file"
+    href="{{ url_for('heligeom_bp.download', results_id=results_id, filename=oligo_filename)}}">
+    <i class="material-icons right">file_download</i>
+      <span class="hide-on-med-and-down">Download Oligomer</span>
+  </a>
+</p>
+{%- endmacro %}
+
+
+<!-- Macro to display the LiteMol plugin for one oligomer -->
+{% macro LiteMol_plugin(id, results_id, oligo_filename) -%}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}"
+type="text/css" />
+<script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
+<div id="{{ id }}" />
+  <script>
+  var plugin = LiteMol.Plugin.create({ target: '#{{ id }}', viewportBackground: '#ffffff' });
+
+  plugin.loadMolecule({
+    id: 'custom',
+    url: "{{ url_for('heligeom_bp.download', results_id=results_id, filename=oligo_filename) }}",
+    format: 'pdb' // default
+  });
+  </script>
+</div>
+{%- endmacro %}
