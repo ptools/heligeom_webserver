@@ -1,186 +1,182 @@
 """
-Ptools module for the calculations
+Backend module for the Heligeom calculations
 """
 
 import math
+from dataclasses import dataclass, field
 
 from ptools import RigidBody, io, measure
 from ptools.heligeom import chain_intersect, heli_analyze, heli_construct
+from ptools.superpose import Screw
 
 from . import utils
 
 
-def get_monomers(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
-    """Return the 2 monomers exracted from the `pdb_file` with the correct extracted atoms
+@dataclass
+class HeligeomMonomer:
+    """Define a Heligeom monomer based on the user inputs."""
+
+    input_file: str  #: the path of the input structure file
+    chain: str  #: the chain selected if provided.
+    residue_range: str  #: the residue index range in the form `X-Y` if provided.
+
+    #: The RigidBody with the correct atoms.
+    rb: RigidBody = field(init=False, repr=False)
+
+    def __post_init__(self):
+        input_structure = RigidBody.from_pdb(self.input_file)
+        self.rb = _create_monomer(input_structure, self.chain, self.residue_range)
+
+
+def _create_monomer(struct, chain="", res_range=""):
+    """Create a monomer from a Rigidbody with the correct extracted atoms
     from either the chains information or the residue range.
+
+    At least one of the 2 optional argument needs to be filled.
 
     Parameters
     ----------
-    pdb_file : str
-        name of the PDB file
-    chain_id_M1 : str
-        Chain of the 1st monomer
-    chain_id_M2 : str
-        Chain of the 2nd monomer
-    res_range_M1 : str
-        string of the form 'X-Y' where X and Y are the residue ID minimal and maximal
-    res_range_M2 : str
-        string of the form 'X-Y' where X and Y are the residue ID minimal and maximal
+    struct : RigidBody
+        the global structure
+    chain : str, optional
+        chain of the monomer.
+    res_range : str, optional
+        string of the form 'X-Y' where X and Y are the residue ID minimal and maximal.
+
+    Raises
+    ------
+    TypeError
+        if the monomer has a size of 0.
 
     Returns
     -------
-    Tuple of RigidBody
-        the 2 monomers
+    RigidBody
+        the monomer constructed
     """
 
-    input_structure = RigidBody.from_pdb(pdb_file)
+    monomer = RigidBody()
 
-    # Monomer 1:
-    if chain_id_M1:
-        monomer1 = input_structure.select_chain(chain_id_M1)
-        if res_range_M1:
-            min_res1, max_res1 = utils.parse_resrange(res_range_M1)
-            monomer1 = monomer1.select_residue_range(min_res1, max_res1)
+    if chain:
+        monomer = struct.select_chain(chain)
+        if res_range:
+            min_resid, max_resid = utils.parse_resrange(res_range)
+            monomer = monomer.select_residue_range(min_resid, max_resid)
     else:
-        min_res1, max_res1 = utils.parse_resrange(res_range_M1)
-        monomer1 = input_structure.select_residue_range(min_res1, max_res1)
+        min_resid, max_resid = utils.parse_resrange(res_range)
+        monomer = struct.select_residue_range(min_resid, max_resid)
 
-    if monomer1.size() == 0:
-        raise ValueError("Monomer 1 has a size of 0.")
+    if monomer.size() == 0:
+        raise TypeError("Monomer has a size of 0.")
 
-    # Monomer 2:
-    if chain_id_M2:
-        monomer2 = input_structure.select_chain(chain_id_M2)
-        if res_range_M2:
-            min_res2, max_res2 = utils.parse_resrange(res_range_M2)
-            monomer2 = monomer2.select_residue_range(min_res2, max_res2)
-    else:
-        min_res2, max_res2 = utils.parse_resrange(res_range_M2)
-        monomer2 = input_structure.select_residue_range(min_res2, max_res2)
-
-    if monomer2.size() == 0:
-        raise ValueError("Monomer 2 has a size of 0.")
-
-    return (monomer1, monomer2)
+    return monomer
 
 
-def screw_parameters(pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
-    # Create monomers from input data
-    monomer1, monomer2 = get_monomers(
-        pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2
-    )
+class HeligeomInterface:
+    """Represents a Heligeom interface between 2 defined monomers."""
 
-    # Retrieve the offset between the first resid of the 2 monomers
-    try:
-        min_res1, _ = utils.parse_resrange(res_range_M1)
-        min_res2, _ = utils.parse_resrange(res_range_M2)
-        delta_resid = min_res2 - min_res1
-        # Handle missing residues with an intersection
-        rb1, rb2 = chain_intersect(monomer1, monomer2, delta_resid=delta_resid)
-    except SyntaxError:
-        rb1 = monomer1
-        rb2 = monomer2
+    #: The 1st monomer of the interface
+    monomer1: HeligeomMonomer
+    #: The 2nd monomer of the interface
+    monomer2: HeligeomMonomer
+    #: The Screw transformation defining the interface
+    hp: Screw
 
-    if rb1.size() == 0:
-        raise ValueError("Monomer 1 has a size of 0.")
-    if rb2.size() == 0:
-        raise ValueError("Monomer 2 has a size of 0.")
+    def __init__(self, pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
+        self.monomer1 = HeligeomMonomer(pdb_file, chain_id_M1, res_range_M1)
+        self.monomer2 = HeligeomMonomer(pdb_file, chain_id_M2, res_range_M2)
 
-    # Use CA for computating parameters
-    monomer1_CA = rb1.select_atom_type("CA")
-    monomer2_CA = rb2.select_atom_type("CA")
+        self.hp = Screw()
 
-    hp = heli_analyze(monomer1_CA, monomer2_CA)
+    def compute_screw(self, force=False):
+        """Compute the screw transformation between the 2 monomers.
 
-    # Retrieve N & Pitch
-    rotation_angle_degrees = math.degrees(hp.angle)
-    if abs(hp.angle) > 0.0:
-        pitch = abs(hp.normtranslation * (360.0 / abs(rotation_angle_degrees)))
-        monomers_per_turn = 360.0 / abs(rotation_angle_degrees)
-    else:
-        # Attention: zeros here indicate NaN (divide by zero)
-        pitch = 0.0
-        monomers_per_turn = 0.0
-    direction = "right-handed" if hp.angle * hp.normtranslation > 0 else "left-handed"
+        Parameters
+        ----------
+        force : bool, optional
+            Force recompute the transformation, by default False
+        """
 
-    dmin, dmax = measure.minmax_distance_to_axis(monomer1, hp.unit, center=hp.point)
+        # Retrieve the offset between the first resid of the 2 monomers
+        try:
+            min_res1, _ = utils.parse_resrange(self.monomer1.residue_range)
+            min_res2, _ = utils.parse_resrange(self.monomer2.residue_range)
+            delta_resid = min_res2 - min_res1
+            # Handle missing residues with an intersection
+            rb1, rb2 = chain_intersect(self.monomer1.rb, self.monomer2.rb, delta_resid=delta_resid)
+        except SyntaxError:
+            rb1 = self.monomer1.rb
+            rb2 = self.monomer2.rb
 
-    return (hp, pitch, monomers_per_turn, direction, dmin, dmax)
+        if rb1.size() == 0:
+            raise ValueError("Monomer 1 has a size of 0.")
+        if rb2.size() == 0:
+            raise ValueError("Monomer 2 has a size of 0.")
 
+        # Use CA for computating parameters
+        monomer1_CA = rb1.select_atom_type("CA")
+        monomer2_CA = rb2.select_atom_type("CA")
 
-def construct(
-    pdb_file,
-    chain_id_M1,
-    chain_id_M2,
-    res_range_M1,
-    res_range_M2,
-    n_mer,
-    z_align,
-    pdb_out,
-):
-    # Create monomers from input data
-    monomer1, monomer2 = get_monomers(
-        pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2
-    )
+        self.hp = heli_analyze(monomer1_CA, monomer2_CA)
 
-    # Retrieve the offset between the first resid of the 2 monomers
-    try:
-        min_res1, _ = utils.parse_resrange(res_range_M1)
-        min_res2, _ = utils.parse_resrange(res_range_M2)
-        delta_resid = min_res2 - min_res1
-        # Handle missing residues with an intersection
-        rb1, rb2 = chain_intersect(monomer1, monomer2, delta_resid=delta_resid)
-    except SyntaxError:
-        rb1 = monomer1
-        rb2 = monomer2
+        # Retrieve N & Pitch
+        rotation_angle_degrees = math.degrees(self.hp.angle)
+        if abs(self.hp.angle) > 0.0:
+            pitch = abs(self.hp.normtranslation * (360.0 / abs(rotation_angle_degrees)))
+            monomers_per_turn = 360.0 / abs(rotation_angle_degrees)
+        else:
+            # Attention: zeros here indicate NaN (divide by zero)
+            pitch = 0.0
+            monomers_per_turn = 0.0
+        direction = "right-handed" if self.hp.angle * self.hp.normtranslation > 0 else "left-handed"
 
-    if rb1.size() == 0:
-        raise ValueError("Monomer 1 has a size of 0.")
-    if rb2.size() == 0:
-        raise ValueError("Monomer 2 has a size of 0.")
+        dmin, dmax = measure.minmax_distance_to_axis(
+            self.monomer1.rb, self.hp.unit, center=self.hp.point
+        )
 
-    # Use CA for computating parameters
-    monomer1_CA = rb1.select_atom_type("CA")
-    monomer2_CA = rb2.select_atom_type("CA")
+        return (pitch, monomers_per_turn, direction, dmin, dmax)
 
-    hp = heli_analyze(monomer1_CA, monomer2_CA)
-    result = heli_construct(monomer1, hp, N=n_mer, Z=z_align)
+    def construct_oligomer(self, ncopies, z_align, fileout):
+        """Based on the interface, construct an oligomer with
+        `ncopies` of the 1st monomer.
 
-    io.write_pdb(result, pdb_out)  # type: ignore
+        This oligomer will be written as a PDB in `fileout`.
 
-    # Retrieve N & Pitch
-    rotation_angle_degrees = math.degrees(hp.angle)
-    if abs(hp.angle) > 0.0:
-        pitch = abs(hp.normtranslation * (360.0 / abs(rotation_angle_degrees)))
-        monomers_per_turn = 360.0 / abs(rotation_angle_degrees)
-    else:
-        # Attention: zeros here indicate NaN (divide by zero)
-        pitch = 0.0
-        monomers_per_turn = 0.0
-    direction = "right-handed" if hp.angle * hp.normtranslation > 0 else "left-handed"
+        Parameters
+        ----------
+        ncopies : int
+            number of copies of the 1st monomer to be cosntructed.
+        z_align: Bool
+            Wether the oligomer should be aligned on the Z axis.
+        fileout : str
+            Path to output file.
+        """
 
-    dmin, dmax = measure.minmax_distance_to_axis(monomer1, hp.unit, center=hp.point)
+        result = heli_construct(self.monomer1.rb, self.hp, N=ncopies, Z=z_align)
 
-    return (hp, pitch, monomers_per_turn, direction, dmin, dmax)
+        io.write_pdb(result, fileout)  # type: ignore
 
+    @classmethod
+    def compute_fnat(cls, heli_interface1, heli_interface2, cutoff=5):
+        """Compute the FNAT (fraction of native contacts) between 2 interfaces.
 
-def analyze_fnat(
-    pdb_file,
-    chain_id_M1,
-    chain_id_M2,
-    res_range_M1,
-    res_range_M2,
-    pdb_file2,
-    chain2_id_M1,
-    chain2_id_M2,
-    res_range2_M1,
-    res_range2_M2,
-):
-    monomer1, monomer2 = get_monomers(
-        pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2
-    )
-    monomer1bis, monomer2bis = get_monomers(
-        pdb_file2, chain2_id_M1, chain2_id_M2, res_range2_M1, res_range2_M2
-    )
+        Parameters
+        ----------
+        heli_interface1 : HeligeomInterface
+            the 1st heligeom interface
+        heli_interface2 : HeligeomInterface
+            the 2nd heligeom interface
+        cutoff : float, optional
+            distance in Angstrom defining a contact between 2 residues, by default 5
 
-    return measure.fnat(monomer1, monomer2, monomer1bis, monomer2bis, cutoff=5)
+        Returns
+        -------
+        float
+            the FNAT value
+        """
+        return measure.fnat(
+            heli_interface1.monomer1.rb,
+            heli_interface1.monomer2.rb,
+            heli_interface2.monomer1.rb,
+            heli_interface2.monomer2.rb,
+            cutoff,
+        )

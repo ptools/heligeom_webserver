@@ -15,7 +15,7 @@ from flask import (
 
 from .forms import Construction, InputStructures, validate_input_structure
 from .models import UserInputs, db
-from .tool import analyze_fnat, construct, screw_parameters
+from .tool import HeligeomInterface
 
 # Blueprint Configuration
 heligeom_bp = Blueprint(
@@ -96,14 +96,12 @@ def results(results_id):
 
         pdb_abs_path = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id, pdb_filename)
 
-        # Compute Helicoidal parameters
-        hp, pitch, monomers_per_turn, direction, dmin, dmax = screw_parameters(
-            pdb_abs_path,
-            chain1_id,
-            chain2_id,
-            res_range1,
-            res_range2,
+        heli_interface1 = HeligeomInterface(
+            pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2
         )
+
+        # Compute Helicoidal parameters
+        pitch, monomers_per_turn, direction, dmin, dmax = heli_interface1.compute_screw()
 
         screw_data = {
             "results_id": results_id,
@@ -115,10 +113,10 @@ def results(results_id):
             "pitch": f"{pitch:3.2f}",
             "nb_monomers": f"{monomers_per_turn:3.2f}",
             "direction": direction,
-            "rotation_angle": f"{hp.angle:3.2f}",
-            "rotation_angle_deg": f"{math.degrees(hp.angle):3.2f}",
-            "axis_point": [f"{coord:3.2f}" for coord in hp.point],
-            "translation": f"{hp.normtranslation:3.2f}",
+            "rotation_angle": f"{heli_interface1.hp.angle:3.2f}",
+            "rotation_angle_deg": f"{math.degrees(heli_interface1.hp.angle):3.2f}",
+            "axis_point": [f"{coord:3.2f}" for coord in heli_interface1.hp.point],
+            "translation": f"{heli_interface1.hp.normtranslation:3.2f}",
             "dmin": f"{dmin:3.2f}",
             "dmax": f"{dmax:3.2f}",
         }
@@ -126,6 +124,7 @@ def results(results_id):
         # 2nd Oligomer
         has_2nd_oligo = False
         screw_data_bis = dict()
+        heli_interface2 = None
 
         pdb_filename2 = query_result.pdb_filename_2nd
         if pdb_filename2:
@@ -143,28 +142,15 @@ def results(results_id):
             else:
                 pdb_abs_path2 = pdb_abs_path
 
-            # Compute Helicoidal parameters
-            hp2, pitch2, nb_monomers2, direction2, dminbis, dmaxbis = screw_parameters(
-                pdb_abs_path2,
-                chain1bis_id,
-                chain2bis_id,
-                res_range1bis,
-                res_range2bis,
+            heli_interface2 = HeligeomInterface(
+                pdb_abs_path2, chain1bis_id, chain2bis_id, res_range1bis, res_range2bis
             )
 
+            # Compute Helicoidal parameters
+            pitch2, monomers_per_turn2, direction2, dmin2, dmax2 = heli_interface2.compute_screw()
+
             # Compute FNAT
-            fnat = analyze_fnat(
-                pdb_abs_path,
-                chain1_id,
-                chain2_id,
-                res_range1,
-                res_range2,
-                pdb_abs_path2,
-                chain1bis_id,
-                chain2bis_id,
-                res_range1bis,
-                res_range2bis,
-            )
+            fnat = HeligeomInterface.compute_fnat(heli_interface1, heli_interface2)
 
             # Create dict of data to pass to render_template
             screw_data_bis = {
@@ -174,20 +160,20 @@ def results(results_id):
                 "res_range1": res_range1bis,
                 "res_range2": res_range2bis,
                 "pitch": f"{pitch2:3.2f}",
-                "nb_monomers": f"{nb_monomers2:3.2f}",
+                "nb_monomers": f"{monomers_per_turn2:3.2f}",
                 "direction": direction2,
-                "rotation_angle": f"{hp2.angle:3.2f}",
-                "rotation_angle_deg": f"{math.degrees(hp2.angle):3.2f}",
-                "axis_point": [f"{coord:3.2f}" for coord in hp2.point],
-                "translation": f"{hp2.normtranslation:3.2f}",
-                "dmin": f"{dminbis:3.2f}",
-                "dmax": f"{dmaxbis:3.2f}",
+                "rotation_angle": f"{heli_interface2.hp.angle:3.2f}",
+                "rotation_angle_deg": f"{math.degrees(heli_interface2.hp.angle):3.2f}",
+                "axis_point": [f"{coord:3.2f}" for coord in heli_interface2.hp.point],
+                "translation": f"{heli_interface2.hp.normtranslation:3.2f}",
+                "dmin": f"{dmin2:3.2f}",
+                "dmax": f"{dmax2:3.2f}",
                 "fnat": f"{fnat:3.4f}",
             }
 
         # Initialize construction form
         construct_form = Construction()
-        if construct_form.validate():
+        if request.method == "POST" and construct_form.validate():
             # Retrieve form values
             n_mer = construct_form.n_mer.data
             z_align = construct_form.z_align
@@ -202,17 +188,8 @@ def results(results_id):
             pdb_out_abs_path = pathlib.Path(
                 current_app.config["DATA_UPLOADS"], results_id, pdb_out_name
             )
-            # Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
-            construct(
-                pdb_abs_path,
-                chain1_id,
-                chain2_id,
-                res_range1,
-                res_range2,
-                n_mer,
-                z_align,
-                pdb_out_abs_path,
-            )
+            # Construct oligomer and write the PDB result in pdb_out_abs_path
+            heli_interface1.construct_oligomer(n_mer, z_align, pdb_out_abs_path)
 
             # Create dict of construction details to pass to render_template
             construct_data = {
@@ -241,17 +218,8 @@ def results(results_id):
                     current_app.config["DATA_UPLOADS"], results_id, pdb_out_name2
                 )
 
-                # Run the Heligeom calculations and write the PDB result in pdb_out_abs_path
-                construct(
-                    pdb_abs_path2,
-                    query_result.chain1bis_id,
-                    query_result.chain2bis_id,
-                    query_result.res_range1bis,
-                    query_result.res_range2bis,
-                    n_mer,
-                    z_align,
-                    pdb_out_abs_path2,
-                )
+                # Construct oligomer and write the PDB result in pdb_out_abs_path
+                heli_interface2.construct_oligomer(n_mer, z_align, pdb_out_abs_path2)  # type: ignore
 
                 # Create dict of construction details to pass to render_template
                 construct_data_bis = {
