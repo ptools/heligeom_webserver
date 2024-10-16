@@ -4,7 +4,7 @@ from . import db
 class UserInputs(db.Model):
     """Class defining the data stored in the Database.
 
-    Matches the field of the `HeligeomForm`.
+    Matches the fields of the `InputStructures` class.
     """
 
     # Uniq ID defining the path of the results page
@@ -19,10 +19,6 @@ class UserInputs(db.Model):
     res_range1 = db.Column(db.String(50), default="")
     # Residue range to define the 2nd monomer
     res_range2 = db.Column(db.String(50), default="")
-    # Number of copy/monomers requested to create the filament.
-    n_mer = db.Column(db.Integer, default=0)
-    # Z alignement of the filament (Yes/No)
-    z_align = db.Column(db.Boolean, default=False)
 
     # For a second oligomer
     second_oligomer = db.Column(db.Boolean, default=False)
@@ -40,8 +36,6 @@ class UserInputs(db.Model):
         chain2_id="",
         res_range1="",
         res_range2="",
-        n_mer=0,
-        z_align=False,
     ):
         self.request_id = request_id
         self.pdb_filename = pdb_filename
@@ -49,8 +43,6 @@ class UserInputs(db.Model):
         self.chain2_id = chain2_id
         self.res_range1 = res_range1
         self.res_range2 = res_range2
-        self.n_mer = n_mer
-        self.z_align = z_align
 
     def add_2nd_oligomer(
         self,
@@ -68,5 +60,4 @@ class UserInputs(db.Model):
         self.res_range2bis = res_range2bis
 
     def __repr__(self):
-        return f"""<Id {self.request_id}, pdb_filename: {self.pdb_filename},
-                n_mer: {self.n_mer}, z_align: {self.z_align}>"""
+        return f"""<Id {self.request_id}, pdb_filename: {self.pdb_filename}"""

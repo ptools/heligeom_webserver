@@ -42,14 +42,16 @@ uploadField2.onchange = checkSize;
 
 // Pre populate form with JS
 document.getElementById("example").onclick = function() {
-
   //Fill PDBid
   document.getElementById("pdb_id").value="2GLS";
   //Fill Chains
   document.getElementById("chain1_id").value="A";
   document.getElementById("chain2_id").value="B";
-  //Fill number of monomers
-  document.getElementById("n_mer").value = "6";
-  document.getElementById("z_align").checked = true;
-
 }
+
+// Use to create a "loading page"
+function loading(){
+    $("#loading").show();
+    $("#content_run").hide();
+}
+

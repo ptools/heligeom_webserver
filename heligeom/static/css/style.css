@@ -105,3 +105,15 @@ body {
   font-weight: bold;
   color: #F44336 !important;
 }
+
+/* For the loading section */
+div#loading {
+  display: none;
+  cursor: wait;
+  padding-top: 200px;
+}
+div#loading img{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

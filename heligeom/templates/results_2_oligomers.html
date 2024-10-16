@@ -3,7 +3,7 @@
 {% block title %}Heligeom - Results{% endblock %}
 
 {% block content %}
-
+{% import 'macros/results.html' as results_macro %}
 
 
 <div class="section">
@@ -24,73 +24,19 @@
       <div class="card">
         <div class="card-content">
           <span class="card-title"><b>General</b></span>
-          <div class="row">
-            <div class="col s12 m6">
-              <h6>Input Parameters</h6>
-              <ul>
-                <li>Input structure: <b>{{data.pdb_input}}</b></li>
-                <li><b>Monomer 1</b>
-                  <ul>
-                    <li>Chain        : <b>{% if data.chain1_id %} {{ data.chain1_id }} {% else %} Unspecified{% endif %}</b></li>
-                    <li>Residue range: <b>{% if data.res_range1 %} {{ data.res_range1 }} {% else %} Unspecified{% endif %}</b></li>
-                  </ul>
-                </li>
-                <li><b>Monomer 2</b>
-                  <ul>
-                    <li>Chain        : <b>{% if data.chain2_id %} {{ data.chain2_id }} {% else %} Unspecified{% endif %}</b></li>
-                    <li>Residue range: <b>{% if data.res_range2 %} {{ data.res_range2 }} {% else %} Unspecified{% endif %}</b></li>
-                  </ul>
-                </li>
-
-              </ul>
-            </div>
-            <div class="col s12 m6">
-              <h6>Construction Parameters</h6>
-              <ul>
-                <li>Number of monomers to construct : <b>{{data.n_mer}}</b></li>
-                <li>Z-align : <b>{% if data.z_align %}Yes {% else %}No {%endif %}</b></li>
-                </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          {{ results_macro.display_input_params(screw_data) }}
+        </div> <!-- end card content-->
+      </div> <!-- end card -->
+    </div> <!-- end col -->
     <div class="col s12 m6">
       <div class="card">
         <div class="card-content">
           <span class="card-title"><b>General</b></span>
-          <div class="row">
-            <div class="col s12 m6">
-              <h6>Input Parameters</h6>
-              <ul>
-                <li>Input structure: <b>{{data_bis.pdb_input}}</b></li>
-                <li><b>Monomer 1</b>
-                  <ul>
-                    <li>Chain        : <b>{% if data_bis.chain1_id %} {{ data_bis.chain1_id }} {% else %} Unspecified{% endif %}</b></li>
-                    <li>Residue range: <b>{% if data_bis.res_range1 %} {{ data_bis.res_range1 }} {% else %} Unspecified{% endif %}</b></li>
-                  </ul>
-                </li>
-                <li><b>Monomer 2</b>
-                  <ul>
-                    <li>Chain        : <b>{% if data_bis.chain2_id %} {{ data_bis.chain2_id }} {% else %} Unspecified{% endif %}</b></li>
-                    <li>Residue range: <b>{% if data_bis.res_range2 %} {{ data_bis.res_range2 }} {% else %} Unspecified{% endif %}</b></li>
-                  </ul>
-                </li>
-
-              </ul>
-            </div>
-            <div class="col s12 m6">
-              <h6>Construction Parameters</h6>
-              <ul>
-                <li>Number of monomers to construct : <b>{{data.n_mer}}</b></li>
-                <li>Z-align : <b>{% if data.z_align %}Yes {% else %}No {%endif %}</b></li>
-                </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+          {{ results_macro.display_input_params(screw_data_bis) }}
+        </div> <!-- end card content-->
+      </div> <!-- end card -->
+    </div> <!-- end col -->
+  </div> <!-- end row -->
 
   <div class="row">
     <div class="col s12 m5">
@@ -99,54 +45,15 @@
           <span class="card-title"><b>Helical parameters for the screw transformation</b></span>
           <div class="row">
             <div class="col s12 m6">
-              <table class="striped">
-                <tbody>
-                  <tr>
-                    <td><b>Pitch</b></td>
-                    <td>{{ data.pitch }} &#8491;</td>
-                  </tr>
-                  <tr>
-                    <td><b>Monomers per turn</b></td>
-                    <td>{{ data.nb_monomers }}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Handedness</b></td>
-                    <td>{{ data.direction | capitalize }}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Distance minimal between screw axis and oligomer (IntR)</b></td>
-                    <td>{{ data.dmin }}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Distance maximal between screw axis and oligomer (ExtR)</b></td>
-                    <td>{{ data.dmax }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              {{ results_macro.display_screw_params(screw_data) }}
             </div>
             <div class="col s12 m6">
-              <table class="striped">
-                <tbody>
-                  <tr>
-                    <td><b>Axis Point (O)</b></td>
-                    <td>{{ data.axis_point|join(" ") }}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Rotation Angle (&theta;)</b></td>
-                    <td>{{ data.rotation_angle_deg }}&#176;</td>
-                  </tr>
-                  <tr>
-                    <td><b>Translation (trans) </b></td>
-                    <td> {{ data.translation }} &#8491;</td>
-                  </tr>
-                </tbody>
-              </table>
+              {{ results_macro.display_axis_params(screw_data) }}
             </div>
-
           </div>
-        </div>
-      </div>
-    </div>
+        </div> <!-- end card content-->
+      </div> <!-- end card -->
+    </div> <!-- end col -->
     <div class="col s12 m2">
       <div class="card">
         <div class="card-content">
@@ -160,56 +67,17 @@
         <div class="card-content">
           <span class="card-title"><b>Helical parameters for the screw transformation</b></span>
           <div class="row">
-
             <div class="col s12 m6">
-              <table class="striped">
-                <tbody>
-                  <tr>
-                    <td><b>Pitch</b></td>
-                    <td>{{ data_bis.pitch }} &#8491;</td>
-                  </tr>
-                  <tr>
-                    <td><b>Monomers per turn</b></td>
-                    <td>{{ data_bis.nb_monomers }}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Handedness</b></td>
-                    <td>{{ data_bis.direction | capitalize }}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Distance minimal between screw axis and oligomer (IntR)</b></td>
-                    <td>{{ data_bis.dmin }}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Distance maximal between screw axis and oligomer (ExtR)</b></td>
-                    <td>{{ data_bis.dmax }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              {{ results_macro.display_screw_params(screw_data_bis) }}
             </div>
             <div class="col s12 m6">
-              <table class="striped">
-                <tbody>
-                  <tr>
-                    <td><b>Axis Point (O)</b></td>
-                    <td>{{ data_bis.axis_point|join(" ") }}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Rotation Angle (&theta;) </b></td>
-                    <td>{{ data_bis.rotation_angle_deg }}&#176;</td>
-                  </tr>
-                  <tr>
-                    <td><b>Translation (trans) </b></td>
-                    <td> {{ data_bis.translation }} &#8491;</td>
-                  </tr>
-                </tbody>
-              </table>
+              {{ results_macro.display_axis_params(screw_data_bis) }}
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
+        </div> <!-- end card content-->
+      </div> <!-- end card -->
+    </div> <!-- end col -->
+  </div> <!-- end row -->
 
 
 
@@ -219,77 +87,69 @@
         <div class="card-content">
           <span class="card-title center"><b>Comparison of the two interfaces</b></span>
           <ul class="center">
-            <li>FNAT: <b>{{data_bis.fnat }}</b></li>
+            <li>FNAT: <b>{{screw_data_bis.fnat }}</b></li>
           </ul>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
+        </div> <!-- end card content-->
+      </div> <!-- end card -->
+    </div> <!-- end col -->
+  </div> <!-- end row -->
 
   <div class="row">
+    <div class="col s12 m12">
+      <div class="card">
+        <div class="card-content center" style="border-top: 1px solid rgba(160, 160, 160, 0.2)">
+          <!-- Form fields -->
+          <span class="card-title"><b>Construction Details</b></span>
+          <form id="" method="POST" action='' class="construct_form">
+            {{ construct_form.csrf_token }}
+            {{ results_macro.display_construction_form(construct_form, "offset-m3") }}
+          </form>
+        </div> <!-- end card content-->
+      </div> <!-- end card -->
+    </div> <!-- end col -->
+  </div> <!-- end row -->
+
+
+  <!-- visualisation-->
+  {% if construct_data %}
+  <div class="row" id="visualisation">
     <div class="col s12 m6">
       <div class="card">
         <div class="card-content">
-          <span class="card-title"><b>Visualisation</b></span>
+          <span class="card-title center"><b>Visualisation</b></span>
           <div class="row">
-            <p class="center-align">
-              <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file" href="{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_out_name)}}">
-                <i class="material-icons right">file_download</i><span class="hide-on-med-and-down">Download Oligomer</span>
-              </a>
-            </p>
+            {{ results_macro.button_download_oligomer(screw_data.results_id, construct_data.pdb_out_name) }}
           </div>
           <div class="row">
-            <link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}" type="text/css" />
-            <script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
-            <div id="litemol_2">
-              <script>
-                var plugin = LiteMol.Plugin.create({ target: '#litemol_2' , viewportBackground: '#ffffff'});
+            {{ results_macro.LiteMol_plugin("litemol_2", screw_data.results_id, construct_data.pdb_out_name) }}
+          </div>
+        </div> <!-- end card content-->
+      </div> <!-- end card -->
+    </div> <!-- end col -->
 
-                plugin.loadMolecule({
-                    id: 'custom',
-                    url: "{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_out_name) }}",
-                    format: 'pdb' // default
-                });
-              </script>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="col s12 m6">
       <div class="card">
         <div class="card-content">
-          <span class="card-title"><b>Visualisation</b></span>
+          <span class="card-title center"><b>Visualisation</b></span>
           <div class="row">
-            <p class="center-align">
-              <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file" href="{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data_bis.pdb_out_name)}}">
-                <i class="material-icons right">file_download</i><span class="hide-on-med-and-down">Download Oligomer</span>
-              </a>
-            </p>
+            {{ results_macro.button_download_oligomer(screw_data.results_id, construct_data_bis.pdb_out_name) }}
           </div>
           <div class="row">
-            <link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}" type="text/css" />
-            <script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
-            <div id="litemol_3">
-              <script>
-                var plugin = LiteMol.Plugin.create({ target: '#litemol_3' , viewportBackground: '#ffffff'});
-
-                plugin.loadMolecule({
-                    id: 'custom',
-                    url: "{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data_bis.pdb_out_name) }}",
-                    format: 'pdb' // default
-                });
-              </script>
-            </div>
+            {{ results_macro.LiteMol_plugin("litemol_3", screw_data.results_id, construct_data.pdb_out_name) }}
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
+        </div> <!-- end card content-->
+      </div> <!-- end card -->
+    </div> <!-- end col -->
+    <script> // Snippet to scroll down to the visualisation section once the form is validated.
+      document.location.hash = '#visualisation';
+    </script>
+    {% endif %}
+  </div> <!-- end row -->
 
 
-</div>
+
+</div> <!-- end section -->
 
 
 {% endblock %}
