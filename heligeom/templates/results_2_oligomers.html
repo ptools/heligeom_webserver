@@ -103,7 +103,7 @@
           <span class="card-title"><b>Construction Details</b></span>
           <form id="" method="POST" action='' class="construct_form">
             {{ construct_form.csrf_token }}
-            {{ results_macro.display_construction_form(construct_form) }}
+            {{ results_macro.display_construction_form(construct_form, "offset-m3") }}
           </form>
         </div> <!-- end card content-->
       </div> <!-- end card -->

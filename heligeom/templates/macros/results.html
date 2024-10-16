@@ -78,14 +78,14 @@
 
 
 <!-- Macro to display construction form -->
-{% macro display_construction_form(form) -%}
+{% macro display_construction_form(form, offset) -%}
 <div class="row">
   <div class="col s12" style="margin-bottom: 10px;">
     <p>From the helical parameters calculated from the 2 monomers, you can construct a filament made of
       copies of Monomer 1.</p>
     <p></p>
   </div>
-  <div class="input-field col s12 m3">
+  <div class="input-field col s12 m3 {{ offset }}">
     {{ form.n_mer }}
     <label>Number of Monomers (100 maximum)</label>
     {% if form.n_mer.errors %}
