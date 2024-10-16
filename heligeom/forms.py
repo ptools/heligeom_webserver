@@ -249,12 +249,13 @@ class Construction(FlaskForm):
     n_mer = IntegerField(
         "n_mer",
         validators=[
-            validators.Optional(),
-            validators.NumberRange(0, 100, message="Only number is accepted."),
+            validators.NumberRange(0, 100, message="Only a number is accepted."),
         ],
+        render_kw={"placeholder": "10"},
     )
+
     # If the filament will be align on Z.
-    z_align = BooleanField("z_align")
+    z_align = BooleanField("z_align", validators=[validators.Optional()])
 
     def validate(self, extra_validators=None):
         """Overload validate() method of the Construction FlaskForm.
