@@ -10,7 +10,7 @@ from flask import current_app
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from werkzeug.utils import secure_filename
-from wtforms import BooleanField, IntegerField, StringField, validators
+from wtforms import BooleanField, IntegerField, RadioField, StringField, validators
 
 from . import utils
 
@@ -106,6 +106,11 @@ class InputStructures(FlaskForm):
         "res_range2bis",
         validators=[validators.Optional(), validators.length(min=1, max=50)],
         render_kw={"placeholder": "220-400"},
+    )
+
+    core_regions = RadioField(
+        "core_regions",
+        choices=[("all", "toto"), ("Select core residues", "toto")],
     )
 
     def validate_1st_oligomer(self):
