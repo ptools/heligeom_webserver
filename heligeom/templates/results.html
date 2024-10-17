@@ -37,6 +37,10 @@
                 <img src="{{ url_for('static', filename='img/screw.png') }}" style="width: 200px;">
               </div>
             </div>
+            <div class="divider"></div>
+            <div class="row s12">
+              {{ results_macro.display_rmsd(screw_data) }}
+            </div>
           </div> <!-- end card content-->
         </div> <!-- end card -->
       </div> <!-- end col -->

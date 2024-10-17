@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 
 from ptools import RigidBody, io, measure
 from ptools.heligeom import chain_intersect, heli_analyze, heli_construct
-from ptools.superpose import Screw
+from ptools.superpose import Screw, rmsd
 
 from . import utils
 
@@ -117,6 +117,7 @@ class HeligeomInterface:
         monomer2_CA = rb2.select_atom_type("CA")
 
         self.hp = heli_analyze(monomer1_CA, monomer2_CA)
+        rmsd_value = rmsd(monomer1_CA, monomer2_CA, do_fit=True)
 
         # Retrieve N & Pitch
         rotation_angle_degrees = math.degrees(self.hp.angle)
@@ -133,7 +134,7 @@ class HeligeomInterface:
             self.monomer1.rb, self.hp.unit, center=self.hp.point
         )
 
-        return (pitch, monomers_per_turn, direction, dmin, dmax)
+        return (pitch, monomers_per_turn, direction, dmin, dmax, rmsd_value)
 
     def construct_oligomer(self, ncopies, z_align, fileout):
         """Based on the interface, construct an oligomer with

@@ -101,7 +101,7 @@ def results(results_id):
         )
 
         # Compute Helicoidal parameters
-        pitch, monomers_per_turn, direction, dmin, dmax = heli_interface1.compute_screw()
+        pitch, monomers_per_turn, direction, dmin, dmax, rmsd = heli_interface1.compute_screw()
 
         screw_data = {
             "results_id": results_id,
@@ -119,6 +119,7 @@ def results(results_id):
             "translation": f"{heli_interface1.hp.normtranslation:3.2f}",
             "dmin": f"{dmin:3.2f}",
             "dmax": f"{dmax:3.2f}",
+            "rmsd": f"{rmsd:3.2f}",
         }
 
         # 2nd Oligomer
@@ -147,7 +148,9 @@ def results(results_id):
             )
 
             # Compute Helicoidal parameters
-            pitch2, monomers_per_turn2, direction2, dmin2, dmax2 = heli_interface2.compute_screw()
+            pitch2, monomers_per_turn2, direction2, dmin2, dmax2, rmsd = (
+                heli_interface2.compute_screw()
+            )
 
             # Compute FNAT
             fnat = HeligeomInterface.compute_fnat(heli_interface1, heli_interface2)
@@ -168,6 +171,7 @@ def results(results_id):
                 "translation": f"{heli_interface2.hp.normtranslation:3.2f}",
                 "dmin": f"{dmin2:3.2f}",
                 "dmax": f"{dmax2:3.2f}",
+                "rmsd": f"{rmsd:3.2f}",
                 "fnat": f"{fnat:3.4f}",
             }
 

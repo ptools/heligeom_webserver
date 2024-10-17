@@ -75,6 +75,11 @@
 </table>
 {%- endmacro %}
 
+{% macro display_rmsd(data) -%}
+<p class="center" style="margin-top: 20px;">
+  <b>RMSD:</b> {{ data.rmsd }}
+</p>
+{%- endmacro %}
 
 
 <!-- Macro to display construction form -->
