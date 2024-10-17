@@ -36,10 +36,10 @@
                     <p>In this case, The 2 monomers <b>must</b> have a residue range filled with the same gap (i.e <i>1-300</i> and <i>301-600</i>).</p>
                   <br>
                   <div class="col s12 m6">
-                    {{ forms_macro.monomer_card(1, form.chain1_id, form.res_range1) }}
+                    {{ forms_macro.monomer_card(1, form.chain1_id, form.res_range1, form.core_filter1, form.core_region1) }}
                   </div> <!-- end div col -->
                   <div class="col s12 m6">
-                    {{ forms_macro.monomer_card(2, form.chain2_id, form.res_range2) }}
+                    {{ forms_macro.monomer_card(2, form.chain2_id, form.res_range2, form.core_filter2, form.core_region2) }}
                   </div> <!-- end div col -->
                   <div class="row">
                     <ul class="collapsible" style="box-shadow: none; border:none;" >
@@ -64,10 +64,10 @@
                           <p>In this case, The 2 monomers <b>must</b> have a residue range filled with the same gap (i.e <i>1-300</i> and <i>301-600</i>).</p>
                         <br>
                           <div class="col s12 m6">
-                            {{ forms_macro.monomer_card("1 bis", form.chain1bis_id, form.res_range1bis) }}
+                            {{ forms_macro.monomer_card("1 bis", form.chain1bis_id, form.res_range1bis, form.core_filter1bis, form.core_region1bis) }}
                           </div> <!-- end div col -->
                           <div class="col s12 m6">
-                            {{ forms_macro.monomer_card("2 bis", form.chain2bis_id, form.res_range2bis) }}
+                            {{ forms_macro.monomer_card("2 bis", form.chain2bis_id, form.res_range2bis, form.core_filter2bis, form.core_region2bis) }}
                           </div> <!-- end div col -->
                         </div>
                       </li>

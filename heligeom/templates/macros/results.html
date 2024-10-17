@@ -13,6 +13,8 @@
                 endif %}</b></li>
             <li>Residue range: <b>{% if data.res_range1 %} {{ data.res_range1 }} {% else %}
                 Unspecified{% endif %}</b></li>
+            <li>Core region: <b>{% if data.core_filter1 == "all" %} All Residues {% else %}
+              {{ data.core_region1 }}{% endif %}</b></li>
             </ul>
         </li>
         <li><b>Monomer 2</b>
@@ -21,6 +23,8 @@
               endif %}</b></li>
           <li>Residue range: <b>{% if data.res_range2 %} {{ data.res_range2 }} {% else %}
               Unspecified{% endif %}</b></li>
+          <li>Core region: <b>{% if data.core_filter2 == "all" %} All Residues {% else %}
+            {{ data.core_region2 }}{% endif %}</b></li>
           </ul>
         </li>
       </ul>

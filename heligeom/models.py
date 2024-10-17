@@ -19,6 +19,14 @@ class UserInputs(db.Model):
     res_range1 = db.Column(db.String(50), default="")
     # Residue range to define the 2nd monomer
     res_range2 = db.Column(db.String(50), default="")
+    # Type of core region (monomer 1)
+    core_filter1 = db.Column(db.String(10), default="")
+    # List of residue range to define the core region (monomer 1)
+    core_region1 = db.Column(db.String(50), default="")
+    # Type of core region (monomer 2)
+    core_filter2 = db.Column(db.String(10), default="")
+    # List of residue range to define the core region (monomer 2)
+    core_region2 = db.Column(db.String(50), default="")
 
     # For a second oligomer
     second_oligomer = db.Column(db.Boolean, default=False)
@@ -27,6 +35,10 @@ class UserInputs(db.Model):
     chain2bis_id = db.Column(db.String(2), default="")
     res_range1bis = db.Column(db.String(50), default="")
     res_range2bis = db.Column(db.String(50), default="")
+    core_filter1bis = db.Column(db.String(10), default="")
+    core_region1bis = db.Column(db.String(50), default="")
+    core_filter2bis = db.Column(db.String(10), default="")
+    core_region2bis = db.Column(db.String(50), default="")
 
     def __init__(
         self,
@@ -36,6 +48,10 @@ class UserInputs(db.Model):
         chain2_id="",
         res_range1="",
         res_range2="",
+        core_filter1="",
+        core_region1="",
+        core_filter2="",
+        core_region2="",
     ):
         self.request_id = request_id
         self.pdb_filename = pdb_filename
@@ -43,6 +59,10 @@ class UserInputs(db.Model):
         self.chain2_id = chain2_id
         self.res_range1 = res_range1
         self.res_range2 = res_range2
+        self.core_filter1 = core_filter1
+        self.core_region1 = core_region1
+        self.core_filter2 = core_filter2
+        self.core_region2 = core_region2
 
     def add_2nd_oligomer(
         self,
@@ -51,6 +71,10 @@ class UserInputs(db.Model):
         chain2bis_id="",
         res_range1bis="",
         res_range2bis="",
+        core_filter1bis="",
+        core_region1bis="",
+        core_filter2bis="",
+        core_region2bis="",
     ):
         self.second_oligomer = True
         self.pdb_filename_2nd = pdb_filename_2nd
@@ -58,6 +82,10 @@ class UserInputs(db.Model):
         self.chain2bis_id = chain2bis_id
         self.res_range1bis = res_range1bis
         self.res_range2bis = res_range2bis
+        self.core_filter1bis = core_filter1bis
+        self.core_region1bis = core_region1bis
+        self.core_filter2bis = core_filter2bis
+        self.core_region2bis = core_region2bis
 
     def __repr__(self):
         return f"""<Id {self.request_id}, pdb_filename: {self.pdb_filename}"""
