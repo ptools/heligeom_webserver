@@ -147,6 +147,11 @@ class InputStructures(FlaskForm):
         Bool
             True if all field forms are valid. False otherwise.
         """
+
+        # Start by calling the parent method
+        if not super().validate(extra_validators=extra_validators):
+            return False
+
         if not self.validate_1st_oligomer():
             return False
 

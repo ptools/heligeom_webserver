@@ -42,7 +42,7 @@
           {{ chain }}
           <label>Chain ID</label>
           {% if chain.errors %}
-            <span class="helper-text error-input">{{ chain.errors }}</span>
+            <span class="helper-text error-input">{{ chain.errors[0] }}</span>
           {% endif %}
         </div>
         <div class="col s12 m6 input-field">
