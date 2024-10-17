@@ -49,7 +49,7 @@
           {{ res_range }}
           <label>Residue Range</label>
           {% if res_range.errors %}
-            <span class="helper-text error-input">{{ res_range.errors }}</span>
+            <span class="helper-text error-input">{{ res_range.errors[0] }}</span>
           {% endif %}
         </div>
         <div class="row">

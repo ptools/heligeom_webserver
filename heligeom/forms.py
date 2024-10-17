@@ -85,26 +85,42 @@ class InputStructures(FlaskForm):
     # A residue range to select a 1st monomer
     res_range1 = StringField(
         "res_range1",
-        validators=[validators.Optional(), validators.length(min=1, max=50)],
+        validators=[
+            validators.Optional(),
+            validators.length(min=1, max=50),
+            validators.Regexp("^[0-9]+-[0-9]+$", message="Invalid range."),
+        ],
         render_kw={"placeholder": "1-300"},
     )
     # A residue range to select a 2nd monomer
     res_range2 = StringField(
         "res_range2",
-        validators=[validators.Optional(), validators.length(min=1, max=50)],
+        validators=[
+            validators.Optional(),
+            validators.length(min=1, max=50),
+            validators.Regexp("^[0-9]+-[0-9]+$", message="Invalid range."),
+        ],
         render_kw={"placeholder": "301-600"},
     )
 
     # A residue range to select an optional variant of 1st monomer
     res_range1bis = StringField(
         "res_range1bis",
-        validators=[validators.Optional(), validators.length(min=1, max=50)],
+        validators=[
+            validators.Optional(),
+            validators.length(min=1, max=50),
+            validators.Regexp("^[0-9]+-[0-9]+$", message="Invalid range."),
+        ],
         render_kw={"placeholder": "20-200"},
     )
     # A residue range to select an optional variant of 2nd monomer
     res_range2bis = StringField(
         "res_range2bis",
-        validators=[validators.Optional(), validators.length(min=1, max=50)],
+        validators=[
+            validators.Optional(),
+            validators.length(min=1, max=50),
+            validators.Regexp("^[0-9]+-[0-9]+$", message="Invalid range."),
+        ],
         render_kw={"placeholder": "220-400"},
     )
 

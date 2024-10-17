@@ -73,7 +73,7 @@ def check_pair_monomers(chain1, res_range1, chain2, res_range2):
             try:
                 parse_resrange(res_range.data)
             except SyntaxError as e:
-                res_range.errors = e.msg
+                res_range.errors = [e.msg] # Use a list because it's unpacked in HTML.
                 valid = False
 
     return valid
