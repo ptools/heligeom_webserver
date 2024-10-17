@@ -10,7 +10,7 @@ from flask import current_app
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from werkzeug.utils import secure_filename
-from wtforms import BooleanField, IntegerField, StringField, validators
+from wtforms import BooleanField, IntegerField, RadioField, StringField, validators
 
 from . import utils
 
@@ -108,6 +108,11 @@ class InputStructures(FlaskForm):
         render_kw={"placeholder": "220-400"},
     )
 
+    core_regions = RadioField(
+        "core_regions",
+        choices=[("all", "toto"), ("Select core residues", "toto")],
+    )
+
     def validate_1st_oligomer(self):
         """Custom validate method for InputStructures form.
         It checks the field needed to retrieve the screw parameters.
@@ -142,6 +147,11 @@ class InputStructures(FlaskForm):
         Bool
             True if all field forms are valid. False otherwise.
         """
+
+        # Start by calling the parent method
+        if not super().validate(extra_validators=extra_validators):
+            return False
+
         if not self.validate_1st_oligomer():
             return False
 

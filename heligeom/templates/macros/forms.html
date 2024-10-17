@@ -42,7 +42,7 @@
           {{ chain }}
           <label>Chain ID</label>
           {% if chain.errors %}
-            <span class="helper-text error-input">{{ chain.errors }}</span>
+            <span class="helper-text error-input">{{ chain.errors[0] }}</span>
           {% endif %}
         </div>
         <div class="col s12 m6 input-field">
@@ -51,6 +51,21 @@
           {% if res_range.errors %}
             <span class="helper-text error-input">{{ res_range.errors }}</span>
           {% endif %}
+        </div>
+        <div class="row">
+          <label>
+            <input name="core" type="radio" checked />
+            <span>All</span>
+          </label>
+
+          <label>
+            <input name="core" type="radio" />
+            <span>Select Residue numbers: </span>
+          </label>
+          <div class="input-field inline">
+            <input id="email_inline" type="email" class="validate">
+            <label for="email_inline"></label>
+          </div>
         </div>
       </div> <!-- end div row -->
     </div> <!-- end div card content -->
