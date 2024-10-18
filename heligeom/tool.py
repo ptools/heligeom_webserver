@@ -198,11 +198,9 @@ def create_core_monomer(rb, core_region):
     if not res:
         return rb
 
-    l_core_rb = list()
+    core_rb = RigidBody()
     for res_range in core_region.split(","):
         min_res, max_res = utils.parse_resrange(res_range)
-        l_core_rb.append(rb.select_residue_range(min_res, max_res))
-
-    core_rb = reduce(add, l_core_rb)
+        core_rb += rb.select_residue_range(min_res, max_res)
 
     return core_rb
