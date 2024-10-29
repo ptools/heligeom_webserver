@@ -137,19 +137,31 @@
 
 
 <!-- Macro to display the LiteMol plugin for one oligomer -->
-{% macro LiteMol_plugin(id, results_id, oligo_filename) -%}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}"
+{% macro PDEMolstar_plugin(id, results_id, oligo_filename) -%}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pdbe-molstar@3.3.0/build/pdbe-molstar-light.css"
 type="text/css" />
-<script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
-<div id="{{ id }}" />
-  <script>
-  var plugin = LiteMol.Plugin.create({ target: '#{{ id }}', viewportBackground: '#ffffff' });
+<script src="https://cdn.jsdelivr.net/npm/pdbe-molstar@3.3.0/build/pdbe-molstar-plugin.js"></script>
 
-  plugin.loadMolecule({
-    id: 'custom',
-    url: "{{ url_for('heligeom_bp.download', results_id=results_id, filename=oligo_filename) }}",
-    format: 'pdb' // default
-  });
-  </script>
-</div>
+<div id="{{ id }}"></div>
+
+<script type="text/javascript">
+  //Create plugin instance
+  const viewerInstance = new PDBeMolstarPlugin();
+
+  //Set options (Checkout available options list in the documentation)
+  const options = {
+    customData: { url: "{{ url_for('heligeom_bp.download', results_id=results_id, filename=oligo_filename) }}", format: 'pdb'},
+    hideControls: true,
+    bgColor: {r:250, g:250, b:250},
+    landscape: true,
+    sequencePanel: true,
+    hideCanvasControls: ['animation']
+  }
+
+  //Get element from HTML/Template to place the viewer
+  const viewerContainer = document.getElementById("{{ id }}");
+
+  //Call render method to display the 3D view
+  viewerInstance.render(viewerContainer, options);
+</script>
 {%- endmacro %}

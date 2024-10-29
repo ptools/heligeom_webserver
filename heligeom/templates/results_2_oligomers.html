@@ -121,7 +121,11 @@
 
   <!-- visualisation-->
   {% if construct_data %}
+
   <div class="row" id="visualisation">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pdbe-molstar@3.3.0/build/pdbe-molstar-light.css"
+    type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/pdbe-molstar@3.3.0/build/pdbe-molstar-plugin.js"></script>
     <div class="col s12 m6">
       <div class="card">
         <div class="card-content">
@@ -130,7 +134,28 @@
             {{ results_macro.button_download_oligomer(screw_data.results_id, construct_data.pdb_out_name) }}
           </div>
           <div class="row">
-            {{ results_macro.LiteMol_plugin("litemol_2", screw_data.results_id, construct_data.pdb_out_name) }}
+            <!-- Here I cannot use the macro for the MolStar plugin because each JS variable needs to be uniq in the whole page. -->
+            <div id="molstar_1"></div>
+            <script type="text/javascript">
+              // Create plugin instance
+              const viewerInstance = new PDBeMolstarPlugin();
+
+              // Set options
+              const options = {
+                customData: { url: "{{ url_for('heligeom_bp.download', results_id=screw_data.results_id, filename=construct_data.pdb_out_name) }}", format: 'pdb'},
+                hideControls: true,
+                bgColor: {r:250, g:250, b:250},
+                landscape: true,
+                sequencePanel: true,
+                hideCanvasControls: ['animation']
+              }
+
+              //Get element from HTML/Template to place the viewer
+              const viewerContainer = document.getElementById("molstar_1");
+
+              //Call render method to display the 3D view
+              viewerInstance.render(viewerContainer, options);
+            </script>
           </div>
         </div> <!-- end card content-->
       </div> <!-- end card -->
@@ -144,7 +169,28 @@
             {{ results_macro.button_download_oligomer(screw_data.results_id, construct_data_bis.pdb_out_name) }}
           </div>
           <div class="row">
-            {{ results_macro.LiteMol_plugin("litemol_3", screw_data.results_id, construct_data.pdb_out_name) }}
+            <!-- Here I cannot use the macro for the MolStar plugin because each JS variable needs to be uniq in the whole page. -->
+            <div id="molstar_2"></div>
+            <script type="text/javascript">
+              //Create plugin instance
+              const viewerInstance2 = new PDBeMolstarPlugin();
+
+              //Set options
+              const options2 = {
+                customData: { url: "{{ url_for('heligeom_bp.download', results_id=screw_data.results_id, filename=construct_data_bis.pdb_out_name) }}", format: 'pdb'},
+                hideControls: true,
+                bgColor: {r:250, g:250, b:250},
+                landscape: true,
+                sequencePanel: true,
+                hideCanvasControls: ['animation']
+              }
+
+              //Get element from HTML/Template to place the viewer
+              const viewerContainer2 = document.getElementById("molstar_2");
+
+              //Call render method to display the 3D view
+              viewerInstance2.render(viewerContainer2, options2);
+            </script>
           </div>
         </div> <!-- end card content-->
       </div> <!-- end card -->

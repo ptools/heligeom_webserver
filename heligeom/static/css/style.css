@@ -81,9 +81,8 @@ body {
   top: 3px;
 }
 
-#litemol {
+#molstar {
   position: relative;
-  margin-top: 80px;
   margin-bottom: 400px;
   width: 1200px;
   height: 600px;
@@ -94,9 +93,8 @@ body {
   display: none;
 }
 
-#litemol_2,  #litemol_3 {
+#molstar_1,  #molstar_2 {
   position: relative;
-  margin-top: 80px;
   margin-bottom: 300px;
   height: 600px;
 }
