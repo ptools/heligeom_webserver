@@ -339,7 +339,7 @@ def results(results_id):
 
             pdb_out_abs_path = path_to_result / pdb_out_name
             # Construct oligomer and write the PDB result in pdb_out_abs_path
-            heli_interface1.construct_oligomer(n_mer, z_align, pdb_out_abs_path)
+            heli_interface1.construct_oligomer(pdb_out_abs_path, n_mer, z_align)
 
             # Create dict of construction details to pass to render_template
             # In the oligomer structure, monomer 1 will be the chain A and monomer 1' will be the chain B.
@@ -365,7 +365,7 @@ def results(results_id):
                 pdb_out_abs_path2 = path_to_result / pdb_out_name2
 
                 # Construct oligomer and write the PDB result in pdb_out_abs_path
-                heli_interface2.construct_oligomer(n_mer, z_align, pdb_out_abs_path2)
+                heli_interface2.construct_oligomer(pdb_out_abs_path2, n_mer, z_align)  # type: ignore
 
                 # Create dict of construction details to pass to render_template
                 construct_data_bis = {
