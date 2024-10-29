@@ -52,6 +52,10 @@ def runpage():
                 chain2_id=form.chain2_id.data,
                 res_range1=form.res_range1.data,
                 res_range2=form.res_range2.data,
+                core_filter1=form.core_filter1.data,
+                core_region1=form.core_region1.data,
+                core_filter2=form.core_filter2.data,
+                core_region2=form.core_region2.data,
             )
 
             # Does the user input for a 2nd assembly ?
@@ -69,6 +73,10 @@ def runpage():
                     chain2bis_id=form.chain2bis_id.data,
                     res_range1bis=form.res_range1bis.data,
                     res_range2bis=form.res_range2bis.data,
+                    core_filter1bis=form.core_filter1bis.data,
+                    core_region1bis=form.core_region1bis.data,
+                    core_filter2bis=form.core_filter2bis.data,
+                    core_region2bis=form.core_region2bis.data,
                 )
 
             db.session.add(user_inputs)
@@ -93,6 +101,10 @@ def results(results_id):
         chain2_id = query_result.chain2_id
         res_range1 = query_result.res_range1
         res_range2 = query_result.res_range2
+        core_filter1 = query_result.core_filter1
+        core_region1 = query_result.core_region1
+        core_filter2 = query_result.core_filter2
+        core_region2 = query_result.core_region2
 
         pdb_abs_path = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id, pdb_filename)
 
@@ -101,7 +113,9 @@ def results(results_id):
         )
 
         # Compute Helicoidal parameters
-        pitch, monomers_per_turn, direction, dmin, dmax, rmsd = heli_interface1.compute_screw()
+        pitch, monomers_per_turn, direction, dmin, dmax, rmsd = heli_interface1.compute_screw(
+            core_filter1, core_region1, core_region2
+        )
 
         screw_data = {
             "results_id": results_id,
@@ -110,6 +124,10 @@ def results(results_id):
             "chain2_id": chain2_id,
             "res_range1": res_range1,
             "res_range2": res_range2,
+            "core_filter1": core_filter1,
+            "core_region1": core_region1,
+            "core_filter2": core_filter2,
+            "core_region2": core_region2,
             "pitch": f"{pitch:3.2f}",
             "nb_monomers": f"{monomers_per_turn:3.2f}",
             "direction": direction,
@@ -134,6 +152,10 @@ def results(results_id):
             chain2bis_id = query_result.chain2bis_id
             res_range1bis = query_result.res_range1bis
             res_range2bis = query_result.res_range2bis
+            core_filter1bis = query_result.core_filter1bis
+            core_region1bis = query_result.core_region1bis
+            core_filter2bis = query_result.core_filter2bis
+            core_region2bis = query_result.core_region2bis
 
             # Different input structure ?
             if pdb_filename2 != pdb_filename:
@@ -149,7 +171,7 @@ def results(results_id):
 
             # Compute Helicoidal parameters
             pitch2, monomers_per_turn2, direction2, dmin2, dmax2, rmsd = (
-                heli_interface2.compute_screw()
+                heli_interface2.compute_screw(core_filter1bis, core_region1bis, core_region2bis)
             )
 
             # Compute FNAT
@@ -162,6 +184,10 @@ def results(results_id):
                 "chain2_id": chain2bis_id,
                 "res_range1": res_range1bis,
                 "res_range2": res_range2bis,
+                "core_filter1": core_filter1bis,
+                "core_region1": core_region1bis,
+                "core_filter2": core_filter2bis,
+                "core_region2": core_region2bis,
                 "pitch": f"{pitch2:3.2f}",
                 "nb_monomers": f"{monomers_per_turn2:3.2f}",
                 "direction": direction2,

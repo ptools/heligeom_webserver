@@ -3,13 +3,17 @@ Backend module for the Heligeom calculations
 """
 
 import math
+import re
 from dataclasses import dataclass, field
+from functools import reduce
+from operator import add
 
 from ptools import RigidBody, io, measure
 from ptools.heligeom import chain_intersect, heli_analyze, heli_construct
 from ptools.superpose import Screw, rmsd
 
 from . import utils
+from .forms import InputStructures
 
 
 @dataclass
@@ -87,7 +91,7 @@ class HeligeomInterface:
 
         self.hp = Screw()
 
-    def compute_screw(self, force=False):
+    def compute_screw(self, core_filter, core_region1, core_region2):
         """Compute the screw transformation between the 2 monomers.
 
         Parameters
@@ -106,6 +110,11 @@ class HeligeomInterface:
         except SyntaxError:
             rb1 = self.monomer1.rb
             rb2 = self.monomer2.rb
+
+        # Core region defined?
+        if core_filter == "manual":
+            rb1 = create_core_monomer(rb1, core_region1)
+            rb2 = create_core_monomer(rb2, core_region2)
 
         if rb1.size() == 0:
             raise ValueError("Monomer 1 has a size of 0.")
@@ -181,3 +190,17 @@ class HeligeomInterface:
             heli_interface2.monomer2.rb,
             cutoff,
         )
+
+
+def create_core_monomer(rb, core_region):
+    # Parse core region input
+    res = re.match(InputStructures.cls_regexp_core, core_region)
+    if not res:
+        return rb
+
+    core_rb = RigidBody()
+    for res_range in core_region.split(","):
+        min_res, max_res = utils.parse_resrange(res_range)
+        core_rb += rb.select_residue_range(min_res, max_res)
+
+    return core_rb
