@@ -226,6 +226,9 @@ def results(results_id):
                 "pdb_out_name": pdb_out_name,
                 "n_mer": n_mer,
                 "z_align": z_align,
+                "select_monomer1": heli_interface1.monomer1.molstar_selection,
+                "select_monomer2": heli_interface1.monomer2.molstar_selection,
+                "select_interface": heli_interface1.molstar_selection_interface(),
             }
 
             # 2nd Oligomer
@@ -256,6 +259,8 @@ def results(results_id):
                     "pdb_out_name": pdb_out_name2,
                     "n_mer": n_mer,
                     "z_align": z_align,
+                    "select_monomer1": heli_interface2.monomer1.molstar_selection,  # type: ignore
+                    "select_monomer2": heli_interface2.monomer2.molstar_selection,  # type: ignore
                 }
 
                 return render_template(

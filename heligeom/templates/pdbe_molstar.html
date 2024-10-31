@@ -40,6 +40,7 @@
 
                   <strong>Highlights</strong><br>
                   <button onclick="viewerInstance.visual.highlight({ data: [{struct_asym_id: 'B', color:{r:0,g:0,b:0}}]})">Highlights Chain B</button><br><br>
+                  <button onclick="viewerInstance.visual.highlight({ data: [{struct_asym_id: 'B', start_residue_number:1, end_residue_number:100, color:{r:255,g:0,b:0}}]})">Highlights partial Chain B</button><br><br>
 
                   <button onclick="
                     var selectSections = [
@@ -95,7 +96,7 @@
 
                 //Set options (Checkout available options list in the documentation)
                 const options = {
-                  customData: { url: 'http://sablons.lbt.ibpc.fr:5000/results/0b97f4eda5754d56843525ff34dc64b3/Construct_N6_Z_2GLS.pdb', format: 'pdb'},
+                  customData: { url: 'http://127.0.0.1:5000/results/0b97f4eda5754d56843525ff34dc64b3/Construct_N6_Z_2GLS.pdb', format: 'pdb'},
                   hideControls: true,
                   bgColor: {r:250, g:250, b:250},
                   landscape: true,
