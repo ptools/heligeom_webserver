@@ -39,11 +39,11 @@ class InputStructures(FlaskForm):
 
     # Input Structure: either a PDB file or a PDB ID
     input_file_2nd = FileField(
-        "input_file",
+        "input_file2",
         validators=[FileAllowed(["pdb"], "Only a PDB file can be uploaded.")],
     )
     pdb_id_2nd = StringField(
-        "pdb_id",
+        "pdb_id2",
         validators=[validators.Optional(), validators.length(min=4, max=4)],
         render_kw={"placeholder": "2GLS"},
     )

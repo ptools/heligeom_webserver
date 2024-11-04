@@ -7,7 +7,7 @@
 <div class="container">
   <div id="content_run" class="section">
 
-    <form method="POST" class="form">
+    <form method="POST" class="form" enctype="multipart/form-data">
       {{ form.csrf_token }}
       {% import 'macros/forms.html' as forms_macro %}
 
