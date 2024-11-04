@@ -115,3 +115,10 @@ div#loading img{
   margin-left: auto;
   margin-right: auto;
 }
+
+
+.visu_button {
+  text-transform:none;
+  letter-spacing: normal;
+  font-size: 14px;
+}

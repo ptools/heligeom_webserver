@@ -136,6 +136,41 @@
 {%- endmacro %}
 
 
+
+{% macro molstar_buttons(construct_data)-%}
+<div class="row" style="margin-bottom: 5px;">
+  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3"
+    onclick="viewerInstance.visual.select({ data: [
+      { {{ construct_data.select_monomer1 }} }
+      ],
+      nonSelectedColor: {r:255,g:255,b:255}})"
+  >
+  Select 1st Monomer
+  </button>
+  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3"
+    onclick="viewerInstance.visual.select({ data: [
+      { {{ construct_data.select_monomer2 }} }
+      ],
+      nonSelectedColor: {r:255,g:255,b:255}})"
+  >
+  Select 2nd Monomer
+  </button>
+  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3"
+    onclick="viewerInstance.visual.select(
+      {data: [ {{ construct_data.select_interface }} ],
+      nonSelectedColor: {r:255,g:255,b:255}})"
+  >
+  Select & Focus on residus at the interface
+  </button>
+</div>
+<div class="row" style="margin-bottom: 5px;">
+  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3" onclick="viewerInstance.visual.clearSelection()">Clear Selection</button>
+  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3" onclick="viewerInstance.visual.reset({ camera: true, theme: true, selectColor:true})">Reset Camera</button>
+</div>
+{%- endmacro %}
+
+
+
 <!-- Macro to display the LiteMol plugin for one oligomer -->
 {% macro PDEMolstar_plugin(id, results_id, oligo_filename) -%}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pdbe-molstar@3.3.0/build/pdbe-molstar-light.css"

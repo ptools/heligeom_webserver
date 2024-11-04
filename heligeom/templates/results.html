@@ -68,33 +68,8 @@
                     {{ results_macro.button_download_oligomer(screw_data.results_id, construct_data.pdb_out_name) }}
                 </div>
               </div>
-              <div class="row">
-                <button
-                  onclick="viewerInstance.visual.select({ data: [
-                    { {{ construct_data.select_monomer1 }} }
-                    ],
-                    nonSelectedColor: {r:255,g:255,b:255}})"
-                >
-                Select 1st Monomer
-                </button>
-                <button
-                  onclick="viewerInstance.visual.select({ data: [
-                    { {{ construct_data.select_monomer2 }} }
-                    ],
-                    nonSelectedColor: {r:255,g:255,b:255}})"
-                >
-                Select 2nd Monomer
-                </button>
-                <button
-                  onclick="viewerInstance.visual.select(
-                    {data: [ {{ construct_data.select_interface }} ],
-                    nonSelectedColor: {r:255,g:255,b:255}})"
-                >
-                Select & Focus on residus at the interface
-                </button>
-                <button onclick="viewerInstance.visual.clearSelection()">Clear Selection</button>
-                <button onclick="viewerInstance.visual.reset({ camera: true, theme: true, selectColor:true})">Reset Camera</button>
-              </div>
+              <div class="row" style="margin-bottom: 30px;"></div>
+              {{ results_macro.molstar_buttons(construct_data) }}
               <div class="row">
                 {{ results_macro.PDEMolstar_plugin("molstar", screw_data.results_id, construct_data.pdb_out_name) }}
               </div>
