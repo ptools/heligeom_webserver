@@ -99,6 +99,8 @@ class HeligeomInterface:
     monomer2: HeligeomMonomer
     #: The Screw transformation defining the interface
     hp: Screw
+    #: The oligomer construction made of monomer1
+    oligomer: RigidBody = field(init=False, repr=False)
 
     def __init__(self, pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
         self.monomer1 = HeligeomMonomer(pdb_file, chain_id_M1, res_range_M1)
@@ -176,13 +178,13 @@ class HeligeomInterface:
             Path to output file.
         """
 
-        result = heli_construct(self.monomer1.rb, self.hp, N=ncopies, Z=z_align)
+        self.oligomer = heli_construct(self.monomer1.rb, self.hp, N=ncopies, Z=z_align)
 
-        io.write_pdb(result, fileout)  # type: ignore
+        io.write_pdb(self.oligomer, fileout)  # type: ignore
 
     def interface_atoms(self):
-        """Returns the indexes of the atoms of `monomer1` that are in contact with
-        the atoms of `monomer2`.
+        """Returns the indexes of the residue atoms of `monomer1` that are in contact with
+        the residue atoms of `monomer2`.
 
         Returns
         -------
