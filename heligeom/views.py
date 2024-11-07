@@ -226,10 +226,13 @@ def results(results_id):
                 "pdb_out_name": pdb_out_name,
                 "n_mer": n_mer,
                 "z_align": z_align,
+                "select_monomer1": heli_interface1.monomer1.molstar_selection,
+                "select_monomer2": heli_interface1.monomer2.molstar_selection,
+                "select_interface": heli_interface1.molstar_selection_interface_oligomer(),
             }
 
             # 2nd Oligomer
-            if has_2nd_oligo:
+            if has_2nd_oligo and heli_interface2:
                 # Different input structure ?
                 if pdb_filename2 != pdb_filename:
                     pdb_abs_path2 = pathlib.Path(
@@ -249,13 +252,16 @@ def results(results_id):
                 )
 
                 # Construct oligomer and write the PDB result in pdb_out_abs_path
-                heli_interface2.construct_oligomer(n_mer, z_align, pdb_out_abs_path2)  # type: ignore
+                heli_interface2.construct_oligomer(n_mer, z_align, pdb_out_abs_path2)
 
                 # Create dict of construction details to pass to render_template
                 construct_data_bis = {
                     "pdb_out_name": pdb_out_name2,
                     "n_mer": n_mer,
                     "z_align": z_align,
+                    "select_monomer1": heli_interface2.monomer1.molstar_selection,
+                    "select_monomer2": heli_interface2.monomer2.molstar_selection,
+                    "select_interface": heli_interface2.molstar_selection_interface_oligomer(),
                 }
 
                 return render_template(

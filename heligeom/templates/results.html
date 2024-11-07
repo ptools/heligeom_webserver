@@ -68,8 +68,10 @@
                     {{ results_macro.button_download_oligomer(screw_data.results_id, construct_data.pdb_out_name) }}
                 </div>
               </div>
+              <div class="row" style="margin-bottom: 30px;"></div>
+              {{ results_macro.molstar_buttons(construct_data) }}
               <div class="row">
-                {{ results_macro.LiteMol_plugin("litemol", screw_data.results_id, construct_data.pdb_out_name) }}
+                {{ results_macro.PDEMolstar_plugin("molstar", screw_data.results_id, construct_data.pdb_out_name) }}
               </div>
             </div>
             <script> // Snippet to scroll down to the visualisation section once the form is validated.

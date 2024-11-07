@@ -81,11 +81,10 @@ body {
   top: 3px;
 }
 
-#litemol {
+#molstar {
   position: relative;
-  margin-top: 80px;
   margin-bottom: 400px;
-  width: 1200px;
+  /* width: 1200px; not responsive */
   height: 600px;
 }
 
@@ -94,9 +93,8 @@ body {
   display: none;
 }
 
-#litemol_2,  #litemol_3 {
+#molstar_1,  #molstar_2 {
   position: relative;
-  margin-top: 80px;
   margin-bottom: 300px;
   height: 600px;
 }
@@ -116,4 +114,11 @@ div#loading img{
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+
+.visu_button {
+  text-transform:none;
+  letter-spacing: normal;
+  font-size: 14px;
 }

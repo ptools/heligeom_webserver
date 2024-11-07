@@ -136,20 +136,67 @@
 {%- endmacro %}
 
 
-<!-- Macro to display the LiteMol plugin for one oligomer -->
-{% macro LiteMol_plugin(id, results_id, oligo_filename) -%}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/LiteMol-plugin.css') }}"
-type="text/css" />
-<script src="{{ url_for('static', filename='js/LiteMol-plugin.js') }}"></script>
-<div id="{{ id }}" />
-  <script>
-  var plugin = LiteMol.Plugin.create({ target: '#{{ id }}', viewportBackground: '#ffffff' });
 
-  plugin.loadMolecule({
-    id: 'custom',
-    url: "{{ url_for('heligeom_bp.download', results_id=results_id, filename=oligo_filename) }}",
-    format: 'pdb' // default
-  });
-  </script>
+{% macro molstar_buttons(construct_data)-%}
+<div class="row" style="margin-bottom: 5px;">
+  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3"
+    onclick="viewerInstance.visual.select({ data: [
+      { {{ construct_data.select_monomer1 }} }
+      ],
+      nonSelectedColor: {r:255,g:255,b:255}})"
+  >
+  Select 1st Monomer
+  </button>
+  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3"
+    onclick="viewerInstance.visual.select({ data: [
+      { {{ construct_data.select_monomer2 }} }
+      ],
+      nonSelectedColor: {r:255,g:255,b:255}})"
+  >
+  Select 2nd Monomer
+  </button>
+  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3"
+    onclick="viewerInstance.visual.select(
+      {data: [ {{ construct_data.select_interface }} ],
+      nonSelectedColor: {r:255,g:255,b:255}})"
+  >
+  Select & Focus on residus at the interface
+  </button>
 </div>
+<div class="row" style="margin-bottom: 5px;">
+  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3" onclick="viewerInstance.visual.clearSelection()">Clear Selection</button>
+  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3" onclick="viewerInstance.visual.reset({ camera: true, theme: true, selectColor:true})">Reset Camera</button>
+</div>
+{%- endmacro %}
+
+
+
+<!-- Macro to display the LiteMol plugin for one oligomer -->
+{% macro PDEMolstar_plugin(id, results_id, oligo_filename) -%}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pdbe-molstar@3.3.0/build/pdbe-molstar-light.css"
+type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/pdbe-molstar@3.3.0/build/pdbe-molstar-plugin.js"></script>
+
+<div id="{{ id }}"></div>
+
+<script type="text/javascript">
+  //Create plugin instance
+  const viewerInstance = new PDBeMolstarPlugin();
+
+  //Set options (Checkout available options list in the documentation)
+  const options = {
+    customData: { url: "{{ url_for('heligeom_bp.download', results_id=results_id, filename=oligo_filename) }}", format: 'pdb'},
+    hideControls: true,
+    bgColor: {r:250, g:250, b:250},
+    reactive: true,
+    sequencePanel: true,
+    hideCanvasControls: ['animation']
+  }
+
+  //Get element from HTML/Template to place the viewer
+  const viewerContainer = document.getElementById("{{ id }}");
+
+  //Call render method to display the 3D view
+  viewerInstance.render(viewerContainer, options);
+</script>
 {%- endmacro %}

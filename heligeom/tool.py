@@ -5,11 +5,10 @@ Backend module for the Heligeom calculations
 import math
 import re
 from dataclasses import dataclass, field
-from functools import reduce
-from operator import add
 
 from ptools import RigidBody, io, measure
 from ptools.heligeom import chain_intersect, heli_analyze, heli_construct
+from ptools.pairlist import PairList
 from ptools.superpose import Screw, rmsd
 
 from . import utils
@@ -26,10 +25,14 @@ class HeligeomMonomer:
 
     #: The RigidBody with the correct atoms.
     rb: RigidBody = field(init=False, repr=False)
+    #: the string of the molstar selection of the monomer
+    molstar_selection: str = field(init=False, repr=False)
 
     def __post_init__(self):
         input_structure = RigidBody.from_pdb(self.input_file)
-        self.rb = _create_monomer(input_structure, self.chain, self.residue_range)
+        (self.rb, self.molstar_selection) = _create_monomer(
+            input_structure, self.chain, self.residue_range
+        )
 
 
 def _create_monomer(struct, chain="", res_range=""):
@@ -37,6 +40,10 @@ def _create_monomer(struct, chain="", res_range=""):
     from either the chains information or the residue range.
 
     At least one of the 2 optional argument needs to be filled.
+
+    It also construct the molstar selection of the monomer, like
+    "struct_asym_id: 'B', start_residue_number:1, end_residue_number:100"
+    See https://github.com/molstar/pdbe-molstar/wiki/3.-Helper-Methods.
 
     Parameters
     ----------
@@ -56,23 +63,31 @@ def _create_monomer(struct, chain="", res_range=""):
     -------
     RigidBody
         the monomer constructed
+    string
+        the molstar selection of the monomer
     """
 
     monomer = RigidBody()
+    molstar_selection = ""
 
     if chain:
         monomer = struct.select_chain(chain)
+        molstar_selection = f"struct_asym_id: '{ chain }'"
         if res_range:
             min_resid, max_resid = utils.parse_resrange(res_range)
             monomer = monomer.select_residue_range(min_resid, max_resid)
+            molstar_selection += (
+                f", start_residue_number: {min_resid}, end_residue_number: {max_resid}"
+            )
     else:
         min_resid, max_resid = utils.parse_resrange(res_range)
         monomer = struct.select_residue_range(min_resid, max_resid)
+        molstar_selection = f"start_residue_number: {min_resid}, end_residue_number: {max_resid}"
 
     if monomer.size() == 0:
         raise TypeError("Monomer has a size of 0.")
 
-    return monomer
+    return monomer, molstar_selection
 
 
 class HeligeomInterface:
@@ -84,6 +99,8 @@ class HeligeomInterface:
     monomer2: HeligeomMonomer
     #: The Screw transformation defining the interface
     hp: Screw
+    #: The oligomer construction made of monomer1
+    oligomer: RigidBody = field(init=False, repr=False)
 
     def __init__(self, pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
         self.monomer1 = HeligeomMonomer(pdb_file, chain_id_M1, res_range_M1)
@@ -161,9 +178,64 @@ class HeligeomInterface:
             Path to output file.
         """
 
-        result = heli_construct(self.monomer1.rb, self.hp, N=ncopies, Z=z_align)
+        self.oligomer = heli_construct(self.monomer1.rb, self.hp, N=ncopies, Z=z_align)
 
-        io.write_pdb(result, fileout)  # type: ignore
+        io.write_pdb(self.oligomer, fileout)  # type: ignore
+
+    def interface_atoms_oligomer(self, cutoff=5):
+        """Returns the indexes of the residue atoms of monomer 1 and monomer 1' in contacts from
+        the oligomer structure computed.
+
+        In the oligomer structure, monomer 1 will be the chain A and monomer 1' will be the chain B.
+
+        Parameters
+        ----------
+        cutoff : float, optional
+            distance in Angstrom defining a contact between 2 residues, by default 5
+
+        Returns
+        -------
+        tuple[np.ndarray, np.ndarray]:
+            monomer 1 and monomer 1' atom indexes.
+        """
+
+        mono1 = self.oligomer.select_chain("A")
+        mono1prime = self.oligomer.select_chain("B")
+
+        lhs_atom_ids, rhs_atom_ids = PairList(mono1, mono1prime, cutoff).raw_contacts()
+        lhs_residue_ids = mono1.residue_indices[lhs_atom_ids]
+        rhs_residue_ids = mono1prime.residue_indices[rhs_atom_ids]
+
+        mono1_atom_indexes = mono1.select_residue_indices(lhs_residue_ids).indices
+        mono2_atom_indexes = mono1prime.select_residue_indices(rhs_residue_ids).indices
+
+        return mono1_atom_indexes, mono2_atom_indexes
+
+    def molstar_selection_interface_oligomer(self):
+        """Returns the molstar selection as a string of the atom indexes belonging
+        to the interface of the oligomer.
+
+        See `interface_atoms_oligomer()`
+
+        Returns
+        -------
+        str
+            the molstar selection as a string of the atom indexes
+        """
+        mono1_atom_indexes, mono2_atom_indexes = self.interface_atoms_oligomer()
+
+        selection = (
+            # selection of the monomer 1
+            f"{{ { self.monomer1.molstar_selection }, color:{{r:255,g:182,b:193 }} }},"
+            # selection of the monomer 1 atoms at the interface
+            f"{{ { self.monomer1.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:{{r:255,g:0,b:255}}, color:{{r:255,g:182,b:193}}, focus:true }},"
+            # selection of the monomer 2
+            f"{{ { self.monomer2.molstar_selection }, color:{{r:255,g:250,b:205 }} }},"
+            # selection of the monomer 2 atoms at the interface
+            f"{{ { self.monomer2.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:{{r:255,g:255,b:0}}, color:{{r:255,g:250,b:205}}, focus:true }},"
+        )
+
+        return selection
 
     @classmethod
     def compute_fnat(cls, heli_interface1, heli_interface2, cutoff=5):
