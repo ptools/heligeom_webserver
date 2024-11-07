@@ -228,7 +228,7 @@ def results(results_id):
                 "z_align": z_align,
                 "select_monomer1": heli_interface1.monomer1.molstar_selection,
                 "select_monomer2": heli_interface1.monomer2.molstar_selection,
-                "select_interface": heli_interface1.molstar_selection_interface(),
+                "select_interface": heli_interface1.molstar_selection_interface_oligomer(),
             }
 
             # 2nd Oligomer
@@ -261,7 +261,7 @@ def results(results_id):
                     "z_align": z_align,
                     "select_monomer1": heli_interface2.monomer1.molstar_selection,
                     "select_monomer2": heli_interface2.monomer2.molstar_selection,
-                    "select_interface": heli_interface2.molstar_selection_interface(),
+                    "select_interface": heli_interface2.molstar_selection_interface_oligomer(),
                 }
 
                 return render_template(

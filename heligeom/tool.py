@@ -182,35 +182,47 @@ class HeligeomInterface:
 
         io.write_pdb(self.oligomer, fileout)  # type: ignore
 
-    def interface_atoms(self):
-        """Returns the indexes of the residue atoms of `monomer1` that are in contact with
-        the residue atoms of `monomer2`.
+    def interface_atoms_oligomer(self, cutoff=5):
+        """Returns the indexes of the residue atoms of monomer 1 and monomer 1' in contacts from
+        the oligomer structure computed.
+
+        In the oligomer structure, monomer 1 will be the chain A and monomer 1' will be the chain B.
+
+        Parameters
+        ----------
+        cutoff : float, optional
+            distance in Angstrom defining a contact between 2 residues, by default 5
 
         Returns
         -------
         tuple[np.ndarray, np.ndarray]:
-            monomer1 and monomer2 atom indexes.
+            monomer 1 and monomer 1' atom indexes.
         """
 
-        lhs_atom_ids, rhs_atom_ids = PairList(self.monomer1.rb, self.monomer2.rb, 5).raw_contacts()
-        lhs_residue_ids = self.monomer1.rb.residue_indices[lhs_atom_ids]
-        rhs_residue_ids = self.monomer2.rb.residue_indices[rhs_atom_ids]
+        mono1 = self.oligomer.select_chain("A")
+        mono1prime = self.oligomer.select_chain("B")
 
-        mono1_atom_indexes = self.monomer1.rb.select_residue_indices(lhs_residue_ids).indices
-        mono2_atom_indexes = self.monomer2.rb.select_residue_indices(rhs_residue_ids).indices
+        lhs_atom_ids, rhs_atom_ids = PairList(mono1, mono1prime, cutoff).raw_contacts()
+        lhs_residue_ids = mono1.residue_indices[lhs_atom_ids]
+        rhs_residue_ids = mono1prime.residue_indices[rhs_atom_ids]
+
+        mono1_atom_indexes = mono1.select_residue_indices(lhs_residue_ids).indices
+        mono2_atom_indexes = mono1prime.select_residue_indices(rhs_residue_ids).indices
 
         return mono1_atom_indexes, mono2_atom_indexes
 
-    def molstar_selection_interface(self):
+    def molstar_selection_interface_oligomer(self):
         """Returns the molstar selection as a string of the atom indexes belonging
-        to the interface.
+        to the interface of the oligomer.
+
+        See `interface_atoms_oligomer()`
 
         Returns
         -------
         str
             the molstar selection as a string of the atom indexes
         """
-        mono1_atom_indexes, mono2_atom_indexes = self.interface_atoms()
+        mono1_atom_indexes, mono2_atom_indexes = self.interface_atoms_oligomer()
 
         selection = (
             # selection of the monomer 1
