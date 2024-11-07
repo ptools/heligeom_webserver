@@ -84,7 +84,7 @@ body {
 #molstar {
   position: relative;
   margin-bottom: 400px;
-  width: 1200px;
+  /* width: 1200px; not responsive */
   height: 600px;
 }
 
