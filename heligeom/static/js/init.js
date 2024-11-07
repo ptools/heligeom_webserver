@@ -1,3 +1,7 @@
+M.AutoInit();
+
+
+
 (function($){
   $(function(){
 

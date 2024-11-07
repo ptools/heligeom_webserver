@@ -1,26 +1,45 @@
 import math
 import pathlib
+import shutil
+import time
 import traceback
 import uuid
 
 from flask import (
     Blueprint,
+    abort,
     current_app,
+    g,
     redirect,
     render_template,
     request,
     send_from_directory,
     url_for,
 )
+from ptools.io.exceptions import InvalidPDBAtomLineError, InvalidPDBFormatError
 
 from .forms import Construction, InputStructures, validate_input_structure
 from .models import UserInputs, db
-from .tool import HeligeomInterface
+from .tool import HeligeomInterface, MonomersDifferentSizeError, MonomerSizeZeroError
 
 # Blueprint Configuration
 heligeom_bp = Blueprint(
     "heligeom_bp", __name__, template_folder="templates", static_folder="static"
 )
+
+
+# Functions used to time spent on each page
+# TODO: Remove in production
+@heligeom_bp.before_request
+def log_route_start():
+    g.start_time = time.time()
+
+
+@heligeom_bp.after_request
+def log_route_end(response):
+    route = request.endpoint
+    print(f"{route} ended after {time.time() - g.pop('start_time', None)}")
+    return response
 
 
 @heligeom_bp.route("/")
@@ -41,7 +60,33 @@ def runpage():
         result_path.mkdir(exist_ok=True)
 
         pdb_filename = validate_input_structure(form.input_file, form.pdb_id, result_path)
+
         if pdb_filename:
+            # Handle cases when monomers have different sizes or one is equal to 0
+            # For that, we need to create real RigidBodys
+            try:
+                HeligeomInterface(
+                    result_path / pathlib.Path(pdb_filename),
+                    form.chain1_id.data,
+                    form.chain2_id.data,
+                    form.res_range1.data,
+                    form.res_range2.data,
+                )
+            except MonomerSizeZeroError as e:
+                modalError = {
+                    "title": "Invalid Monomer Selection",
+                    "message": str(e),
+                }
+                shutil.rmtree(result_path)  # Removed newly created folder due to the errors
+                return render_template("run.html", form=form, modalError=modalError)
+            except (InvalidPDBFormatError, InvalidPDBAtomLineError) as e:
+                modalError = {
+                    "title": f"File Parsing Error for {pdb_filename}",
+                    "message": str(e),
+                }
+                shutil.rmtree(result_path)  # Removed newly created folder due to the errors
+                return render_template("run.html", form=form, modalError=modalError)
+
             # Save to the database the form inputs
             # Only way for now to pass the form data to another page.
             # We could use session or flash messages but neither seems to fit the need.
@@ -67,6 +112,29 @@ def runpage():
                 if pdb_filename_2nd is None:
                     pdb_filename_2nd = pdb_filename
 
+                try:
+                    HeligeomInterface(
+                        result_path / pathlib.Path(pdb_filename_2nd),
+                        form.chain1bis_id.data,
+                        form.chain2bis_id.data,
+                        form.res_range1bis.data,
+                        form.res_range2bis.data,
+                    )
+                except MonomerSizeZeroError as e:
+                    modalError = {
+                        "title": "Invalid Monomer Selection <b>in the 2nd Oligomer</b>",
+                        "message": str(e),
+                    }
+                    shutil.rmtree(result_path)  # Removed newly created folder due to the errors
+                    return render_template("run.html", form=form, modalError=modalError)
+                except (InvalidPDBFormatError, InvalidPDBAtomLineError) as e:
+                    modalError = {
+                        "title": f"File Parsing Error for {pdb_filename_2nd}",
+                        "message": str(e),
+                    }
+                    shutil.rmtree(result_path)  # Removed newly created folder due to the errors
+                    return render_template("run.html", form=form, modalError=modalError)
+
                 user_inputs.add_2nd_oligomer(
                     pdb_filename_2nd=pdb_filename_2nd,
                     chain1bis_id=form.chain1bis_id.data,
@@ -79,6 +147,7 @@ def runpage():
                     core_region2bis=form.core_region2bis.data,
                 )
 
+            # Store the input values in the database
             db.session.add(user_inputs)
             db.session.commit()
 
@@ -89,13 +158,13 @@ def runpage():
 
 @heligeom_bp.route("/results/<results_id>", methods=["GET", "POST"])
 def results(results_id):
+    # Query the database to retrieve the form inputs
+    query_result = UserInputs.query.filter_by(request_id=results_id).first()
+
+    if not query_result:
+        abort(404)
+
     try:
-        # Query the database to retrieve the form inputs
-        query_result = UserInputs.query.filter_by(request_id=results_id).first()
-
-        if not query_result:
-            raise AttributeError("Could not find the results id.")
-
         pdb_filename = query_result.pdb_filename
         chain1_id = query_result.chain1_id
         chain2_id = query_result.chain2_id
@@ -294,6 +363,11 @@ def results(results_id):
             )
 
     except Exception:
+        # Save the error log into a file and redirect to a 500 error
+        error_file = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id, "error.log")
+        with open(error_file, "w") as log:
+            log.write(traceback.format_exc())
+        # TODO: switch to "abort(500)" in prod
         return render_template("error.html", error_log=traceback.format_exc())
 
 
@@ -318,3 +392,13 @@ def contact():
 @heligeom_bp.route("/error")
 def error():
     return render_template("error.html")
+
+
+@heligeom_bp.app_errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
+
+
+@heligeom_bp.errorhandler(500)
+def internal_server_error(e):
+    return render_template("500.html"), 500

@@ -30,6 +30,7 @@ class InputStructures(FlaskForm):
     input_file = FileField(
         "input_file",
         validators=[FileAllowed(["pdb"], "Only a PDB file can be uploaded.")],
+        render_kw={"accept": ".pdb"},  # restriction in the upload dialog box filetype
     )
     pdb_id = StringField(
         "pdb_id",
@@ -41,6 +42,7 @@ class InputStructures(FlaskForm):
     input_file_2nd = FileField(
         "input_file2",
         validators=[FileAllowed(["pdb"], "Only a PDB file can be uploaded.")],
+        render_kw={"accept": ".pdb"},  # restriction in the upload dialog box filetype
     )
     pdb_id_2nd = StringField(
         "pdb_id2",
