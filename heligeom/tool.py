@@ -15,6 +15,18 @@ from . import utils
 from .forms import InputStructures
 
 
+class MonomerSizeZeroError(BaseException):
+    """Raised when a RigidBody has a size of 0 atoms."""
+
+    pass
+
+
+class MonomersDifferentSizeError(BaseException):
+    """Raised when 2 RigidBodys have differnt sizes."""
+
+    pass
+
+
 @dataclass
 class HeligeomMonomer:
     """Define a Heligeom monomer based on the user inputs."""
@@ -33,6 +45,10 @@ class HeligeomMonomer:
         (self.rb, self.molstar_selection) = _create_monomer(
             input_structure, self.chain, self.residue_range
         )
+
+    def size(self):
+        """Return the number of atoms of the Rigidbody"""
+        return self.rb.size()
 
 
 def _create_monomer(struct, chain="", res_range=""):
@@ -84,9 +100,6 @@ def _create_monomer(struct, chain="", res_range=""):
         monomer = struct.select_residue_range(min_resid, max_resid)
         molstar_selection = f"start_residue_number: {min_resid}, end_residue_number: {max_resid}"
 
-    if monomer.size() == 0:
-        raise TypeError("Monomer has a size of 0.")
-
     return monomer, molstar_selection
 
 
@@ -104,7 +117,11 @@ class HeligeomInterface:
 
     def __init__(self, pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
         self.monomer1 = HeligeomMonomer(pdb_file, chain_id_M1, res_range_M1)
+        if self.monomer1.size() == 0:
+            raise MonomerSizeZeroError("Monomer 1 has a size of 0 atoms.")
         self.monomer2 = HeligeomMonomer(pdb_file, chain_id_M2, res_range_M2)
+        if self.monomer2.size() == 0:
+            raise MonomerSizeZeroError("Monomer 2 has a size of 0 atoms.")
 
         self.hp = Screw()
 
@@ -134,9 +151,14 @@ class HeligeomInterface:
             rb2 = create_core_monomer(rb2, core_region2)
 
         if rb1.size() == 0:
-            raise ValueError("Monomer 1 has a size of 0.")
+            raise MonomerSizeZeroError("Monomer 1 defined with core regions has a size of 0 atoms.")
         if rb2.size() == 0:
-            raise ValueError("Monomer 2 has a size of 0.")
+            raise MonomerSizeZeroError("Monomer 2 defined with core regions has a size of 0 atoms.")
+
+        if rb1.size() != rb2.size():
+            raise MonomersDifferentSizeError(
+                f"Monomer 1 & 2 have different sizes ({rb1.size()} vs {rb2.size()} )."
+            )
 
         # Use CA for computating parameters
         monomer1_CA = rb1.select_atom_type("CA")

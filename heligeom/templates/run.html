@@ -92,4 +92,27 @@
 
 </div> <!-- end container -->
 
+ <!-- Only display the modal if there is an error during processing input data -->
+{% if modalError %}
+<!-- Modal Structure -->
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <h4 class="red-text light">{{modalError.title | safe }}</h4>
+    <p><b>{{modalError.message}}</b></p>
+    <p>Please check the values in the monomer sections.</p>
+  </div>
+  <div class="modal-footer">
+    <a class="modal-close waves-effect waves-green btn-flat">Agree</a>
+  </div>
+</div>
+<!-- Modal Activation -->
+<script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var Modalelem = document.querySelector('.modal');
+            var instance = M.Modal.init(Modalelem);
+            instance.open();
+        });
+</script>
+{% endif %}
+
 {% endblock %}

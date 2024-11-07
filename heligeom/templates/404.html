@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Page not found{% endblock %}
+
+{% block content %}
+
+
+  <div class="container">
+    <div class="section">
+
+      <br>
+      <h4 class="header center">Error 404</h5>
+
+      <p class="center">
+        Heligeom does not contain the requested page.
+      </p>
+
+      <div class="center">
+        <a class="btn waves-effect lbt-bleu" href="{{ url_for('heligeom_bp.homepage')}}" >Back to home page</a>
+      </div>
+    </div>
+  </div>
+
+
+
+  {% endblock %}
