@@ -15,17 +15,17 @@
         <div class="card">
           <div class="card-content">
             <span class="card-title"><b>General</b></span>
-            {{ results_macro.display_input_params(screw_data,"pdbe_component") }}
+            {{ results_macro.display_input_params(screw_data,"pdbe_component_monomers") }}
             <script>
-              var viewerInstance1;
-              window.onload = function () {
-                const pdbeMolstarComponent = document.getElementById('pdbe_component');
-                viewerInstance1 = pdbeMolstarComponent.viewerInstance;
-                viewerInstance1.events.loadComplete.subscribe(() => {
+              var pdbe_component_monomers;
+              window.addEventListener('load', function() {
+                const pdbeMolstarComponent = document.getElementById('pdbe_component_monomers');
+                pdbe_component_monomers = pdbeMolstarComponent.viewerInstance;
+                pdbe_component_monomers.events.loadComplete.subscribe(() => {
                   /* do something after 3D view is fully loaded */
-                  viewerInstance1.visual.select({data:[ {{ screw_data.select_interface_mono | safe }} ]});
+                  pdbe_component_monomers.visual.select({data:[ {{ screw_data.select_interface_mono | safe }} ]});
                 });
-              };
+              });
           </script>
           </div><!-- end card content-->
         </div> <!-- end card -->
@@ -79,10 +79,18 @@
                     {{ results_macro.button_download_oligomer(screw_data.results_id, construct_data.pdb_out_name) }}
                 </div>
               </div>
-              <div class="row" style="margin-bottom: 30px;"></div>
-              {{ results_macro.molstar_buttons(construct_data) }}
-              <div class="row">
-                {{ results_macro.PDEMolstar_plugin("molstar", screw_data.results_id, construct_data.pdb_out_name) }}
+              <div class="row" style="margin-bottom: 30px;">
+                {{ results_macro.molstar_buttons(construct_data, "pdbe_component_oligo") }}
+              </div>
+              <div class="row oligomers_visu">
+                {{ results_macro.PDBEMolstar_plugin("pdbe_component_oligo", screw_data.results_id, construct_data.pdb_out_name) }}
+                <script>
+                  var pdbe_component_oligo;
+                  window.addEventListener('load', function() {
+                    const pdbeMolstarComponent = document.getElementById('pdbe_component_oligo');
+                    pdbe_component_oligo = pdbeMolstarComponent.viewerInstance;
+                  });
+              </script>
               </div>
             </div>
             <script> // Snippet to scroll down to the visualisation section once the form is validated.
