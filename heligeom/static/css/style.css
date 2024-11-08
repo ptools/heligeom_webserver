@@ -122,3 +122,8 @@ div#loading img{
   letter-spacing: normal;
   font-size: 14px;
 }
+
+.monomers_visu {
+  position: relative;
+  height: 300px;
+}

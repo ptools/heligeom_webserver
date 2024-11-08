@@ -248,6 +248,7 @@ def results(results_id):
 
             # Create dict of data to pass to render_template
             screw_data_bis = {
+                "results_id": results_id,
                 "pdb_input": pdb_filename2,
                 "chain1_id": chain1bis_id,
                 "chain2_id": chain2bis_id,

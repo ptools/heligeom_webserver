@@ -29,6 +29,16 @@
         </li>
       </ul>
   </div>
+  <div class="col s12 m6 monomers_visu">
+    <pdbe-molstar hide-controls="true"
+                  reactive="true"
+                  hide-animation-icon="true"
+                  bg-color-r="250" bg-color-g="250" bg-color-b="250"
+                  custom-data-url="{{url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_input)}}"
+                  custom-data-format="pdb"
+                  >
+    </pdbe-molstar>
+  </div>
 </div>
 {%- endmacro %}
 
