@@ -1,7 +1,5 @@
 M.AutoInit();
 
-
-
 (function($){
   $(function(){
 
@@ -12,6 +10,7 @@ M.AutoInit();
 
 $(document).ready(function(){
   $('.collapsible').collapsible();
+  $('.tooltipped').tooltip();
 });
 
 // When called, remove the "hide" class of one element id given in parameter
