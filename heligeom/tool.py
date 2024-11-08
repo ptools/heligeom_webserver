@@ -3,6 +3,7 @@ Backend module for the Heligeom calculations
 """
 
 import math
+import pathlib
 import re
 from dataclasses import dataclass, field
 

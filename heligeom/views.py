@@ -164,6 +164,8 @@ def results(results_id):
     if not query_result:
         abort(404)
 
+    path_to_result = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id)
+
     try:
         pdb_filename = query_result.pdb_filename
         chain1_id = query_result.chain1_id
@@ -175,7 +177,7 @@ def results(results_id):
         core_filter2 = query_result.core_filter2
         core_region2 = query_result.core_region2
 
-        pdb_abs_path = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id, pdb_filename)
+        pdb_abs_path = path_to_result / pdb_filename
 
         heli_interface1 = HeligeomInterface(
             pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2
@@ -228,9 +230,7 @@ def results(results_id):
 
             # Different input structure ?
             if pdb_filename2 != pdb_filename:
-                pdb_abs_path2 = pathlib.Path(
-                    current_app.config["DATA_UPLOADS"], results_id, pdb_filename2
-                )
+                pdb_abs_path2 = path_to_result / pdb_filename2
             else:
                 pdb_abs_path2 = pdb_abs_path
 
@@ -284,9 +284,7 @@ def results(results_id):
             else:
                 pdb_out_name = f"Construct_N{n_mer}_{pdb_filename}"
 
-            pdb_out_abs_path = pathlib.Path(
-                current_app.config["DATA_UPLOADS"], results_id, pdb_out_name
-            )
+            pdb_out_abs_path = path_to_result / pdb_out_name
             # Construct oligomer and write the PDB result in pdb_out_abs_path
             heli_interface1.construct_oligomer(n_mer, z_align, pdb_out_abs_path)
 
@@ -304,9 +302,7 @@ def results(results_id):
             if has_2nd_oligo and heli_interface2:
                 # Different input structure ?
                 if pdb_filename2 != pdb_filename:
-                    pdb_abs_path2 = pathlib.Path(
-                        current_app.config["DATA_UPLOADS"], results_id, pdb_filename2
-                    )
+                    pdb_abs_path2 = path_to_result / pdb_filename2
                 else:
                     pdb_abs_path2 = pdb_abs_path
 
@@ -316,9 +312,7 @@ def results(results_id):
                 else:
                     pdb_out_name2 = f"Construct_2nd_N{n_mer}_{pdb_filename2}"
 
-                pdb_out_abs_path2 = pathlib.Path(
-                    current_app.config["DATA_UPLOADS"], results_id, pdb_out_name2
-                )
+                pdb_out_abs_path2 = path_to_result / pdb_out_name2
 
                 # Construct oligomer and write the PDB result in pdb_out_abs_path
                 heli_interface2.construct_oligomer(n_mer, z_align, pdb_out_abs_path2)
@@ -364,7 +358,7 @@ def results(results_id):
 
     except Exception:
         # Save the error log into a file and redirect to a 500 error
-        error_file = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id, "error.log")
+        error_file = path_to_result / "error.log"
         with open(error_file, "w") as log:
             log.write(traceback.format_exc())
         # TODO: switch to "abort(500)" in prod
