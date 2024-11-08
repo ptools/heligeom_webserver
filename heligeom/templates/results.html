@@ -15,7 +15,18 @@
         <div class="card">
           <div class="card-content">
             <span class="card-title"><b>General</b></span>
-            {{ results_macro.display_input_params(screw_data) }}
+            {{ results_macro.display_input_params(screw_data,"pdbe_component") }}
+            <script>
+              var viewerInstance1;
+              window.onload = function () {
+                const pdbeMolstarComponent = document.getElementById('pdbe_component');
+                viewerInstance1 = pdbeMolstarComponent.viewerInstance;
+                viewerInstance1.events.loadComplete.subscribe(() => {
+                  /* do something after 3D view is fully loaded */
+                  viewerInstance1.visual.select({data:[ {{ screw_data.select_interface_mono | safe }} ]});
+                });
+              };
+          </script>
           </div><!-- end card content-->
         </div> <!-- end card -->
       </div> <!-- end col -->

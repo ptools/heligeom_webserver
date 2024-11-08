@@ -20,7 +20,7 @@ from ptools.io.exceptions import InvalidPDBAtomLineError, InvalidPDBFormatError
 
 from .forms import Construction, InputStructures, validate_input_structure
 from .models import UserInputs, db
-from .tool import HeligeomInterface, MonomersDifferentSizeError, MonomerSizeZeroError
+from .tool import HeligeomInterface, MonomerSizeZeroError
 
 # Blueprint Configuration
 heligeom_bp = Blueprint(
@@ -183,6 +183,8 @@ def results(results_id):
             pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2
         )
 
+        heli_interface1.save_monomers(path_to_result / "mono1-2.pdb")
+
         # Compute Helicoidal parameters
         pitch, monomers_per_turn, direction, dmin, dmax, rmsd = heli_interface1.compute_screw(
             core_filter1, core_region1, core_region2
@@ -191,6 +193,7 @@ def results(results_id):
         screw_data = {
             "results_id": results_id,
             "pdb_input": pdb_filename,
+            "monos_file": "mono1-2.pdb",
             "chain1_id": chain1_id,
             "chain2_id": chain2_id,
             "res_range1": res_range1,
@@ -209,6 +212,9 @@ def results(results_id):
             "dmin": f"{dmin:3.2f}",
             "dmax": f"{dmax:3.2f}",
             "rmsd": f"{rmsd:3.2f}",
+            "select_monomer1": heli_interface1.monomer1.molstar_selection,
+            "select_monomer2": heli_interface1.monomer2.molstar_selection,
+            "select_interface_mono": heli_interface1.molstar_selection_monomers(),
         }
 
         # 2nd Oligomer
@@ -238,6 +244,8 @@ def results(results_id):
                 pdb_abs_path2, chain1bis_id, chain2bis_id, res_range1bis, res_range2bis
             )
 
+            heli_interface2.save_monomers(path_to_result / "mono1-2_bis.pdb")
+
             # Compute Helicoidal parameters
             pitch2, monomers_per_turn2, direction2, dmin2, dmax2, rmsd = (
                 heli_interface2.compute_screw(core_filter1bis, core_region1bis, core_region2bis)
@@ -250,6 +258,7 @@ def results(results_id):
             screw_data_bis = {
                 "results_id": results_id,
                 "pdb_input": pdb_filename2,
+                "monos_file": "mono1-2_bis.pdb",
                 "chain1_id": chain1bis_id,
                 "chain2_id": chain2bis_id,
                 "res_range1": res_range1bis,
@@ -269,6 +278,9 @@ def results(results_id):
                 "dmax": f"{dmax2:3.2f}",
                 "rmsd": f"{rmsd:3.2f}",
                 "fnat": f"{fnat:3.4f}",
+                "select_monomer1": heli_interface2.monomer1.molstar_selection,
+                "select_monomer2": heli_interface2.monomer2.molstar_selection,
+                "select_interface_mono": heli_interface2.molstar_selection_monomers(),
             }
 
         # Initialize construction form

@@ -205,6 +205,19 @@ class HeligeomInterface:
 
         io.write_pdb(self.oligomer, fileout)  # type: ignore
 
+    def save_monomers(self, fileout):
+        """Save both monomers to a PDB file in `fileout`.
+
+
+        Parameters
+        ----------
+        fileout : pathlib.Path
+            Path to output file.
+        """
+        concat = self.monomer1.rb + self.monomer2.rb
+        concat.reset_atom_indices(start=self.monomer1.rb.indices[0])
+        io.write_pdb(concat, fileout)  # type: ignore
+
     def interface_atoms_oligomer(self, cutoff=5):
         """Returns the indexes of the residue atoms of monomer 1 and monomer 1' in contacts from
         the oligomer structure computed.
@@ -246,6 +259,55 @@ class HeligeomInterface:
             the molstar selection as a string of the atom indexes
         """
         mono1_atom_indexes, mono2_atom_indexes = self.interface_atoms_oligomer()
+
+        selection = (
+            # selection of the monomer 1
+            f"{{ { self.monomer1.molstar_selection }, color:{{r:255,g:182,b:193 }} }},"
+            # selection of the monomer 1 atoms at the interface
+            f"{{ { self.monomer1.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:{{r:255,g:0,b:255}}, color:{{r:255,g:182,b:193}}, focus:true }},"
+            # selection of the monomer 2
+            f"{{ { self.monomer2.molstar_selection }, color:{{r:255,g:250,b:205 }} }},"
+            # selection of the monomer 2 atoms at the interface
+            f"{{ { self.monomer2.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:{{r:255,g:255,b:0}}, color:{{r:255,g:250,b:205}}, focus:true }},"
+        )
+
+        return selection
+
+    def interface_atoms(self, cutoff=5):
+        """Returns the indexes of the residue atoms of monomer 1 and monomer 2 in contacts
+
+        Parameters
+        ----------
+        cutoff : float, optional
+            distance in Angstrom defining a contact between 2 residues, by default 5
+
+        Returns
+        -------
+        tuple[np.ndarray, np.ndarray]:
+            monomer 1 and monomer 2 atom indexes.
+        """
+
+        lhs_atom_ids, rhs_atom_ids = PairList(self.monomer1.rb, self.monomer2.rb, 5).raw_contacts()
+        lhs_residue_ids = self.monomer1.rb.residue_indices[lhs_atom_ids]
+        rhs_residue_ids = self.monomer2.rb.residue_indices[rhs_atom_ids]
+
+        mono1_atom_indexes = self.monomer1.rb.select_residue_indices(lhs_residue_ids).indices
+        mono2_atom_indexes = self.monomer2.rb.select_residue_indices(rhs_residue_ids).indices
+
+        return mono1_atom_indexes, mono2_atom_indexes
+
+    def molstar_selection_monomers(self):
+        """Returns the molstar selection as a string of the 2 monomers
+        and the atom indexes belonging to the interface of monomer 1 and 2.
+
+        See `interface_atoms()` for the contacts.
+
+        Returns
+        -------
+        str
+            the molstar selection as a string
+        """
+        mono1_atom_indexes, mono2_atom_indexes = self.interface_atoms()
 
         selection = (
             # selection of the monomer 1

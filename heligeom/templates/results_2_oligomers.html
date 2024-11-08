@@ -24,7 +24,7 @@
       <div class="card">
         <div class="card-content">
           <span class="card-title"><b>General</b></span>
-          {{ results_macro.display_input_params(screw_data) }}
+          {{ results_macro.display_input_params(screw_data, "pdbe_component1") }}
         </div> <!-- end card content-->
       </div> <!-- end card -->
     </div> <!-- end col -->
@@ -32,11 +32,32 @@
       <div class="card">
         <div class="card-content">
           <span class="card-title"><b>General</b></span>
-          {{ results_macro.display_input_params(screw_data_bis) }}
+          {{ results_macro.display_input_params(screw_data_bis, "pdbe_component2") }}
         </div> <!-- end card content-->
       </div> <!-- end card -->
     </div> <!-- end col -->
   </div> <!-- end row -->
+
+  <!-- Activate the molstar selections in both instances at the same time -->
+  <script>
+    var viewerInstance1, viewerInstance2;
+    window.onload = function () {
+        const pdbeMolstarComponent1 = document.getElementById('pdbe_component1');
+        const pdbeMolstarComponent2 = document.getElementById('pdbe_component2');
+        viewerInstance1 = pdbeMolstarComponent1.viewerInstance;
+        viewerInstance2 = pdbeMolstarComponent2.viewerInstance;
+
+        viewerInstance1.events.loadComplete.subscribe(() => {
+          /* do something after 3D view is fully loaded */
+          viewerInstance1.visual.select({data:[ {{ screw_data.select_interface_mono | safe }} ]});
+        });
+        viewerInstance2.events.loadComplete.subscribe(() => {
+          /* do something after 3D view is fully loaded */
+          viewerInstance2.visual.select({data:[ {{ screw_data_bis.select_interface_mono | safe }} ]});
+        });
+    };
+  </script>
+
 
   <div class="row">
     <div class="col s12 m5">
@@ -173,7 +194,7 @@
           <div class="row" style="margin-bottom: 30px;"></div>
           <div class="row" style="margin-bottom: 5px;">
             <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3"
-              onclick="viewerInstance2.visual.select({ data: [
+              onclick="viewerInstance3.visual.select({ data: [
                 { {{ construct_data_bis.select_monomer1 }} }
                 ],
                 nonSelectedColor: {r:255,g:255,b:255}})"
@@ -181,7 +202,7 @@
             Select 1st Monomer
             </button>
             <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3"
-              onclick="viewerInstance2.visual.select({ data: [
+              onclick="viewerInstance3.visual.select({ data: [
                 { {{ construct_data_bis.select_monomer2 }} }
                 ],
                 nonSelectedColor: {r:255,g:255,b:255}})"
@@ -189,7 +210,7 @@
             Select 2nd Monomer
             </button>
             <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3"
-              onclick="viewerInstance2.visual.select(
+              onclick="viewerInstance3.visual.select(
                 {data: [ {{ construct_data_bis.select_interface }} ],
                 nonSelectedColor: {r:255,g:255,b:255}})"
             >
@@ -197,15 +218,15 @@
             </button>
           </div>
           <div class="row" style="margin-bottom: 5px;">
-            <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3" onclick="viewerInstance2.visual.clearSelection()">Clear Selection</button>
-            <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3" onclick="viewerInstance2.visual.reset({ camera: true, theme: true, selectColor:true})">Reset Camera</button>
+            <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3" onclick="viewerInstance3.visual.clearSelection()">Clear Selection</button>
+            <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3" onclick="viewerInstance3.visual.reset({ camera: true, theme: true, selectColor:true})">Reset Camera</button>
           </div>
           <div class="row">
             <!-- Here I cannot use the macro for the MolStar plugin because each JS variable needs to be uniq in the whole page. -->
             <div id="molstar_2"></div>
             <script type="text/javascript">
               //Create plugin instance
-              const viewerInstance2 = new PDBeMolstarPlugin();
+              const viewerInstance3 = new PDBeMolstarPlugin();
 
               //Set options
               const options2 = {
@@ -221,7 +242,7 @@
               const viewerContainer2 = document.getElementById("molstar_2");
 
               //Call render method to display the 3D view
-              viewerInstance2.render(viewerContainer2, options2);
+              viewerInstance3.render(viewerContainer2, options2);
             </script>
           </div>
         </div> <!-- end card content-->

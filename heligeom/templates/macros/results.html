@@ -1,13 +1,13 @@
 <!-- List of reusable macros for the result page. Avoid code duplication. -->
 
 <!-- Macro to display input parameters -->
-{% macro display_input_params(data) -%}
+{% macro display_input_params(data, pdbe_component) -%}
 <div class="row">
   <div class="col s12 m6">
       <h6>Input Parameters</h6>
       <ul>
         <li>Input structure: <b>{{data.pdb_input}}</b></li>
-        <li><b>Monomer 1</b>
+        <li><b style="color: #66c2a5">Monomer 1</b>
             <ul>
             <li>Chain : <b>{% if data.chain1_id %} {{ data.chain1_id }} {% else %} Unspecified{%
                 endif %}</b></li>
@@ -30,14 +30,18 @@
       </ul>
   </div>
   <div class="col s12 m6 monomers_visu">
-    <pdbe-molstar hide-controls="true"
+    <pdbe-molstar id = "{{ pdbe_component }}"
+                  hide-controls="true"
                   reactive="true"
                   hide-animation-icon="true"
                   bg-color-r="250" bg-color-g="250" bg-color-b="250"
-                  custom-data-url="{{url_for('heligeom_bp.download', results_id=data.results_id, filename=data.pdb_input)}}"
+                  custom-data-url="{{url_for('heligeom_bp.download', results_id=data.results_id, filename=data.monos_file)}}"
                   custom-data-format="pdb"
+                  hide-het="true"
+                  hide-water="true"
                   >
     </pdbe-molstar>
+
   </div>
 </div>
 {%- endmacro %}
@@ -180,7 +184,8 @@
   >
   Select 2nd Monomer
   </button>
-  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3"
+  <button class="waves-effect waves-light btn-small visu_button grey lighten-5  grey-text text-darken-3  tooltipped"
+          data-position="top" data-tooltip="Interface is defined by the residues of monomer 1 in contacts of the 1st copy of itself."
     onclick="viewerInstance.visual.select(
       {data: [ {{ construct_data.select_interface }} ],
       nonSelectedColor: {r:255,g:255,b:255}})"
