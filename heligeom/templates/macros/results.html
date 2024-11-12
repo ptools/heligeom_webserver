@@ -7,7 +7,7 @@
       <h6>Input Parameters</h6>
       <ul>
         <li>Input structure: <b>{{data.pdb_input}}</b></li>
-        <li><b style="color: #66c2a5">Monomer 1</b>
+        <li><b>Monomer 1</b>
             <ul>
             <li>Chain : <b>{% if data.chain1_id %} {{ data.chain1_id }} {% else %} Unspecified{%
                 endif %}</b></li>
@@ -29,7 +29,9 @@
         </li>
       </ul>
   </div>
-  <div class="col s12 m6 monomers_visu">
+  <div class="col s12 m6">
+    <h6 class="center" >Contacts at the interface</h6>
+    <div class="monomers_visu">
     <pdbe-molstar id = "{{ pdbe_component }}"
                   hide-controls="true"
                   reactive="true"
@@ -41,7 +43,7 @@
                   hide-water="true"
                   >
     </pdbe-molstar>
-
+    </div>
   </div>
 </div>
 {%- endmacro %}

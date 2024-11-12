@@ -324,7 +324,6 @@ class HeligeomInterface:
             f"{{ { self.monomer2.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer2[1]}', color:'{self.colors_monomer2[0]}', focus:true }},"
         )
 
-        print(selection)
         return selection
 
     @classmethod
