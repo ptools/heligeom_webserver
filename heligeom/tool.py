@@ -58,6 +58,8 @@ def _create_monomer(struct, chain="", res_range=""):
 
     At least one of the 2 optional argument needs to be filled.
 
+    All heteros atoms are discarded.
+
     It also construct the molstar selection of the monomer, like
     "struct_asym_id: 'B', start_residue_number:1, end_residue_number:100"
     See https://github.com/molstar/pdbe-molstar/wiki/3.-Helper-Methods.
@@ -87,8 +89,10 @@ def _create_monomer(struct, chain="", res_range=""):
     monomer = RigidBody()
     molstar_selection = ""
 
+    no_hetero = struct.select("not hetero")
+
     if chain:
-        monomer = struct.select_chain(chain)
+        monomer = no_hetero.select_chain(chain)
         molstar_selection = f"struct_asym_id: '{ chain }'"
         if res_range:
             min_resid, max_resid = utils.parse_resrange(res_range)
@@ -98,7 +102,7 @@ def _create_monomer(struct, chain="", res_range=""):
             )
     else:
         min_resid, max_resid = utils.parse_resrange(res_range)
-        monomer = struct.select_residue_range(min_resid, max_resid)
+        monomer = no_hetero.select_residue_range(min_resid, max_resid)
         molstar_selection = f"start_residue_number: {min_resid}, end_residue_number: {max_resid}"
 
     return monomer, molstar_selection
