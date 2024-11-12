@@ -10,6 +10,7 @@
 /* For sticky footer to the bottom */
 html, body {
   height: 100%;
+  font-size: 16px;
 }
 body {
   display: flex;
@@ -20,6 +21,10 @@ body {
 }
 .footer {
   flex-shrink: 0;
+}
+
+td {
+  padding: 5px 5px;
 }
 
 /* To get the navbar to the left */
@@ -113,9 +118,26 @@ div#loading img{
 
 .monomers_visu {
   position: relative;
-  height: 300px;
+  height: 340px;
 }
 .oligomers_visu {
   position: relative;
   height: 600px;
+}
+
+#screw_img {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: 200px;
+}
+
+p#rmsd {
+  font-size: 110%;
+}
+
+.title_card_results{
+  color:#CCB89D;
+  font-size: 26px !important;
+  font-weight: bold !important;
 }

@@ -3,34 +3,30 @@
 <!-- Macro to display input parameters -->
 {% macro display_input_params(data, pdbe_component) -%}
 <div class="row">
-  <div class="col s12 m6">
-      <h6>Input Parameters</h6>
+  <div class="col s12 m4">
+      <h5 class="light">Input Parameters</h5>
+      <p>Input structure: <b>{{data.pdb_input}}</b></p>
+      <h6 style="color:#02AAB3">Monomer 1</h6>
       <ul>
-        <li>Input structure: <b>{{data.pdb_input}}</b></li>
-        <li><b>Monomer 1</b>
-            <ul>
-            <li>Chain : <b>{% if data.chain1_id %} {{ data.chain1_id }} {% else %} Unspecified{%
-                endif %}</b></li>
-            <li>Residue range: <b>{% if data.res_range1 %} {{ data.res_range1 }} {% else %}
-                Unspecified{% endif %}</b></li>
-            <li>Core region: <b>{% if data.core_filter1 == "all" %} All Residues {% else %}
-              {{ data.core_region1 }}{% endif %}</b></li>
-            </ul>
-        </li>
-        <li><b>Monomer 2</b>
-          <ul>
-          <li>Chain : <b>{% if data.chain2_id %} {{ data.chain2_id }} {% else %} Unspecified{%
-              endif %}</b></li>
-          <li>Residue range: <b>{% if data.res_range2 %} {{ data.res_range2 }} {% else %}
-              Unspecified{% endif %}</b></li>
-          <li>Core region: <b>{% if data.core_filter2 == "all" %} All Residues {% else %}
-            {{ data.core_region2 }}{% endif %}</b></li>
-          </ul>
-        </li>
+        <li>&emsp;Chain : <b>{% if data.chain1_id %} {{ data.chain1_id }} {% else %} Unspecified{%
+          endif %}</b></li>
+        <li>&emsp;Residue range: <b>{% if data.res_range1 %} {{ data.res_range1 }} {% else %}
+        Unspecified{% endif %}</b></li>
+        <li>&emsp;Core region: <b>{% if data.core_filter1 == "all" %} All Residues {% else %}
+        {{ data.core_region1 }}{% endif %}</b></li>
+      </ul>
+      <h6 style="color:#F57C00">Monomer 2</h6>
+      <p>
+      <ul>
+        <li>&emsp;Chain : <b>{% if data.chain2_id %} {{ data.chain2_id }} {% else %} Unspecified{%
+            endif %}</b></li>
+        <li>&emsp;Residue range: <b>{% if data.res_range2 %} {{ data.res_range2 }} {% else %}
+            Unspecified{% endif %}</b></li>
+        <li>&emsp;Core region: <b>{% if data.core_filter2 == "all" %} All Residues {% else %}
+          {{ data.core_region2 }}{% endif %}</b></li>
       </ul>
   </div>
-  <div class="col s12 m6">
-    <h6 class="center" >Contacts at the interface</h6>
+  <div class="col s12 m8">
     <div class="monomers_visu">
     <pdbe-molstar id = "{{ pdbe_component }}"
                   hide-controls="true"
@@ -50,46 +46,46 @@
 
 <!-- Macro to display screw parameters -->
 {% macro display_screw_params(data) -%}
-<table class="striped">
+<table class="striped highlight">
   <tbody>
     <tr>
-      <td><b>Pitch</b></td>
-      <td>{{ data.pitch }} &#8491;</td>
+      <td>Pitch</td>
+      <td><b>{{ data.pitch }} &#8491;</b></td>
     </tr>
     <tr>
-      <td><b>Monomers per turn</b></td>
-      <td>{{ data.nb_monomers }}</td>
+      <td>Monomers per turn</td>
+      <td><b>{{ data.nb_monomers }}</b></td>
     </tr>
     <tr>
-      <td><b>Handedness</b></td>
-      <td>{{ data.direction | capitalize }}</td>
+      <td>Handedness</td>
+      <td><b>{{ data.direction | capitalize }}</b></td>
     </tr>
     <tr>
-      <td><b>Distance minimal between screw axis and oligomer (IntR)</b></td>
-      <td>{{ data.dmin }}</td>
+      <td>Distance minimal between screw axis and oligomer (IntR)</td>
+      <td><b>{{ data.dmin }}</b></td>
     </tr>
     <tr>
-      <td><b>Distance maximal between screw axis and oligomer (ExtR)</b></td>
-      <td>{{ data.dmax }}</td>
+      <td>Distance maximal between screw axis and oligomer (ExtR)</td>
+      <td><b>{{ data.dmax }}</b></td>
   </tbody>
 </table>
 {%- endmacro %}
 
 <!-- Macro to display axis parameters -->
 {% macro display_axis_params(data) -%}
-<table class="striped">
+<table class="striped highlight">
   <tbody>
     <tr>
-      <td><b>Axis Point (O)</b></td>
-      <td>{{ data.axis_point|join(" ") }}</td>
+      <td>Axis Point (O)</td>
+      <td><b>{{ data.axis_point|join(" ") }}</b></td>
     </tr>
     <tr>
-      <td><b>Rotation Angle (&theta;) </b></td>
-      <td>{{ data.rotation_angle_deg }}&#176;</td>
+      <td>Rotation Angle (&theta;)</td>
+      <td><b>{{ data.rotation_angle_deg }}&#176;</b></td>
     </tr>
     <tr>
-      <td><b>Translation (trans) </b></td>
-      <td> {{ data.translation }} &#8491;</td>
+      <td>Translation (trans)</td>
+      <td><b>{{ data.translation }} &#8491;</b></td>
     </tr>
   </tbody>
 </table>
@@ -99,18 +95,18 @@
 <div class="center tooltipped" data-position="top" data-tooltip="RMSD is computed between the Carbon-α of the 2 monomers." style="margin-top: 20px;">
   {% if (data.rmsd | float < 2) %}
     <div class="green-text text-darken-3">
-    <b>RMSD:</b> {{ data.rmsd }}
-    <p>The RMSD of the superposition is acceptable (<= 2&#8491;).</p>
+    RMSD: <b>{{ data.rmsd }}</b>
+    <p id="rmsd">The RMSD of the superposition is acceptable (<= 2&#8491;).</p>
     </div>
   {% elif (data.rmsd) | float > 2 and (data.rmsd) | float < 5 %}
   <div class="red-text text-accent-1">
-    <b>RMSD:</b> {{ data.rmsd }}
-    <p>Warning: The RMSD of the superposition is >= 2&#8491;. The construction of the oligomer could be incorrect.</p>
+    RMSD: <b>{{ data.rmsd }}</b>
+    <p id="rmsd"></p>Warning: The RMSD of the superposition is >= 2&#8491;. The construction of the oligomer could be incorrect.</p>
     </div>
   {% else %}
   <div class="red-text">
-    <b>RMSD:</b> {{ data.rmsd }}
-    <p><b>Critical: </b>The RMSD of the superposition is >= 5&#8491;. The construction of the oligomer will lead to incorrect results.</p>
+    RMSD: <b>{{ data.rmsd }}</b>
+    <p id="rmsd"></p><b>Critical: </b>The RMSD of the superposition is >= 5&#8491;. The construction of the oligomer will lead to incorrect results.</p>
   </div>
   {% endif %}
 </div>
