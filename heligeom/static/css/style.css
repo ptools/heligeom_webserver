@@ -81,22 +81,10 @@ body {
   top: 3px;
 }
 
-#molstar {
-  position: relative;
-  margin-bottom: 400px;
-  /* width: 1200px; not responsive */
-  height: 600px;
-}
 
 /* For loader button */
 .hide{
   display: none;
-}
-
-#molstar_1,  #molstar_2 {
-  position: relative;
-  margin-bottom: 300px;
-  height: 600px;
 }
 
 .error-input {
@@ -121,4 +109,13 @@ div#loading img{
   text-transform:none;
   letter-spacing: normal;
   font-size: 14px;
+}
+
+.monomers_visu {
+  position: relative;
+  height: 300px;
+}
+.oligomers_visu {
+  position: relative;
+  height: 600px;
 }

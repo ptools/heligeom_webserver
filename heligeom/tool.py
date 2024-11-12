@@ -3,6 +3,7 @@ Backend module for the Heligeom calculations
 """
 
 import math
+import pathlib
 import re
 from dataclasses import dataclass, field
 
@@ -114,6 +115,10 @@ class HeligeomInterface:
     hp: Screw
     #: The oligomer construction made of monomer1
     oligomer: RigidBody = field(init=False, repr=False)
+    #: colors of the 1st monomer ([light, strong])
+    colors_monomer1: list = ["#DCFCFE", "#02AAB3"]
+    #: colors of the 2nd monomer ([light, strong])
+    colors_monomer2: list = ["#FFD1A2", "#F57C00"]
 
     def __init__(self, pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
         self.monomer1 = HeligeomMonomer(pdb_file, chain_id_M1, res_range_M1)
@@ -204,6 +209,19 @@ class HeligeomInterface:
 
         io.write_pdb(self.oligomer, fileout)  # type: ignore
 
+    def save_monomers(self, fileout):
+        """Save both monomers to a PDB file in `fileout`.
+
+
+        Parameters
+        ----------
+        fileout : pathlib.Path
+            Path to output file.
+        """
+        concat = self.monomer1.rb + self.monomer2.rb
+        concat.reset_atom_indices(start=self.monomer1.rb.indices[0])
+        io.write_pdb(concat, fileout)  # type: ignore
+
     def interface_atoms_oligomer(self, cutoff=5):
         """Returns the indexes of the residue atoms of monomer 1 and monomer 1' in contacts from
         the oligomer structure computed.
@@ -248,13 +266,62 @@ class HeligeomInterface:
 
         selection = (
             # selection of the monomer 1
-            f"{{ { self.monomer1.molstar_selection }, color:{{r:255,g:182,b:193 }} }},"
+            f"{{ { self.monomer1.molstar_selection }, color:'{ self.colors_monomer1[0] }' }},"
             # selection of the monomer 1 atoms at the interface
-            f"{{ { self.monomer1.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:{{r:255,g:0,b:255}}, color:{{r:255,g:182,b:193}}, focus:true }},"
+            f"{{ { self.monomer1.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer1[1]}', color:'{self.colors_monomer1[0]}', focus:true }},"
             # selection of the monomer 2
-            f"{{ { self.monomer2.molstar_selection }, color:{{r:255,g:250,b:205 }} }},"
+            f"{{ { self.monomer2.molstar_selection }, color:'{ self.colors_monomer2[0] }' }},"
             # selection of the monomer 2 atoms at the interface
-            f"{{ { self.monomer2.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:{{r:255,g:255,b:0}}, color:{{r:255,g:250,b:205}}, focus:true }},"
+            f"{{ { self.monomer2.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer2[1]}', color:'{self.colors_monomer2[0]}', focus:true }},"
+        )
+
+        return selection
+
+    def interface_atoms(self, cutoff=5):
+        """Returns the indexes of the residue atoms of monomer 1 and monomer 2 in contacts
+
+        Parameters
+        ----------
+        cutoff : float, optional
+            distance in Angstrom defining a contact between 2 residues, by default 5
+
+        Returns
+        -------
+        tuple[np.ndarray, np.ndarray]:
+            monomer 1 and monomer 2 atom indexes.
+        """
+
+        lhs_atom_ids, rhs_atom_ids = PairList(self.monomer1.rb, self.monomer2.rb, 5).raw_contacts()
+        lhs_residue_ids = self.monomer1.rb.residue_indices[lhs_atom_ids]
+        rhs_residue_ids = self.monomer2.rb.residue_indices[rhs_atom_ids]
+
+        mono1_atom_indexes = self.monomer1.rb.select_residue_indices(lhs_residue_ids).indices
+        mono2_atom_indexes = self.monomer2.rb.select_residue_indices(rhs_residue_ids).indices
+
+        return mono1_atom_indexes, mono2_atom_indexes
+
+    def molstar_selection_monomers(self):
+        """Returns the molstar selection as a string of the 2 monomers
+        and the atom indexes belonging to the interface of monomer 1 and 2.
+
+        See `interface_atoms()` for the contacts.
+
+        Returns
+        -------
+        str
+            the molstar selection as a string
+        """
+        mono1_atom_indexes, mono2_atom_indexes = self.interface_atoms()
+
+        selection = (
+            # selection of the monomer 1
+            f"{{ { self.monomer1.molstar_selection }, color:'{ self.colors_monomer1[0] }' }},"
+            # selection of the monomer 1 atoms at the interface
+            f"{{ { self.monomer1.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer1[1]}', color:'{self.colors_monomer1[0]}', focus:true }},"
+            # selection of the monomer 2
+            f"{{ { self.monomer2.molstar_selection }, color:'{ self.colors_monomer2[0] }' }},"
+            # selection of the monomer 2 atoms at the interface
+            f"{{ { self.monomer2.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer2[1]}', color:'{self.colors_monomer2[0]}', focus:true }},"
         )
 
         return selection

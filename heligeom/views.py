@@ -20,7 +20,7 @@ from ptools.io.exceptions import InvalidPDBAtomLineError, InvalidPDBFormatError
 
 from .forms import Construction, InputStructures, validate_input_structure
 from .models import UserInputs, db
-from .tool import HeligeomInterface, MonomersDifferentSizeError, MonomerSizeZeroError
+from .tool import HeligeomInterface, MonomerSizeZeroError
 
 # Blueprint Configuration
 heligeom_bp = Blueprint(
@@ -164,6 +164,8 @@ def results(results_id):
     if not query_result:
         abort(404)
 
+    path_to_result = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id)
+
     try:
         pdb_filename = query_result.pdb_filename
         chain1_id = query_result.chain1_id
@@ -175,11 +177,13 @@ def results(results_id):
         core_filter2 = query_result.core_filter2
         core_region2 = query_result.core_region2
 
-        pdb_abs_path = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id, pdb_filename)
+        pdb_abs_path = path_to_result / pdb_filename
 
         heli_interface1 = HeligeomInterface(
             pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2
         )
+
+        heli_interface1.save_monomers(path_to_result / "mono1-2.pdb")
 
         # Compute Helicoidal parameters
         pitch, monomers_per_turn, direction, dmin, dmax, rmsd = heli_interface1.compute_screw(
@@ -189,6 +193,7 @@ def results(results_id):
         screw_data = {
             "results_id": results_id,
             "pdb_input": pdb_filename,
+            "monos_file": "mono1-2.pdb",
             "chain1_id": chain1_id,
             "chain2_id": chain2_id,
             "res_range1": res_range1,
@@ -207,6 +212,7 @@ def results(results_id):
             "dmin": f"{dmin:3.2f}",
             "dmax": f"{dmax:3.2f}",
             "rmsd": f"{rmsd:3.2f}",
+            "select_interface_mono": heli_interface1.molstar_selection_monomers(),
         }
 
         # 2nd Oligomer
@@ -228,15 +234,15 @@ def results(results_id):
 
             # Different input structure ?
             if pdb_filename2 != pdb_filename:
-                pdb_abs_path2 = pathlib.Path(
-                    current_app.config["DATA_UPLOADS"], results_id, pdb_filename2
-                )
+                pdb_abs_path2 = path_to_result / pdb_filename2
             else:
                 pdb_abs_path2 = pdb_abs_path
 
             heli_interface2 = HeligeomInterface(
                 pdb_abs_path2, chain1bis_id, chain2bis_id, res_range1bis, res_range2bis
             )
+
+            heli_interface2.save_monomers(path_to_result / "mono1-2_bis.pdb")
 
             # Compute Helicoidal parameters
             pitch2, monomers_per_turn2, direction2, dmin2, dmax2, rmsd = (
@@ -248,7 +254,9 @@ def results(results_id):
 
             # Create dict of data to pass to render_template
             screw_data_bis = {
+                "results_id": results_id,
                 "pdb_input": pdb_filename2,
+                "monos_file": "mono1-2_bis.pdb",
                 "chain1_id": chain1bis_id,
                 "chain2_id": chain2bis_id,
                 "res_range1": res_range1bis,
@@ -268,6 +276,7 @@ def results(results_id):
                 "dmax": f"{dmax2:3.2f}",
                 "rmsd": f"{rmsd:3.2f}",
                 "fnat": f"{fnat:3.4f}",
+                "select_interface_mono": heli_interface2.molstar_selection_monomers(),
             }
 
         # Initialize construction form
@@ -284,9 +293,7 @@ def results(results_id):
             else:
                 pdb_out_name = f"Construct_N{n_mer}_{pdb_filename}"
 
-            pdb_out_abs_path = pathlib.Path(
-                current_app.config["DATA_UPLOADS"], results_id, pdb_out_name
-            )
+            pdb_out_abs_path = path_to_result / pdb_out_name
             # Construct oligomer and write the PDB result in pdb_out_abs_path
             heli_interface1.construct_oligomer(n_mer, z_align, pdb_out_abs_path)
 
@@ -295,8 +302,8 @@ def results(results_id):
                 "pdb_out_name": pdb_out_name,
                 "n_mer": n_mer,
                 "z_align": z_align,
-                "select_monomer1": heli_interface1.monomer1.molstar_selection,
-                "select_monomer2": heli_interface1.monomer2.molstar_selection,
+                "select_monomer1": f"{heli_interface1.monomer1.molstar_selection}, color:'{heli_interface1.colors_monomer1[1]}'",
+                "select_monomer2": f"{heli_interface1.monomer2.molstar_selection}, color:'{heli_interface1.colors_monomer2[1]}'",
                 "select_interface": heli_interface1.molstar_selection_interface_oligomer(),
             }
 
@@ -304,9 +311,7 @@ def results(results_id):
             if has_2nd_oligo and heli_interface2:
                 # Different input structure ?
                 if pdb_filename2 != pdb_filename:
-                    pdb_abs_path2 = pathlib.Path(
-                        current_app.config["DATA_UPLOADS"], results_id, pdb_filename2
-                    )
+                    pdb_abs_path2 = path_to_result / pdb_filename2
                 else:
                     pdb_abs_path2 = pdb_abs_path
 
@@ -316,9 +321,7 @@ def results(results_id):
                 else:
                     pdb_out_name2 = f"Construct_2nd_N{n_mer}_{pdb_filename2}"
 
-                pdb_out_abs_path2 = pathlib.Path(
-                    current_app.config["DATA_UPLOADS"], results_id, pdb_out_name2
-                )
+                pdb_out_abs_path2 = path_to_result / pdb_out_name2
 
                 # Construct oligomer and write the PDB result in pdb_out_abs_path
                 heli_interface2.construct_oligomer(n_mer, z_align, pdb_out_abs_path2)
@@ -328,8 +331,8 @@ def results(results_id):
                     "pdb_out_name": pdb_out_name2,
                     "n_mer": n_mer,
                     "z_align": z_align,
-                    "select_monomer1": heli_interface2.monomer1.molstar_selection,
-                    "select_monomer2": heli_interface2.monomer2.molstar_selection,
+                    "select_monomer1": f"{heli_interface2.monomer1.molstar_selection}, color:'{heli_interface2.colors_monomer1[1]}'",
+                    "select_monomer2": f"{heli_interface2.monomer2.molstar_selection}, color:'{heli_interface2.colors_monomer2[1]}'",
                     "select_interface": heli_interface2.molstar_selection_interface_oligomer(),
                 }
 
@@ -364,7 +367,7 @@ def results(results_id):
 
     except Exception:
         # Save the error log into a file and redirect to a 500 error
-        error_file = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id, "error.log")
+        error_file = path_to_result / "error.log"
         with open(error_file, "w") as log:
             log.write(traceback.format_exc())
         # TODO: switch to "abort(500)" in prod
