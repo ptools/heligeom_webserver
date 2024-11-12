@@ -212,8 +212,6 @@ def results(results_id):
             "dmin": f"{dmin:3.2f}",
             "dmax": f"{dmax:3.2f}",
             "rmsd": f"{rmsd:3.2f}",
-            "select_monomer1": heli_interface1.monomer1.molstar_selection,
-            "select_monomer2": heli_interface1.monomer2.molstar_selection,
             "select_interface_mono": heli_interface1.molstar_selection_monomers(),
         }
 
@@ -278,8 +276,6 @@ def results(results_id):
                 "dmax": f"{dmax2:3.2f}",
                 "rmsd": f"{rmsd:3.2f}",
                 "fnat": f"{fnat:3.4f}",
-                "select_monomer1": heli_interface2.monomer1.molstar_selection,
-                "select_monomer2": heli_interface2.monomer2.molstar_selection,
                 "select_interface_mono": heli_interface2.molstar_selection_monomers(),
             }
 
@@ -306,8 +302,8 @@ def results(results_id):
                 "pdb_out_name": pdb_out_name,
                 "n_mer": n_mer,
                 "z_align": z_align,
-                "select_monomer1": heli_interface1.monomer1.molstar_selection,
-                "select_monomer2": heli_interface1.monomer2.molstar_selection,
+                "select_monomer1": f"{heli_interface1.monomer1.molstar_selection}, color:'{heli_interface1.colors_monomer1[1]}'",
+                "select_monomer2": f"{heli_interface1.monomer2.molstar_selection}, color:'{heli_interface1.colors_monomer2[1]}'",
                 "select_interface": heli_interface1.molstar_selection_interface_oligomer(),
             }
 
@@ -335,8 +331,8 @@ def results(results_id):
                     "pdb_out_name": pdb_out_name2,
                     "n_mer": n_mer,
                     "z_align": z_align,
-                    "select_monomer1": heli_interface2.monomer1.molstar_selection,
-                    "select_monomer2": heli_interface2.monomer2.molstar_selection,
+                    "select_monomer1": f"{heli_interface2.monomer1.molstar_selection}, color:'{heli_interface2.colors_monomer1[1]}'",
+                    "select_monomer2": f"{heli_interface2.monomer2.molstar_selection}, color:'{heli_interface2.colors_monomer2[1]}'",
                     "select_interface": heli_interface2.molstar_selection_interface_oligomer(),
                 }
 

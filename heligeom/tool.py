@@ -115,6 +115,10 @@ class HeligeomInterface:
     hp: Screw
     #: The oligomer construction made of monomer1
     oligomer: RigidBody = field(init=False, repr=False)
+    #: colors of the 1st monomer ([light, strong])
+    colors_monomer1: list = ["#DCFCFE", "#02AAB3"]
+    #: colors of the 2nd monomer ([light, strong])
+    colors_monomer2: list = ["#FFD1A2", "#F57C00"]
 
     def __init__(self, pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
         self.monomer1 = HeligeomMonomer(pdb_file, chain_id_M1, res_range_M1)
@@ -262,13 +266,13 @@ class HeligeomInterface:
 
         selection = (
             # selection of the monomer 1
-            f"{{ { self.monomer1.molstar_selection }, color:{{r:255,g:182,b:193 }} }},"
+            f"{{ { self.monomer1.molstar_selection }, color:'{ self.colors_monomer1[0] }' }},"
             # selection of the monomer 1 atoms at the interface
-            f"{{ { self.monomer1.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:{{r:255,g:0,b:255}}, color:{{r:255,g:182,b:193}}, focus:true }},"
+            f"{{ { self.monomer1.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer1[1]}', color:'{self.colors_monomer1[0]}', focus:true }},"
             # selection of the monomer 2
-            f"{{ { self.monomer2.molstar_selection }, color:{{r:255,g:250,b:205 }} }},"
+            f"{{ { self.monomer2.molstar_selection }, color:'{ self.colors_monomer2[0] }' }},"
             # selection of the monomer 2 atoms at the interface
-            f"{{ { self.monomer2.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:{{r:255,g:255,b:0}}, color:{{r:255,g:250,b:205}}, focus:true }},"
+            f"{{ { self.monomer2.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer2[1]}', color:'{self.colors_monomer2[0]}', focus:true }},"
         )
 
         return selection
@@ -311,15 +315,16 @@ class HeligeomInterface:
 
         selection = (
             # selection of the monomer 1
-            f"{{ { self.monomer1.molstar_selection }, color:{{r:255,g:182,b:193 }} }},"
+            f"{{ { self.monomer1.molstar_selection }, color:'{ self.colors_monomer1[0] }' }},"
             # selection of the monomer 1 atoms at the interface
-            f"{{ { self.monomer1.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:{{r:255,g:0,b:255}}, color:{{r:255,g:182,b:193}}, focus:true }},"
+            f"{{ { self.monomer1.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer1[1]}', color:'{self.colors_monomer1[0]}', focus:true }},"
             # selection of the monomer 2
-            f"{{ { self.monomer2.molstar_selection }, color:{{r:255,g:250,b:205 }} }},"
+            f"{{ { self.monomer2.molstar_selection }, color:'{ self.colors_monomer2[0] }' }},"
             # selection of the monomer 2 atoms at the interface
-            f"{{ { self.monomer2.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:{{r:255,g:255,b:0}}, color:{{r:255,g:250,b:205}}, focus:true }},"
+            f"{{ { self.monomer2.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer2[1]}', color:'{self.colors_monomer2[0]}', focus:true }},"
         )
 
+        print(selection)
         return selection
 
     @classmethod
