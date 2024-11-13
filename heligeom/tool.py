@@ -89,7 +89,7 @@ def _create_monomer(struct, chain="", res_range=""):
     monomer = RigidBody()
     molstar_selection = ""
 
-    no_hetero = struct.select("not hetero")
+    no_hetero = struct.select("not hetero and not water")
 
     if chain:
         monomer = no_hetero.select_chain(chain)
