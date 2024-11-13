@@ -12,8 +12,13 @@
           endif %}</b></li>
         <li>&emsp;Residue range: <b>{% if data.res_range1 %} {{ data.res_range1 }} {% else %}
         Unspecified{% endif %}</b></li>
-        <li>&emsp;Core region: <b>{% if data.core_filter1 == "all" %} All Residues {% else %}
-        {{ data.core_region1 }}{% endif %}</b></li>
+        <li
+          onmouseover="{{pdbe_component}}.visual.highlight({data : [{ {{ data.select_core1 | safe }} }] });"
+          onmouseout="{{pdbe_component}}.visual.clearHighlight();"
+        >
+          &emsp;<div class="core_li">Core region: <b>{% if data.core_filter1 == "all" %} All Residues {% else %}
+          {{ data.core_region1 }}{% endif %}</b></div>
+        </li>
       </ul>
       <h6 style="color:#F57C00">Monomer 2</h6>
       <p>
@@ -22,7 +27,11 @@
             endif %}</b></li>
         <li>&emsp;Residue range: <b>{% if data.res_range2 %} {{ data.res_range2 }} {% else %}
             Unspecified{% endif %}</b></li>
-        <li>&emsp;Core region: <b>{% if data.core_filter2 == "all" %} All Residues {% else %}
+        <li
+          onmouseover="{{pdbe_component}}.visual.highlight({data : [{ {{ data.select_core2 | safe }} }] });"
+          onmouseout="{{pdbe_component}}.visual.clearHighlight();"
+        >
+        &emsp;<div class="core_li">Core region: <b>{% if data.core_filter2 == "all" %} All Residues {% else %}
           {{ data.core_region2 }}{% endif %}</b></li>
       </ul>
   </div>

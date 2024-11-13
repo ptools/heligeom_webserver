@@ -124,6 +124,11 @@ class HeligeomInterface:
     #: colors of the 2nd monomer ([light, strong])
     colors_monomer2: list = ["#FFD1A2", "#F57C00"]
 
+    #: molstar selection of the core monomer 1
+    molstar_select_core_monomer1: str
+    #: molstar selection of the core monomer 2
+    molstar_select_core_monomer2: str
+
     def __init__(self, pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
         self.monomer1 = HeligeomMonomer(pdb_file, chain_id_M1, res_range_M1)
         if self.monomer1.size() == 0:
@@ -133,6 +138,8 @@ class HeligeomInterface:
             raise MonomerSizeZeroError("Monomer 2 has a size of 0 atoms.")
 
         self.hp = Screw()
+        self.molstar_select_core_monomer1 = self.monomer1.molstar_selection
+        self.molstar_select_core_monomer2 = self.monomer2.molstar_selection
 
     def compute_screw(self, core_filter, core_region1, core_region2):
         """Compute the screw transformation between the 2 monomers.
@@ -156,8 +163,15 @@ class HeligeomInterface:
 
         # Core region defined?
         if core_filter == "manual":
-            rb1 = create_core_monomer(rb1, core_region1)
-            rb2 = create_core_monomer(rb2, core_region2)
+            rb1, self.molstar_select_core_monomer1 = create_core_monomer(rb1, core_region1)  # type: ignore
+            rb2, self.molstar_select_core_monomer2 = create_core_monomer(rb2, core_region2)  # type: ignore
+            if self.monomer1.chain:
+                self.molstar_select_core_monomer1 = f"struct_asym_id: '{ self.monomer1.chain }', {self.molstar_select_core_monomer1}"  # noqa: E501
+            if self.monomer2.chain:
+                self.molstar_select_core_monomer2 = f"struct_asym_id: '{ self.monomer2.chain }', {self.molstar_select_core_monomer2}"  # noqa: E501
+
+        print(self.molstar_select_core_monomer1)
+        print(self.molstar_select_core_monomer2)
 
         if rb1.size() == 0:
             raise MonomerSizeZeroError("Monomer 1 defined with core regions has a size of 0 atoms.")
@@ -340,6 +354,15 @@ class HeligeomInterface:
 
         return selection
 
+    def molstar_selections_core(self):
+        """Returns the molstar selection as a string of the core region of 2 monomers
+
+        Returns
+        -------
+        str
+            the molstar selection as a string
+        """
+
     @classmethod
     def compute_fnat(cls, heli_interface1, heli_interface2, cutoff=5):
         """Compute the FNAT (fraction of native contacts) between 2 interfaces.
@@ -373,9 +396,11 @@ def create_core_monomer(rb, core_region):
     if not res:
         return rb
 
+    molstar_selection = ""
     core_rb = RigidBody()
     for res_range in core_region.split(","):
         min_res, max_res = utils.parse_resrange(res_range)
+        molstar_selection += f"start_residue_number: {min_res}, end_residue_number: {max_res}"
         core_rb += rb.select_residue_range(min_res, max_res)
 
-    return core_rb
+    return core_rb, molstar_selection

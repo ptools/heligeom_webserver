@@ -141,3 +141,8 @@ p#rmsd {
   font-size: 26px !important;
   font-weight: bold !important;
 }
+
+.core_li{
+  display: inline-block;
+  border-bottom: 1px dashed #888;
+}

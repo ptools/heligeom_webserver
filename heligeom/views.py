@@ -213,6 +213,8 @@ def results(results_id):
             "dmax": f"{dmax:3.2f}",
             "rmsd": f"{rmsd:3.2f}",
             "select_interface_mono": heli_interface1.molstar_selection_monomers(),
+            "select_core1": heli_interface1.molstar_select_core_monomer1,
+            "select_core2": heli_interface1.molstar_select_core_monomer2,
         }
 
         # 2nd Oligomer
@@ -277,6 +279,8 @@ def results(results_id):
                 "rmsd": f"{rmsd:3.2f}",
                 "fnat": f"{fnat:3.4f}",
                 "select_interface_mono": heli_interface2.molstar_selection_monomers(),
+                "select_core1": heli_interface2.molstar_select_core_monomer1,
+                "select_core2": heli_interface2.molstar_select_core_monomer2,
             }
 
         # Initialize construction form
