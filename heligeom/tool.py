@@ -246,12 +246,17 @@ class HeligeomInterface:
         mono1 = self.oligomer.select_chain("A")
         mono1prime = self.oligomer.select_chain("B")
 
+        mono1_atom_indexes = []
+        mono2_atom_indexes = []
+
         lhs_atom_ids, rhs_atom_ids = PairList(mono1, mono1prime, cutoff).raw_contacts()
         lhs_residue_ids = mono1.residue_indices[lhs_atom_ids]
         rhs_residue_ids = mono1prime.residue_indices[rhs_atom_ids]
 
-        mono1_atom_indexes = mono1.select_residue_indices(lhs_residue_ids).indices
-        mono2_atom_indexes = mono1prime.select_residue_indices(rhs_residue_ids).indices
+        if lhs_atom_ids.size != 0:
+            mono1_atom_indexes = mono1.select_residue_indices(lhs_residue_ids).indices
+        if rhs_atom_ids.size != 0:
+            mono2_atom_indexes = mono1prime.select_residue_indices(rhs_residue_ids).indices
 
         return mono1_atom_indexes, mono2_atom_indexes
 
@@ -299,8 +304,13 @@ class HeligeomInterface:
         lhs_residue_ids = self.monomer1.rb.residue_indices[lhs_atom_ids]
         rhs_residue_ids = self.monomer2.rb.residue_indices[rhs_atom_ids]
 
-        mono1_atom_indexes = self.monomer1.rb.select_residue_indices(lhs_residue_ids).indices
-        mono2_atom_indexes = self.monomer2.rb.select_residue_indices(rhs_residue_ids).indices
+        mono1_atom_indexes = []
+        mono2_atom_indexes = []
+
+        if lhs_atom_ids.size != 0:
+            mono1_atom_indexes = self.monomer1.rb.select_residue_indices(lhs_residue_ids).indices
+        if rhs_atom_ids.size != 0:
+            mono2_atom_indexes = self.monomer2.rb.select_residue_indices(rhs_residue_ids).indices
 
         return mono1_atom_indexes, mono2_atom_indexes
 
