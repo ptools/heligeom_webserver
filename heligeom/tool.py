@@ -92,17 +92,17 @@ def _create_monomer(struct, chain="", res_range=""):
     no_hetero = struct.select("not hetero and not water")
 
     if chain:
-        monomer = no_hetero.select_chain(chain)
+        monomer = no_hetero.select(f"chain {chain}")
         molstar_selection = f"struct_asym_id: '{ chain }'"
         if res_range:
             min_resid, max_resid = utils.parse_resrange(res_range)
-            monomer = monomer.select_residue_range(min_resid, max_resid)
+            monomer = monomer.select(f"resid {min_resid}:{max_resid}")
             molstar_selection += (
                 f", start_residue_number: {min_resid}, end_residue_number: {max_resid}"
             )
     else:
         min_resid, max_resid = utils.parse_resrange(res_range)
-        monomer = no_hetero.select_residue_range(min_resid, max_resid)
+        monomer = no_hetero.select(f"resid {min_resid}:{max_resid}")
         molstar_selection = f"start_residue_number: {min_resid}, end_residue_number: {max_resid}"
 
     return monomer, molstar_selection
@@ -184,8 +184,8 @@ class HeligeomInterface:
             )
 
         # Use CA for computating parameters
-        monomer1_CA = rb1.select_atom_type("CA")
-        monomer2_CA = rb2.select_atom_type("CA")
+        monomer1_CA = rb1.select("name CA")
+        monomer2_CA = rb2.select("name CA")
 
         self.hp = heli_analyze(monomer1_CA, monomer2_CA)
         rmsd_value = rmsd(monomer1_CA, monomer2_CA, do_fit=True)
@@ -257,8 +257,8 @@ class HeligeomInterface:
             monomer 1 and monomer 1' atom indexes.
         """
 
-        mono1 = self.oligomer.select_chain("A")
-        mono1prime = self.oligomer.select_chain("B")
+        mono1 = self.oligomer.select("chain A")
+        mono1prime = self.oligomer.select("chain B")
 
         mono1_atom_indexes = []
         mono2_atom_indexes = []
@@ -268,9 +268,9 @@ class HeligeomInterface:
         rhs_residue_ids = mono1prime.residue_indices[rhs_atom_ids]
 
         if lhs_atom_ids.size != 0:
-            mono1_atom_indexes = mono1.select_residue_indices(lhs_residue_ids).indices
+            mono1_atom_indexes = mono1.select_by_property("resid", lhs_residue_ids).indices
         if rhs_atom_ids.size != 0:
-            mono2_atom_indexes = mono1prime.select_residue_indices(rhs_residue_ids).indices
+            mono2_atom_indexes = mono1prime.select_by_property("resid", rhs_residue_ids).indices
 
         return mono1_atom_indexes, mono2_atom_indexes
 
@@ -314,7 +314,9 @@ class HeligeomInterface:
             monomer 1 and monomer 2 atom indexes.
         """
 
-        lhs_atom_ids, rhs_atom_ids = PairList(self.monomer1.rb, self.monomer2.rb, 5).raw_contacts()
+        lhs_atom_ids, rhs_atom_ids = PairList(
+            self.monomer1.rb, self.monomer2.rb, cutoff
+        ).raw_contacts()
         lhs_residue_ids = self.monomer1.rb.residue_indices[lhs_atom_ids]
         rhs_residue_ids = self.monomer2.rb.residue_indices[rhs_atom_ids]
 
@@ -322,9 +324,13 @@ class HeligeomInterface:
         mono2_atom_indexes = []
 
         if lhs_atom_ids.size != 0:
-            mono1_atom_indexes = self.monomer1.rb.select_residue_indices(lhs_residue_ids).indices
+            mono1_atom_indexes = self.monomer1.rb.select_by_property(
+                "resid", lhs_residue_ids
+            ).indices
         if rhs_atom_ids.size != 0:
-            mono2_atom_indexes = self.monomer2.rb.select_residue_indices(rhs_residue_ids).indices
+            mono2_atom_indexes = self.monomer2.rb.select_by_property(
+                "resid", rhs_residue_ids
+            ).indices
 
         return mono1_atom_indexes, mono2_atom_indexes
 
@@ -401,6 +407,6 @@ def create_core_monomer(rb, core_region):
     for res_range in core_region.split(","):
         min_res, max_res = utils.parse_resrange(res_range)
         molstar_selection += f"start_residue_number: {min_res}, end_residue_number: {max_res}"
-        core_rb += rb.select_residue_range(min_res, max_res)
+        core_rb += rb.select(f"resid {min_res}:{max_res}")
 
     return core_rb, molstar_selection
