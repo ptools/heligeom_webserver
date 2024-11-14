@@ -163,7 +163,8 @@
 <!-- Macro to display the download button for one oligomer -->
 {% macro button_download_oligomer(results_id, oligo_filename) -%}
 <p class="center-align">
-  <a class="waves-effect btn-small orange darken-4" data-tooltip="Download PDB file"
+  <a class="waves-effect btn-small orange darken-4 tooltipped" data-position="top"
+  data-tooltip="Atoms of the core regions will have their occupancy set to 1. 0 otherwise."
     href="{{ url_for('heligeom_bp.download', results_id=results_id, filename=oligo_filename)}}">
     <i class="material-icons right">file_download</i>
       <span class="hide-on-med-and-down">Download Oligomer</span>

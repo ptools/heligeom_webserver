@@ -43,6 +43,13 @@ class HeligeomMonomer:
 
     def __post_init__(self):
         input_structure = RigidBody.from_pdb(self.input_file)
+        # Add manually the occupency property if it's not read
+        if "occupancies" not in input_structure.atom_properties:
+            input_structure.add_atom_property(
+                "occupancy", "occupancies", [0] * len(input_structure)
+            )
+        else:
+            input_structure.occupancies = [0] * len(input_structure)
         (self.rb, self.molstar_selection) = _create_monomer(
             input_structure, self.chain, self.residue_range
         )
@@ -105,7 +112,7 @@ def _create_monomer(struct, chain="", res_range=""):
         monomer = no_hetero.select(f"resid {min_resid}:{max_resid}")
         molstar_selection = f"start_residue_number: {min_resid}, end_residue_number: {max_resid}"
 
-    return monomer, molstar_selection
+    return monomer.copy(), molstar_selection
 
 
 class HeligeomInterface:
@@ -156,22 +163,32 @@ class HeligeomInterface:
             min_res2, _ = utils.parse_resrange(self.monomer2.residue_range)
             delta_resid = min_res2 - min_res1
             # Handle missing residues with an intersection
-            rb1, rb2 = chain_intersect(self.monomer1.rb, self.monomer2.rb, delta_resid=delta_resid)
+            self.monomer1.rb, self.monomer2.rb = chain_intersect(
+                self.monomer1.rb, self.monomer2.rb, delta_resid=delta_resid
+            )
         except SyntaxError:
-            rb1 = self.monomer1.rb
-            rb2 = self.monomer2.rb
+            # No Residue range provided so no chain_intersect needed
+            pass
 
         # Core region defined?
         if core_filter == "manual":
-            rb1, self.molstar_select_core_monomer1 = create_core_monomer(rb1, core_region1)  # type: ignore
-            rb2, self.molstar_select_core_monomer2 = create_core_monomer(rb2, core_region2)  # type: ignore
+            rb1, self.molstar_select_core_monomer1 = create_core_monomer(  # type: ignore
+                self.monomer1.rb, core_region1
+            )
+            rb2, self.molstar_select_core_monomer2 = create_core_monomer(  # type: ignore
+                self.monomer2.rb, core_region2
+            )
+
             if self.monomer1.chain:
                 self.molstar_select_core_monomer1 = f"struct_asym_id: '{ self.monomer1.chain }', {self.molstar_select_core_monomer1}"  # noqa: E501
             if self.monomer2.chain:
                 self.molstar_select_core_monomer2 = f"struct_asym_id: '{ self.monomer2.chain }', {self.molstar_select_core_monomer2}"  # noqa: E501
+        else:
+            # The core region is the whole monomer
+            self.monomer1.rb.occupancies = [1] * len(self.monomer1.rb)
 
-        print(self.molstar_select_core_monomer1)
-        print(self.molstar_select_core_monomer2)
+            rb1 = self.monomer1.rb
+            rb2 = self.monomer2.rb
 
         if rb1.size() == 0:
             raise MonomerSizeZeroError("Monomer 1 defined with core regions has a size of 0 atoms.")
@@ -407,6 +424,9 @@ def create_core_monomer(rb, core_region):
     for res_range in core_region.split(","):
         min_res, max_res = utils.parse_resrange(res_range)
         molstar_selection += f"start_residue_number: {min_res}, end_residue_number: {max_res}"
-        core_rb += rb.select(f"resid {min_res}:{max_res}")
+        tmp_core_rb = rb.select(f"resid {min_res}:{max_res}")
+        # Core region = 1 in occupancy
+        tmp_core_rb.occupancies = [1] * len(tmp_core_rb)
+        core_rb += tmp_core_rb
 
     return core_rb, molstar_selection
