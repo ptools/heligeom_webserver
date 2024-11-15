@@ -7,6 +7,7 @@ import pathlib
 import re
 from dataclasses import dataclass, field
 
+import numpy as np
 from ptools import RigidBody, io, measure
 from ptools.heligeom import chain_intersect, heli_analyze, heli_construct
 from ptools.pairlist import PairList
@@ -16,6 +17,23 @@ from . import utils
 from .forms import InputStructures
 
 
+# = Custom selections functions are faster than semantic ones i.e rb.select("chain X") ========
+def _custom_select_chains(rb, chain):
+    indices = np.where(rb.atom_properties.get("chains").values == chain)[0]
+    return rb[indices]
+
+
+def _custom_select_residue_range(rb, start, end):
+    indices = np.where(
+        np.logical_and(
+            rb.atom_properties.get("residue_indices").values >= start,
+            rb.atom_properties.get("residue_indices").values <= end,
+        )
+    )[0]
+    return rb[indices]
+
+
+# = Custom Exceptions ========
 class MonomerSizeZeroError(BaseException):
     """Raised when a RigidBody has a size of 0 atoms."""
 
@@ -26,6 +44,9 @@ class MonomersDifferentSizeError(BaseException):
     """Raised when 2 RigidBodys have differnt sizes."""
 
     pass
+
+
+# =================================
 
 
 @dataclass
@@ -92,17 +113,17 @@ def _create_monomer(struct, chain="", res_range=""):
     molstar_selection = ""
 
     if chain:
-        monomer = struct.select(f"chain {chain}")
+        monomer = _custom_select_chains(struct, chain)
         molstar_selection = f"struct_asym_id: '{ chain }'"
         if res_range:
             min_resid, max_resid = utils.parse_resrange(res_range)
-            monomer = monomer.select(f"resid {min_resid}:{max_resid}")
+            monomer = _custom_select_residue_range(monomer, min_resid, max_resid)
             molstar_selection += (
                 f", start_residue_number: {min_resid}, end_residue_number: {max_resid}"
             )
     else:
         min_resid, max_resid = utils.parse_resrange(res_range)
-        monomer = struct.select(f"resid {min_resid}:{max_resid}")
+        monomer = _custom_select_residue_range(struct, min_resid, max_resid)
         molstar_selection = f"start_residue_number: {min_resid}, end_residue_number: {max_resid}"
 
     return monomer.copy(), molstar_selection
@@ -131,7 +152,7 @@ class HeligeomInterface:
 
     def __init__(self, pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
         # Parse the input file
-        global_rb = RigidBody.from_pdb(pdb_file).select("not hetero and not water").copy()
+        global_rb = RigidBody.from_pdb(pdb_file)
 
         # Add manually the occupency property if it's not read
         if "occupancies" not in global_rb.atom_properties:
@@ -139,11 +160,14 @@ class HeligeomInterface:
         else:
             global_rb.occupancies = [0] * len(global_rb)
 
-        self.monomer1 = HeligeomMonomer(global_rb, chain_id_M1, res_range_M1)
+        # Discard hetero and water atoms
+        protein = global_rb.select("not hetero and not water")
+
+        self.monomer1 = HeligeomMonomer(protein, chain_id_M1, res_range_M1)
         if self.monomer1.size() == 0:
             raise MonomerSizeZeroError("Monomer 1 has a size of 0 atoms.")
 
-        self.monomer2 = HeligeomMonomer(global_rb, chain_id_M2, res_range_M2)
+        self.monomer2 = HeligeomMonomer(protein, chain_id_M2, res_range_M2)
         if self.monomer2.size() == 0:
             raise MonomerSizeZeroError("Monomer 2 has a size of 0 atoms.")
 
