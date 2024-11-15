@@ -24,6 +24,9 @@ numpy = "*"
 hypothesis = "*"
 ptools = {editable = true, path = "./ptools-python"}
 ruff = "*"
+line-profiler = "*"
+snakeviz = "*"
+flask-debugtoolbar-lineprofilerpanel = "*"
 
 [requires]
 python_version = "3.12"

@@ -22,6 +22,8 @@ from .forms import Construction, InputStructures, validate_input_structure
 from .models import UserInputs, db
 from .tool import HeligeomInterface, MonomerSizeZeroError
 
+from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
+
 # Blueprint Configuration
 heligeom_bp = Blueprint(
     "heligeom_bp", __name__, template_folder="templates", static_folder="static"
@@ -48,6 +50,7 @@ def homepage():
 
 
 @heligeom_bp.route("/run", methods=["GET", "POST"])
+@line_profile
 def runpage():
     # Initialize submission form
     form = InputStructures()
