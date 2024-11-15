@@ -32,7 +32,7 @@ class MonomersDifferentSizeError(BaseException):
 class HeligeomMonomer:
     """Define a Heligeom monomer based on the user inputs."""
 
-    input_file: str  #: the path of the input structure file
+    input_data: str | RigidBody  #: the input data. Can be a file or a RigidBody structure
     chain: str  #: the chain selected if provided.
     residue_range: str  #: the residue index range in the form `X-Y` if provided.
 
@@ -42,14 +42,10 @@ class HeligeomMonomer:
     molstar_selection: str = field(init=False, repr=False)
 
     def __post_init__(self):
-        input_structure = RigidBody.from_pdb(self.input_file)
-        # Add manually the occupency property if it's not read
-        if "occupancies" not in input_structure.atom_properties:
-            input_structure.add_atom_property(
-                "occupancy", "occupancies", [0] * len(input_structure)
-            )
+        if isinstance(self.input_data, str):
+            input_structure = RigidBody.from_pdb(self.input_data)
         else:
-            input_structure.occupancies = [0] * len(input_structure)
+            input_structure = self.input_data
         (self.rb, self.molstar_selection) = _create_monomer(
             input_structure, self.chain, self.residue_range
         )
@@ -93,13 +89,10 @@ def _create_monomer(struct, chain="", res_range=""):
         the molstar selection of the monomer
     """
 
-    monomer = RigidBody()
     molstar_selection = ""
 
-    no_hetero = struct.select("not hetero and not water")
-
     if chain:
-        monomer = no_hetero.select(f"chain {chain}")
+        monomer = struct.select(f"chain {chain}")
         molstar_selection = f"struct_asym_id: '{ chain }'"
         if res_range:
             min_resid, max_resid = utils.parse_resrange(res_range)
@@ -109,7 +102,7 @@ def _create_monomer(struct, chain="", res_range=""):
             )
     else:
         min_resid, max_resid = utils.parse_resrange(res_range)
-        monomer = no_hetero.select(f"resid {min_resid}:{max_resid}")
+        monomer = struct.select(f"resid {min_resid}:{max_resid}")
         molstar_selection = f"start_residue_number: {min_resid}, end_residue_number: {max_resid}"
 
     return monomer.copy(), molstar_selection
@@ -137,10 +130,20 @@ class HeligeomInterface:
     molstar_select_core_monomer2: str
 
     def __init__(self, pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
-        self.monomer1 = HeligeomMonomer(pdb_file, chain_id_M1, res_range_M1)
+        # Parse the input file
+        global_rb = RigidBody.from_pdb(pdb_file).select("not hetero and not water").copy()
+
+        # Add manually the occupency property if it's not read
+        if "occupancies" not in global_rb.atom_properties:
+            global_rb.add_atom_property("occupancy", "occupancies", [0] * len(global_rb))
+        else:
+            global_rb.occupancies = [0] * len(global_rb)
+
+        self.monomer1 = HeligeomMonomer(global_rb, chain_id_M1, res_range_M1)
         if self.monomer1.size() == 0:
             raise MonomerSizeZeroError("Monomer 1 has a size of 0 atoms.")
-        self.monomer2 = HeligeomMonomer(pdb_file, chain_id_M2, res_range_M2)
+
+        self.monomer2 = HeligeomMonomer(global_rb, chain_id_M2, res_range_M2)
         if self.monomer2.size() == 0:
             raise MonomerSizeZeroError("Monomer 2 has a size of 0 atoms.")
 
