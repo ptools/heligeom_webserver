@@ -328,7 +328,8 @@ class HeligeomInterface:
         """Returns the molstar selection as a string of the atom indexes belonging
         to the interface of the oligomer.
 
-        See `interface_atoms_oligomer()`
+        See `interface_atoms_oligomer()`.
+        In the oligomer structure, monomer 1 will be the chain A and monomer 1' will be the chain B.
 
         Returns
         -------
@@ -339,13 +340,13 @@ class HeligeomInterface:
 
         selection = (
             # selection of the monomer 1
-            f"{{ { self.monomer1.molstar_selection }, color:'{ self.colors_monomer1[0] }' }},"
+            f"{{ struct_asym_id: 'A', color:'{ self.colors_monomer1[0] }' }},"
             # selection of the monomer 1 atoms at the interface
-            f"{{ { self.monomer1.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer1[1]}', color:'{self.colors_monomer1[0]}', focus:true }},"
+            f"{{ struct_asym_id: 'A', atom_id: [{", ".join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer1[1]}', color:'{self.colors_monomer1[0]}', focus:true }},"
             # selection of the monomer 2
-            f"{{ { self.monomer2.molstar_selection }, color:'{ self.colors_monomer2[0] }' }},"
+            f"{{ struct_asym_id: 'B', color:'{ self.colors_monomer2[0] }' }},"
             # selection of the monomer 2 atoms at the interface
-            f"{{ { self.monomer2.molstar_selection }, atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer2[1]}', color:'{self.colors_monomer2[0]}', focus:true }},"
+            f"{{ struct_asym_id: 'B', atom_id: [{", ".join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer2[1]}', color:'{self.colors_monomer2[0]}', focus:true }},"
         )
 
         return selection

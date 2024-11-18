@@ -312,12 +312,13 @@ def results(results_id):
             heli_interface1.construct_oligomer(n_mer, z_align, pdb_out_abs_path)
 
             # Create dict of construction details to pass to render_template
+            # In the oligomer structure, monomer 1 will be the chain A and monomer 1' will be the chain B.
             construct_data = {
                 "pdb_out_name": pdb_out_name,
                 "n_mer": n_mer,
                 "z_align": z_align,
-                "select_monomer1": f"{heli_interface1.monomer1.molstar_selection}, color:'{heli_interface1.colors_monomer1[1]}'",
-                "select_monomer2": f"{heli_interface1.monomer2.molstar_selection}, color:'{heli_interface1.colors_monomer2[1]}'",
+                "select_monomer1": f"struct_asym_id: 'A', color:'{heli_interface1.colors_monomer1[1]}'",
+                "select_monomer2": f"struct_asym_id: 'B', color:'{heli_interface1.colors_monomer2[1]}'",
                 "select_interface": heli_interface1.molstar_selection_interface_oligomer(),
             }
 
@@ -345,8 +346,8 @@ def results(results_id):
                     "pdb_out_name": pdb_out_name2,
                     "n_mer": n_mer,
                     "z_align": z_align,
-                    "select_monomer1": f"{heli_interface2.monomer1.molstar_selection}, color:'{heli_interface2.colors_monomer1[1]}'",
-                    "select_monomer2": f"{heli_interface2.monomer2.molstar_selection}, color:'{heli_interface2.colors_monomer2[1]}'",
+                    "select_monomer1": f"struct_asym_id: 'A', color:'{heli_interface2.colors_monomer1[1]}'",
+                    "select_monomer2": f"struct_asym_id: 'B', color:'{heli_interface2.colors_monomer2[1]}'",
                     "select_interface": heli_interface2.molstar_selection_interface_oligomer(),
                 }
 
