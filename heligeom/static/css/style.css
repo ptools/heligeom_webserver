@@ -154,3 +154,9 @@ p#rmsd {
 .axis_params td {
   padding: 3px 5px;
 }
+
+#button_residue {
+  height: 27px;
+  line-height: 27px;
+  font-size: 12px;
+}

@@ -344,13 +344,73 @@ class HeligeomInterface:
 
         return selection
 
-    def interface_atoms(self, cutoff=5):
+    def save_csv_atom_contacts(self, pl, filout):
+        """Save to a file `filout` all contacts stored in `pl`
+        with atom information.
+
+        The format will be .csv with those columns:
+            Index, Atom1 Id, Atom1 Name, Residue1 Id, Residue1 Name, Atom2 Id, Atom2 Name, Residue2 Id, Residue2 Name, Distance.
+
+        Parameters
+        ----------
+        pl : Pairlist
+            the contacts computed
+        filout : str
+            the filename to write the contacts results.
+        """
+
+        # Retrieve the list of atoms for each partner from the Pairlist
+        lhs_atom_ids, rhs_atom_ids = pl.raw_contacts()
+
+        # start at 1
+        indexes = np.arange(1, len(lhs_atom_ids) + 1)
+
+        # Retrieve info from the first monomer
+        lhs_atom_names = self.monomer1.rb[lhs_atom_ids].names
+        lhs_atom_resids = self.monomer1.rb[lhs_atom_ids].residue_indices
+        lhs_atom_resnames = self.monomer1.rb[lhs_atom_ids].residue_names
+
+        # Retrieve info from the 2nd monomer
+        rhs_atom_names = self.monomer2.rb[rhs_atom_ids].names
+        rhs_atom_resids = self.monomer2.rb[rhs_atom_ids].residue_indices
+        rhs_atom_resnames = self.monomer2.rb[rhs_atom_ids].residue_names
+
+        # :( cast the  contacts distance in string
+        distances = [f"{dist:.2f}" for dist in pl.distances()]
+
+        np.savetxt(
+            filout,
+            [
+                i
+                for i in zip(
+                    indexes,
+                    lhs_atom_ids,
+                    lhs_atom_names,
+                    lhs_atom_resids,
+                    lhs_atom_resnames,
+                    rhs_atom_ids,
+                    rhs_atom_names,
+                    rhs_atom_resids,
+                    rhs_atom_resnames,
+                    distances,
+                    strict=True,
+                )
+            ],
+            delimiter=",",
+            fmt="%s",
+            header="Index, Atom1 Id, Atom1 Name, Residue1 Id, Residue1 Name, Atom2 Id, Atom2 Name, Residue2 Id, Residue2 Name, Distance",
+            comments="",
+        )
+
+    def interface_atoms(self, cutoff=5, fileout=None):
         """Returns the indexes of the residue atoms of monomer 1 and monomer 2 in contacts
 
         Parameters
         ----------
         cutoff : float, optional
             distance in Angstrom defining a contact between 2 residues, by default 5
+        filout: str, optional
+            If provided, the list of contacts will be save in .csv format in this filename.
 
         Returns
         -------
@@ -358,9 +418,13 @@ class HeligeomInterface:
             monomer 1 and monomer 2 atom indexes.
         """
 
-        lhs_atom_ids, rhs_atom_ids = PairList(
-            self.monomer1.rb, self.monomer2.rb, cutoff
-        ).raw_contacts()
+        pl = PairList(self.monomer1.rb, self.monomer2.rb, cutoff)
+
+        if fileout and isinstance(fileout, str | pathlib.Path):
+            self.save_csv_atom_contacts(pl, fileout)
+
+        lhs_atom_ids, rhs_atom_ids = pl.raw_contacts()
+
         lhs_residue_ids = self.monomer1.rb.residue_indices[lhs_atom_ids]
         rhs_residue_ids = self.monomer2.rb.residue_indices[rhs_atom_ids]
 
@@ -378,7 +442,7 @@ class HeligeomInterface:
 
         return mono1_atom_indexes, mono2_atom_indexes
 
-    def molstar_selection_monomers(self):
+    def molstar_selection_monomers(self, fileout=None):
         """Returns the molstar selection as a string of the 2 monomers
         and the atom indexes belonging to the interface of monomer 1 and 2.
 
@@ -389,7 +453,7 @@ class HeligeomInterface:
         str
             the molstar selection as a string
         """
-        mono1_atom_indexes, mono2_atom_indexes = self.interface_atoms()
+        mono1_atom_indexes, mono2_atom_indexes = self.interface_atoms(cutoff=5, fileout=fileout)
 
         selection = (
             # selection of the monomer 1
@@ -403,15 +467,6 @@ class HeligeomInterface:
         )
 
         return selection
-
-    def molstar_selections_core(self):
-        """Returns the molstar selection as a string of the core region of 2 monomers
-
-        Returns
-        -------
-        str
-            the molstar selection as a string
-        """
 
     @classmethod
     def compute_fnat(cls, heli_interface1, heli_interface2, cutoff=5):

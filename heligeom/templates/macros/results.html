@@ -34,6 +34,13 @@
         &emsp;<div class="core_li">Core region: <b>{% if data.core_filter2 == "all" %} All Residues {% else %}
           {{ data.core_region2 }}{% endif %}</b></li>
       </ul>
+      <p>
+        <a id=button_residue class="waves-effect btn-small grey darken-1"
+          href="{{ url_for('heligeom_bp.download', results_id=data.results_id, filename=data.contacts_csv)}}">
+          <i class="material-icons right">receipt</i>
+            <span class="hide-on-med-and-down">Download list of contacts</span>
+        </a>
+      </p>
   </div>
   <div class="col s12 m8">
     <div class="monomers_visu">

@@ -190,6 +190,8 @@ def results(results_id):
             core_filter1, core_region1, core_region2
         )
 
+        contacts_csv = "contacts_interface1.csv"
+
         screw_data = {
             "results_id": results_id,
             "pdb_input": pdb_filename,
@@ -212,9 +214,12 @@ def results(results_id):
             "dmin": f"{dmin:3.2f}",
             "dmax": f"{dmax:3.2f}",
             "rmsd": f"{rmsd:3.2f}",
-            "select_interface_mono": heli_interface1.molstar_selection_monomers(),
+            "select_interface_mono": heli_interface1.molstar_selection_monomers(
+                path_to_result / contacts_csv
+            ),
             "select_core1": heli_interface1.molstar_select_core_monomer1,
             "select_core2": heli_interface1.molstar_select_core_monomer2,
+            "contacts_csv": contacts_csv,
         }
 
         # 2nd Oligomer
@@ -251,6 +256,8 @@ def results(results_id):
                 heli_interface2.compute_screw(core_filter1bis, core_region1bis, core_region2bis)
             )
 
+            contactsbis_csv = "contacts_interface2.csv"
+
             # Compute FNAT
             fnat = HeligeomInterface.compute_fnat(heli_interface1, heli_interface2)
 
@@ -278,9 +285,12 @@ def results(results_id):
                 "dmax": f"{dmax2:3.2f}",
                 "rmsd": f"{rmsd:3.2f}",
                 "fnat": f"{fnat:3.4f}",
-                "select_interface_mono": heli_interface2.molstar_selection_monomers(),
+                "select_interface_mono": heli_interface2.molstar_selection_monomers(
+                    path_to_result / contactsbis_csv
+                ),
                 "select_core1": heli_interface2.molstar_select_core_monomer1,
                 "select_core2": heli_interface2.molstar_select_core_monomer2,
+                "contacts_csv": contactsbis_csv,
             }
 
         # Initialize construction form
