@@ -161,7 +161,7 @@ class HeligeomInterface:
             global_rb.occupancies = [0] * len(global_rb)
 
         # Discard hetero and water atoms
-        protein = global_rb.select("not hetero and not water")
+        protein = global_rb.select("not hetero and not water").copy()
 
         self.monomer1 = HeligeomMonomer(protein, chain_id_M1, res_range_M1)
         if self.monomer1.size() == 0:
