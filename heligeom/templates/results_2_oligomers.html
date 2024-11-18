@@ -147,9 +147,6 @@
   {% if construct_data %}
 
   <div class="row" id="visualisation">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pdbe-molstar@3.3.0/build/pdbe-molstar-light.css"
-    type="text/css" />
-    <script src="https://cdn.jsdelivr.net/npm/pdbe-molstar@3.3.0/build/pdbe-molstar-plugin.js"></script>
     <div class="col s12 m6">
       <div class="card">
         <div class="card-content">
@@ -157,7 +154,7 @@
           <div class="row">
             {{ results_macro.button_download_oligomer(screw_data.results_id, construct_data.pdb_out_name) }}
           </div>
-          <div class="row" style="margin-bottom: 30px;">
+          <div class="row center" style="margin-bottom: 30px;">
             {{ results_macro.molstar_buttons(construct_data,"pdbe_component_oligo") }}
           </div>
           <div class="row oligomers_visu">
@@ -181,7 +178,7 @@
           <div class="row">
             {{ results_macro.button_download_oligomer(screw_data.results_id, construct_data_bis.pdb_out_name) }}
           </div>
-          <div class="row" style="margin-bottom: 30px;">
+          <div class="row center" style="margin-bottom: 30px;">
             {{ results_macro.molstar_buttons(construct_data_bis,"pdbe_component_oligo_bis") }}
           </div>
           <div class="row oligomers_visu">
