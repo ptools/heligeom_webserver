@@ -20,7 +20,7 @@ from ptools.io.exceptions import InvalidPDBAtomLineError, InvalidPDBFormatError
 
 from .forms import Construction, InputStructures, validate_input_structure
 from .models import UserInputs, db
-from .tool import HeligeomInterface, MonomerSizeZeroError
+from .tool import HeligeomInterface, MonomersDifferentSizeError, MonomerSizeZeroError
 
 # Blueprint Configuration
 heligeom_bp = Blueprint(
@@ -72,16 +72,16 @@ def runpage():
                     form.res_range1.data,
                     form.res_range2.data,
                 )
-            except MonomerSizeZeroError as e:
+            except InvalidPDBFormatError as e:
                 modalError = {
-                    "title": "Invalid Monomer Selection",
+                    "title": f"File Parsing Error for {pdb_filename}",
                     "message": str(e),
                 }
                 shutil.rmtree(result_path)  # Removed newly created folder due to the errors
                 return render_template("run.html", form=form, modalError=modalError)
-            except (InvalidPDBFormatError, InvalidPDBAtomLineError) as e:
+            except (MonomerSizeZeroError, MonomersDifferentSizeError) as e:
                 modalError = {
-                    "title": f"File Parsing Error for {pdb_filename}",
+                    "title": "Invalid Monomer Selection for the 1st Oligomeric form",
                     "message": str(e),
                 }
                 shutil.rmtree(result_path)  # Removed newly created folder due to the errors
@@ -120,16 +120,16 @@ def runpage():
                         form.res_range1bis.data,
                         form.res_range2bis.data,
                     )
-                except MonomerSizeZeroError as e:
+                except InvalidPDBFormatError as e:
                     modalError = {
-                        "title": "Invalid Monomer Selection <b>in the 2nd Oligomer</b>",
+                        "title": f"File Parsing Error for {pdb_filename_2nd}",
                         "message": str(e),
                     }
                     shutil.rmtree(result_path)  # Removed newly created folder due to the errors
                     return render_template("run.html", form=form, modalError=modalError)
-                except (InvalidPDBFormatError, InvalidPDBAtomLineError) as e:
+                except (MonomerSizeZeroError, MonomersDifferentSizeError) as e:
                     modalError = {
-                        "title": f"File Parsing Error for {pdb_filename_2nd}",
+                        "title": "Invalid Monomer Selection for the 2nd Oligomeric form",
                         "message": str(e),
                     }
                     shutil.rmtree(result_path)  # Removed newly created folder due to the errors

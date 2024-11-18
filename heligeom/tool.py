@@ -171,6 +171,12 @@ class HeligeomInterface:
         if self.monomer2.size() == 0:
             raise MonomerSizeZeroError("Monomer 2 has a size of 0 atoms.")
 
+        # TODO CHECK WITH CORE REGIONS
+        if self.monomer1.size() != self.monomer2.size():
+            raise MonomersDifferentSizeError(
+                f"Monomer 1 & 2 have different atom sizes ({self.monomer1.size()} vs {self.monomer2.size()})."
+            )
+
         self.hp = Screw()
         self.molstar_select_core_monomer1 = self.monomer1.molstar_selection
         self.molstar_select_core_monomer2 = self.monomer2.molstar_selection
