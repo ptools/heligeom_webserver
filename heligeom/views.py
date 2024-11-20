@@ -88,8 +88,6 @@ def runpage():
                 return render_template("run.html", form=form, modalError=modalError)
 
             # Save to the database the form inputs
-            # Only way for now to pass the form data to another page.
-            # We could use session or flash messages but neither seems to fit the need.
             user_inputs = UserInputs(
                 request_id=uniq_id,
                 pdb_filename=pdb_filename,
@@ -161,12 +159,17 @@ def results(results_id):
     # Query the database to retrieve the form inputs
     query_result = UserInputs.query.filter_by(request_id=results_id).first()
 
+    # Redirect to 404 page when the query didn't return anything
     if not query_result:
         abort(404)
 
+    # Path for all output files accessible to the user
     path_to_result = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id)
+    pdb_monomers = "mono1-2.pdb"
+    contacts_csv = "contacts_interface1.csv"
 
     try:
+        # Extract data from the database
         pdb_filename = query_result.pdb_filename
         chain1_id = query_result.chain1_id
         chain2_id = query_result.chain2_id
@@ -179,23 +182,24 @@ def results(results_id):
 
         pdb_abs_path = path_to_result / pdb_filename
 
+        # Object to handle all the computation
         heli_interface1 = HeligeomInterface(
             pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2
         )
 
-        heli_interface1.save_monomers(path_to_result / "mono1-2.pdb")
+        # Save monomers only for the 1st molstar visualisation, depicting the interface
+        heli_interface1.save_monomers(path_to_result / pdb_monomers)
 
         # Compute Helicoidal parameters
         pitch, monomers_per_turn, direction, dmin, dmax, rmsd = heli_interface1.compute_screw(
             core_filter1, core_region1, core_region2
         )
 
-        contacts_csv = "contacts_interface1.csv"
-
+        # Information passed to the jinja2 template
         screw_data = {
             "results_id": results_id,
             "pdb_input": pdb_filename,
-            "monos_file": "mono1-2.pdb",
+            "monos_file": pdb_monomers,
             "chain1_id": chain1_id,
             "chain2_id": chain2_id,
             "res_range1": res_range1,
@@ -228,6 +232,7 @@ def results(results_id):
         heli_interface2 = None
 
         pdb_filename2 = query_result.pdb_filename_2nd
+
         if pdb_filename2:
             has_2nd_oligo = True
             chain1bis_id = query_result.chain1bis_id
@@ -292,6 +297,7 @@ def results(results_id):
                 "select_core2": heli_interface2.molstar_select_core_monomer2,
                 "contacts_csv": contactsbis_csv,
             }
+        # End if 2nd Oligomer
 
         # Initialize construction form
         construct_form = Construction()
@@ -300,7 +306,6 @@ def results(results_id):
             n_mer = construct_form.n_mer.data
             z_align = construct_form.z_align
 
-            # Ptools part
             # Name of the constructed PDB (used also in download function)
             if z_align:
                 pdb_out_name = f"Construct_N{n_mer}_Z_{pdb_filename}"
@@ -359,7 +364,7 @@ def results(results_id):
                     construct_data=construct_data,
                     construct_data_bis=construct_data_bis,
                 )
-
+            # End if 2nd Oligomer
             else:
                 return render_template(
                     "results.html",
@@ -389,7 +394,7 @@ def results(results_id):
         return render_template("error.html", error_log=traceback.format_exc())
 
 
-# Create a route for the generated PDB. Use to download it and in the LiteMol plugin
+# Create a route for the generated PDB. Use to download it and in the Molstar plugin
 @heligeom_bp.route("/results/<results_id>/<path:filename>", methods=["GET", "POST"])
 def download(results_id, filename):
     return send_from_directory(

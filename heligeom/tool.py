@@ -233,7 +233,7 @@ class HeligeomInterface:
                 f"Monomer 1 & 2 have different sizes ({rb1.size()} vs {rb2.size()} )."
             )
 
-        # Use CA for computating parameters
+        # Use CA to compute Screw parameters
         monomer1_CA = rb1.select("name CA")
         monomer2_CA = rb2.select("name CA")
 
@@ -258,7 +258,7 @@ class HeligeomInterface:
         return (pitch, monomers_per_turn, direction, dmin, dmax, rmsd_value)
 
     def construct_oligomer(self, ncopies, z_align, fileout):
-        """Based on the interface, construct an oligomer with
+        """Based on the Screw, construct an oligomer with
         `ncopies` of the 1st monomer.
 
         This oligomer will be written as a PDB in `fileout`.
@@ -279,7 +279,6 @@ class HeligeomInterface:
 
     def save_monomers(self, fileout):
         """Save both monomers to a PDB file in `fileout`.
-
 
         Parameters
         ----------
@@ -503,6 +502,25 @@ class HeligeomInterface:
 
 
 def create_core_monomer(rb, core_region):
+    """Based on the string `core_region`, construct a sub Rigidbody of `rb`
+    containing only the residus selected.
+
+    The string should be in the form of "X-Y, Z-A,..." with X,Y,Z,A as residue numbers.
+
+
+    Parameters
+    ----------
+    rb : _type_
+        _description_
+    core_region : String
+        litteral string defining a core region, in the form of "X-Y, Z-A,..."
+
+    Returns
+    -------
+    Rigidbody
+        a new RigidBody containing only the core region.
+        If no core region found, return the input `rb`.
+    """
     # Parse core region input
     res = re.match(InputStructures.cls_regexp_core, core_region)
     if not res:

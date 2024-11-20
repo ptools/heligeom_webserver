@@ -76,6 +76,7 @@ class UserInputs(db.Model):
         core_filter2bis="",
         core_region2bis="",
     ):
+        """Fill the values of the 2nd oligomer form data."""
         self.second_oligomer = True
         self.pdb_filename_2nd = pdb_filename_2nd
         self.chain1bis_id = chain1bis_id

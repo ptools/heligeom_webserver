@@ -225,11 +225,29 @@ class InputStructures(FlaskForm):
         return self.check_core_regions()
 
     def check_core_regions(self):
+        """Custom validator that make sure the core regions are realistic.
+
+        Check both core regions of the 1st interface.
+
+        Returns
+        -------
+        Boolean
+            True if the regions are correct. False otherwise
+        """
         return check_core_region_monomer(
             self.core_filter1, self.core_region1
         ) and check_core_region_monomer(self.core_filter2, self.core_region2)
 
     def check_core_regions_bis(self):
+        """Custom validator that make sure the core regions are realistic.
+
+        Check both core regions of the 2nd interface.
+
+        Returns
+        -------
+        Boolean
+            True if the regions are correct. False otherwise
+        """
         return check_core_region_monomer(
             self.core_filter1bis, self.core_region1bis
         ) and check_core_region_monomer(self.core_filter2bis, self.core_region2bis)
@@ -361,6 +379,23 @@ def validate_input_structure(pdb_file, pdb_id, path):
 
 
 def check_core_region_monomer(filter, string_range):
+    """Ensure the input text area of a core region is valid.
+
+    Valid means the radio button is coherent with the text area
+    and the text area contains correct & realistic patterns.
+
+    Parameters
+    ----------
+    filter : RadioField
+        the button to select the type of core region
+    string_range : StringField
+        the text area to select custom core region
+
+    Returns
+    -------
+    Boolean
+        True if the core region is valid. False otherwise
+    """
     # No core region defined
     if filter.data == "all":
         return True
@@ -411,6 +446,9 @@ class Construction(FlaskForm):
         Bool
             True if the fields forms are valid. False otherwise.
         """
+        # Start by calling the parent method
+        if not super().validate(extra_validators=extra_validators):
+            return False
 
         if self.n_mer.data is None:
             self.n_mer.errors = "Required to construct the filament."
