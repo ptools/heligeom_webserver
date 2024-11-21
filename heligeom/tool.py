@@ -19,15 +19,15 @@ from .forms import InputStructures
 
 # = Custom selections functions are faster than semantic ones i.e rb.select("chain X") ========
 def _custom_select_chains(rb, chain):
-    indices = np.where(rb.atom_properties.get("chains").values == chain)[0]
+    indices = np.where(rb.atom_properties["chains"].values == chain)[0]
     return rb[indices]
 
 
 def _custom_select_residue_range(rb, start, end):
     indices = np.where(
         np.logical_and(
-            rb.atom_properties.get("residue_indices").values >= start,
-            rb.atom_properties.get("residue_indices").values <= end,
+            rb.atom_properties["residue_indices"].values >= start,
+            rb.atom_properties["residue_indices"].values <= end,
         )
     )[0]
     return rb[indices]
