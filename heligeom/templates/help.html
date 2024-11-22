@@ -8,93 +8,118 @@
   <div class="container">
     <div class="section">
 
-        <h2 class="header light">How to use Heligeom</h2>
+      <h2 class="header light blue-grey-text text-darken-3"">About Heligeom</h2>
 
-        <div class="divider"></div>
 
-        <h4 class="header center-align" id="1_oligo">Run Page</h4>
+      <p>
+        Heligeom aims at characterizing, manipulating and assembling structural units with a screw organization, and in which the structural units may be individual proteins or protein hetero-multimers.<br/>
+        Heligeom relies on the structures of monomer-monomer interfaces both for deriving the transformations and for filament construction. <br />
 
-        <div class="divider"></div>
+      </p>
 
-        <h4 class="header center-align" id="1_oligo">Result Page with 1 Oligomer</h4>
+      <h5 class="blue-grey-text text-darken-3">Examples</h5>
 
-        <div>
-          <h5 class="header">1 - Input parameters</h5>
-          <div class="center-align">
-            <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_up.png')}}"style="max-width:80%;">
-          </div>
-          <p>
-            First, <b>Heligeom</b> displays a summary of the input parameters you have entered: PDB file name (or PDB Id ), chains and/or residues range.
-            If one is not specified, the word "Unspecified" is displayed instead. <br>
-            The number of monomers required to create the oligomer and the Z-alignment are also given.
-          </p>
-        </div>
+      <p>
+        Here, you can find a set of pre-computed results to explore Heligeom outputs:
+        <ul class="browser-default">
+          <li><a href="linktoresults">2GLS</a>: It is an oligomeric ring. By choosing the first 2 chains (i.e 'A' and 'B') and construct an oligomer of 6 elements, you can retrieve the first layer of ring present in the PDB file.</li>
+          <li><a href="linktoresults">5i9f</a>: Showcase the comparison of 2 slightly different interfaces, resulting in different constructed oligomers.
+        </ul>
 
-        <div>
-        <h5 class="header">1 - Helical parameters</h5>
-        <b>Note: </b> This is the same values displayed when clicked on the button
-        <button class="waves-effect btn lbt-bleu">Retrieve Helical parameters?<i class="material-icons right">send</i></button>
-        on the input page.
+      </p>
+
+      <h2 class="header light blue-grey-text text-darken-3"">Documentation</h2>
+
+
+
+      <h4 class="header light blue-grey-text text-darken-3">Run Page</h4>
+
+      <div class="divider"></div>
+
+      <h4 class="header light blue-grey-text text-darken-3" id="1_oligo">Result Page with 1 Oligomer</h4>
+
+      <div>
+        <h5 class="header">1 - Contacts at the interface</h5>
         <div class="center-align">
-          <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_mid.png')}}"style="max-width:80%;">
+          <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_up.png')}}"style="max-width:80%;">
         </div>
         <p>
-          Then, <b>Heligeom</b> displays the helical parameters computed from the 2 monomers given.
-          It refers to the <a href="{{ url_for('heligeom_bp.homepage', _anchor='screw') }}">screw calculation</a>.<br>
-          See the image below for a visual explanation of those parameters.<br>
-          The <b>pitch</b> is the distance of one helix turn along the helix axis. <br>
-          The <b>monomer per turn</b> is the number of monomers needed for <b>1</b> turn of the helix.<br>
-          The <b>Handedness</b> is the direction of rotation around the axis.<br>
-          The 2 distances (<b>IntR</b> and <b>ExtR</b>) are the minimal and maximal distances between the screw axis and the atoms of oligomer.<br>
-          On the right, it is the parameters of the screw axis, defined in the image next to it.
+          On the left, <b>Heligeom</b> displays a summary of the input parameters. <br />
+          For each monomer, you will have the chains, the residues range and the core regions.
+          If one is not specified, the word "Unspecified" is displayed instead. <br />
+
+          On the right, there is a <a href="https://molstar.org/">Mol*</a> visualisation depicting:
+          <ul class="browser-default">
+            <li>the 2 monomers selected by the user represented as Cartoon and whose colors matches their respecting title on the left.</li>
+            <li>the residues in contact at the interface, represented as '</li>
+          </ul>
+
         </p>
+      </div>
+
+      <div>
+      <h5 class="header">1 - Helical parameters</h5>
+
+      <div class="center-align">
+        <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_mid.png')}}"style="max-width:80%;">
+      </div>
+      <p>
+        Then, <b>Heligeom</b> displays the helical parameters computed from the 2 monomers given.
+        It refers to the <a href="{{ url_for('heligeom_bp.homepage', _anchor='screw') }}">screw calculation</a>.<br>
+        See the image below for a visual explanation of those parameters.<br>
+        The <b>pitch</b> is the distance of one helix turn along the helix axis. <br>
+        The <b>monomer per turn</b> is the number of monomers needed for <b>1</b> turn of the helix.<br>
+        The <b>Handedness</b> is the direction of rotation around the axis.<br>
+        The 2 distances (<b>IntR</b> and <b>ExtR</b>) are the minimal and maximal distances between the screw axis and the atoms of oligomer.<br>
+        On the right, it is the parameters of the screw axis, defined in the image next to it.
+      </p>
+      <div class="center-align">
+        <img class="responsive-img" src="{{ url_for('static', filename='img/helical_parameters_sketch.png')}}"style="max-width:25%;">
+      </div>
+      </div>
+
+      <div>
+        <h5 class="header">3 - Visualisation</h5>
         <div class="center-align">
-          <img class="responsive-img" src="{{ url_for('static', filename='img/helical_parameters_sketch.png')}}"style="max-width:25%;">
+          <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_bot.png')}}"style="max-width:80%;">
         </div>
+        <p>
+          Finally, <b>Heligeom</b> offers an interative view of the constructed oligomer. By default, the coloration is made by monomers.<br>
+          The plugin use is <a href="http://webchemdev.ncbr.muni.cz/Litemol/">LiteMol</a>, here a <a href="https://webchem.ncbr.muni.cz/Wiki/LiteMol:UserManual">link</a> to its documentation if needed. <br>
+          You can download the PDB file of the oligomer with the orange button.<br>
+        </p>
+      </div>
+
+
+      <div class="divider"></div>
+
+      <h4 class="header light blue-grey-text text-darken-3">Result Page with 2 Oligomers</h4>
+
+
+      <div>
+        <h5 class="header">Results</h5>
+        <div class="center-align">
+          <img class="responsive-img" src="{{ url_for('static', filename='img/result_2_up.png')}}"style="max-width:80%;">
         </div>
+        <p>
+          For a couple of oligmers, <b>Heligeom</b> displays the same content that for <a href="{{ url_for('heligeom_bp.help', _anchor='1_oligo') }}">1 Oligomer</a> with a <b>side by side </b> view.
+        </p>
+      </div>
 
-        <div>
-          <h5 class="header">3 - Visualisation</h5>
-          <div class="center-align">
-            <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_bot.png')}}"style="max-width:80%;">
-          </div>
-          <p>
-            Finally, <b>Heligeom</b> offers an interative view of the constructed oligomer. By default, the coloration is made by monomers.<br>
-            The plugin use is <a href="http://webchemdev.ncbr.muni.cz/Litemol/">LiteMol</a>, here a <a href="https://webchem.ncbr.muni.cz/Wiki/LiteMol:UserManual">link</a> to its documentation if needed. <br>
-            You can download the PDB file of the oligomer with the orange button.<br>
-          </p>
+      <div>
+        <h5 class="header">Comparison of the interface</h5>
+        <div class="center-align">
+          <img class="responsive-img" src="{{ url_for('static', filename='img/result_2_mid.png')}}"style="max-width:80%;">
         </div>
-
-
-        <div class="divider"></div>
-
-        <h4 class="header center-align">Result Page with 2 Oligomers</h4>
-
-
-        <div>
-          <h5 class="header">Results</h5>
-          <div class="center-align">
-            <img class="responsive-img" src="{{ url_for('static', filename='img/result_2_up.png')}}"style="max-width:80%;">
-          </div>
-          <p>
-            For a couple of oligmers, <b>Heligeom</b> displays the same content that for <a href="{{ url_for('heligeom_bp.help', _anchor='1_oligo') }}">1 Oligomer</a> with a <b>side by side </b> view.
-          </p>
-        </div>
-
-        <div>
-          <h5 class="header">Comparison of the interface</h5>
-          <div class="center-align">
-            <img class="responsive-img" src="{{ url_for('static', filename='img/result_2_mid.png')}}"style="max-width:80%;">
-          </div>
-          <p>
-            On the Result page, <b>Heligeom</b> displays some analyzis of the comparison of the 2 interfaces.<br>
-            <b><font size="+1">FNAT</font></b><br>
-            The Fnat is the fraction of residue pairs of the 1st interface present in the 2nd interface, as defined
-            <a href="{{ url_for('heligeom_bp.homepage', _anchor='interfaces') }}">here</a>.<br>
-            Value of 1.0: <b>All</b> of the residue pairs of the 1st interface are present in the 2nd one.<br>
-            Value of 0.0: <b>None</b> of the residue pairs of the 1st interface are present in the 2nd one.<br>
-          </p>
-        </div>
+        <p>
+          On the Result page, <b>Heligeom</b> displays some analyzis of the comparison of the 2 interfaces.<br>
+          <b><font size="+1">FNAT</font></b><br>
+          The Fnat is the fraction of residue pairs of the 1st interface present in the 2nd interface, as defined
+          <a href="{{ url_for('heligeom_bp.homepage', _anchor='interfaces') }}">here</a>.<br>
+          Value of 1.0: <b>All</b> of the residue pairs of the 1st interface are present in the 2nd one.<br>
+          Value of 0.0: <b>None</b> of the residue pairs of the 1st interface are present in the 2nd one.<br>
+        </p>
+      </div>
 
     </div>
   </div>
