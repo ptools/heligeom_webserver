@@ -27,6 +27,8 @@ heligeom_bp = Blueprint(
     "heligeom_bp", __name__, template_folder="templates", static_folder="static"
 )
 
+VERSION = "1.0.0"
+
 
 # Functions used to time spent on each page
 # TODO: Remove in production
@@ -40,6 +42,12 @@ def log_route_end(response):
     route = request.endpoint
     print(f"{route} ended after {time.time() - g.pop('start_time', None)}")
     return response
+
+
+# Allow a global variable to passed by default to render_template()
+@heligeom_bp.context_processor
+def set_version():
+    return dict(version=VERSION)
 
 
 @heligeom_bp.route("/")
