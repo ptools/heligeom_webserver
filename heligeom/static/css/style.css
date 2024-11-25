@@ -164,3 +164,7 @@ p#rmsd {
 .img_help {
   padding-top: 15px;
 }
+
+.valign {
+  vertical-align: middle;
+}
