@@ -160,3 +160,11 @@ p#rmsd {
   line-height: 27px;
   font-size: 12px;
 }
+
+.img_help {
+  padding-top: 15px;
+}
+
+.valign {
+  vertical-align: middle;
+}
