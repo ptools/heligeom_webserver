@@ -88,8 +88,15 @@
                     const pdbeMolstarComponent = document.getElementById('pdbe_component_oligo');
                     pdbe_component_oligo = pdbeMolstarComponent.viewerInstance;
                   });
-              </script>
+                </script>
               </div>
+              {% if construct_data.flatten %}
+                <div class="row valign-wrapper">
+                    <div class="col s12 m8">
+                      {{ results_macro.display_ring_params(construct_data) }}
+                    </div>
+                </div>
+              {% endif %}
             </div>
             <script> // Snippet to scroll down to the visualisation section once the form is validated.
               document.location.hash = '#visualisation';

@@ -8,7 +8,9 @@ import re
 from dataclasses import dataclass, field
 
 import numpy as np
-from ptools import RigidBody, io, measure
+import ptools
+from ptools import RigidBody, io, measure, reduce
+from ptools import superpose
 from ptools.heligeom import chain_intersect, heli_analyze, heli_construct
 from ptools.pairlist import PairList
 from ptools.superpose import Screw, rmsd
@@ -260,7 +262,7 @@ class HeligeomInterface:
 
         return (pitch, monomers_per_turn, direction, dmin, dmax, rmsd_value)
 
-    def construct_oligomer(self, fileout, ncopies, z_align=True, flatten=False):
+    def construct_oligomer(self, fileout, ncopies, z_align=True):
         """Based on the interface, construct an oligomer with
         `ncopies` of the 1st monomer.
 
@@ -274,17 +276,44 @@ class HeligeomInterface:
             number of copies of the 1st monomer to be cosntructed.
         z_align: Bool
             Wether the oligomer should be aligned on the Z axis.
-        flatten: Bool
-            Wether the oligomer should be flatten.
         """
 
-        if flatten:
-            # result = heli_ring(self.monomer1.rb, self.hp, N=ncopies, Z=z_align)
-            pass
-        else:
-            self.oligomer = heli_construct(self.monomer1.rb, self.hp, N=ncopies, Z=z_align)
+        self.oligomer = heli_construct(self.monomer1.rb, self.hp, N=ncopies, Z=z_align)
 
         io.write_pdb(self.oligomer, fileout)  # type: ignore
+
+    def heli_ring(self, fileout, ncopies, z_align=True):
+        # Create an AttractRigidBody from a RigidBody
+        # First need to reduce the structures to Coarse grained structures
+        reducer = reduce.Reducer(
+            self.monomer1.rb, reduce.FORCEFIELDS["attract1"], reduce.DEFAULT_ATOM_RENAME_RULES_PATH
+        )
+        reducer.reduce(reduce.exceptions.all_exceptions())
+        arec = ptools.AttractRigidBody(reducer.get_reduced_model())
+
+        reducer = reduce.Reducer(
+            self.monomer2.rb, reduce.FORCEFIELDS["attract1"], reduce.DEFAULT_ATOM_RENAME_RULES_PATH
+        )
+        reducer.reduce(reduce.exceptions.all_exceptions())
+        alig = ptools.AttractRigidBody(reducer.get_reduced_model())
+
+        # Compute reference energy
+        eref = utils.ener1(arec, alig, 7)
+
+        # Call adjust with Ptarget = 0 to create a ring
+        newhp, newrb, bestener, rms, fnat = utils.adjust(arec, self.hp, eref, ncopies, 0)
+
+        # Reconstruct the atomistic structure
+        new_rb_atomistic = self.monomer1.rb.copy()
+        rb_CA = self.monomer1.rb.select("name CA")
+        red_CA = newrb.select("name CA")
+        matrix = superpose.fit_matrix(red_CA, rb_CA)
+        superpose.transform.move(new_rb_atomistic, matrix)
+
+        self.oligomer = heli_construct(new_rb_atomistic, newhp, N=ncopies, Z=z_align)
+        io.write_pdb(self.oligomer, fileout)  # type: ignore
+
+        return (newhp, rms, fnat)
 
     def save_monomers(self, fileout):
         """Save both monomers to a PDB file in `fileout`.
