@@ -111,7 +111,7 @@
 <div class="center tooltipped" data-position="top" data-tooltip="RMSD is computed between the Carbon-α of the 2 monomers." style="margin-top: 20px;">
   {% if (data.rmsd | float < 2) %}
     <div class="green-text text-darken-3">
-    RMSD: <b>{{ data.rmsd }}</b>
+      RMSD: <b>{{ data.rmsd }}</b>  <i class="valign tiny material-icons">help</i>
     <p id="rmsd">The RMSD of the superposition is acceptable (<= 2&#8491;).</p>
     </div>
   {% elif (data.rmsd) | float > 2 and (data.rmsd) | float < 5 %}
@@ -141,7 +141,7 @@
     {{ form.n_mer }}
     <label>Number of Monomers (100 maximum)</label>
     {% if form.n_mer.errors %}
-    <span class="helper-text error-input">{{form.n_mer.errors}}</span>
+    <span class="helper-text error-input">{{form.n_mer.errors[0]}}</span>
     {% else %}
     <span class="helper-text" data-error="Number only" data-success="">Number only</span>
     {% endif %}
@@ -205,7 +205,7 @@
       {data: [ {{ construct_data.select_interface }} ],
       nonSelectedColor: {r:255,g:255,b:255}})"
   >
-  Select & Focus on residus at the interface
+  Select & Focus on residus at the interface  <i class="valign tiny material-icons">help</i>
   </button>
 </div>
 <div class="row" style="margin-bottom: 5px;">
