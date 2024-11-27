@@ -172,10 +172,10 @@ class HeligeomInterface:
             raise MonomerSizeZeroError("Monomer 2 has a size of 0 atoms.")
 
         # TODO CHECK WITH CORE REGIONS
-        if self.monomer1.size() != self.monomer2.size():
-            raise MonomersDifferentSizeError(
-                f"Monomer 1 & 2 have different atom sizes ({self.monomer1.size()} vs {self.monomer2.size()})."
-            )
+        # if self.monomer1.size() != self.monomer2.size():
+        #     raise MonomersDifferentSizeError(
+        #         f"Monomer 1 & 2 have different atom sizes ({self.monomer1.size()} vs {self.monomer2.size()})."
+        #     )
 
         self.hp = Screw()
         self.molstar_select_core_monomer1 = self.monomer1.molstar_selection
@@ -228,14 +228,14 @@ class HeligeomInterface:
         if rb2.size() == 0:
             raise MonomerSizeZeroError("Monomer 2 defined with core regions has a size of 0 atoms.")
 
-        if rb1.size() != rb2.size():
-            raise MonomersDifferentSizeError(
-                f"Monomer 1 & 2 have different sizes ({rb1.size()} vs {rb2.size()} )."
-            )
-
         # Use CA to compute Screw parameters
         monomer1_CA = rb1.select("name CA")
         monomer2_CA = rb2.select("name CA")
+
+        if monomer1_CA.size() != monomer2_CA.size():
+            raise MonomersDifferentSizeError(
+                f"Monomer 1 & 2 have different sizes ({rb1.size()} vs {rb2.size()} )."
+            )
 
         self.hp = heli_analyze(monomer1_CA, monomer2_CA)
         rmsd_value = rmsd(monomer1_CA, monomer2_CA, do_fit=True)
