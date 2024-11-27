@@ -11,6 +11,7 @@ M.AutoInit();
 $(document).ready(function(){
   $('.collapsible').collapsible();
   $('.tooltipped').tooltip();
+  $('.scrollspy').scrollSpy();
 });
 
 // When called, remove the "hide" class of one element id given in parameter

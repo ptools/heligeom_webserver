@@ -5,62 +5,180 @@
 {% block content %}
 
 
-  <div class="container">
-    <div class="section">
+<div class="container">
+  <div class="section">
+    <div class="row">
+      <div class="col s12 m9 l10">
+        <h2 class="header light blue-grey-text text-darken-3">About Heligeom</h2>
 
-        <h2 class="header light">How to use Heligeom</h2>
 
-        <div class="divider"></div>
+        <p>
+          Heligeom aims at characterizing, manipulating and assembling structural units with a screw organization, and in which the structural units may be individual proteins or protein hetero-multimers.<br/>
+          Heligeom relies on the structures of monomer-monomer interfaces both for deriving the transformations and for filament construction. <br />
 
-        <h4 class="header center-align" id="1_oligo">Run Page</h4>
+        </p>
 
-        <div class="divider"></div>
+        <div  class="section scrollspy" id="examples" style="padding-top: 0px;">
+          <h5 class="title_card_results">Examples</h5>
 
-        <h4 class="header center-align" id="1_oligo">Result Page with 1 Oligomer</h4>
+          <p>
+            Here, you can find a set of pre-computed results to explore Heligeom outputs:
+            <ul class="browser-default">
+              <li><a href="linktoresults">2GLS</a>: It is an oligomeric ring.
+                By choosing the first 2 chains (i.e 'A' and 'B') and construct an oligomer of 6 elements, you can retrieve the first layer of ring present in the PDB file.
+                This is the example used when clicking on the <i>Example button</i> on the Run page.
+              </li>
+              <li><a href="linktoresults">5i9f</a>: Showcase the comparison of 2 slightly different interfaces, resulting in different constructed oligomers.
+            </ul>
 
-        <div>
-          <h5 class="header">1 - Input parameters</h5>
-          <div class="center-align">
-            <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_up.png')}}"style="max-width:80%;">
+          </p>
+        </div>
+
+        <h2 class="header light blue-grey-text text-darken-3">Documentation</h2>
+
+
+        <div class="section scrollspy" id="run" style="padding-top: 0px;">
+          <h3 class="title_card_results">Run Page</h3>
+
+          <h5 class="header">1 - First Oligomeric form</h5>
+          <div class="center-align img_help" style="padding-top: 10px;">
+            <img class="responsive-img" src="{{ url_for('static', filename='img/run_1.png')}}"style="max-width:80%;">
           </div>
           <p>
-            First, <b>Heligeom</b> displays a summary of the input parameters you have entered: PDB file name (or PDB Id ), chains and/or residues range.
-            If one is not specified, the word "Unspecified" is displayed instead. <br>
-            The number of monomers required to create the oligomer and the Z-alignment are also given.
+            The form is organised in 2 parts: the <span style="color: #4472c4">Input data</span>
+            and the <span style="color: #ed7d31">Selection</span>. <br />
+            <br />
+            In the <span style="color: #4472c4">Input data</span>, you can either:
+            <ul class="browser-default">
+              <li>choose a input file. Only the PDB format is accepted.</li>
+              <li>select a PDB id taken from <a href="https://www.rcsb.org/">https://www.rcsb.org/</a></li>
+            </ul>
+            From this input PDB, in the <span style="color: #ed7d31">Selection</span> section, you'll need to define the 2 monomers whose the interface and the Screw parameters will be computed from.<br />
+            For each monomer you can specify either the chain, the residue range or both.
+          </p>
+          <p>
+            <b>Core Region:</b> A core region is a specific region of the monomer which will be used to compute the helical parameters and the residue at the interface.<br>
+            <b><i class="tiny material-icons valign">priority_high</i>Careful, during the construction of an oligomer, the whole monomer will be used, not just the core region.</b><i class="tiny material-icons valign">priority_high</i>
           </p>
         </div>
 
         <div>
-        <h5 class="header">1 - Helical parameters</h5>
-        <b>Note: </b> This is the same values displayed when clicked on the button
-        <button class="waves-effect btn lbt-bleu">Retrieve Helical parameters?<i class="material-icons right">send</i></button>
-        on the input page.
-        <div class="center-align">
-          <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_mid.png')}}"style="max-width:80%;">
-        </div>
-        <p>
-          Then, <b>Heligeom</b> displays the helical parameters computed from the 2 monomers given.
-          It refers to the <a href="{{ url_for('heligeom_bp.homepage', _anchor='screw') }}">screw calculation</a>.<br>
-          See the image below for a visual explanation of those parameters.<br>
-          The <b>pitch</b> is the distance of one helix turn along the helix axis. <br>
-          The <b>monomer per turn</b> is the number of monomers needed for <b>1</b> turn of the helix.<br>
-          The <b>Handedness</b> is the direction of rotation around the axis.<br>
-          The 2 distances (<b>IntR</b> and <b>ExtR</b>) are the minimal and maximal distances between the screw axis and the atoms of oligomer.<br>
-          On the right, it is the parameters of the screw axis, defined in the image next to it.
-        </p>
-        <div class="center-align">
-          <img class="responsive-img" src="{{ url_for('static', filename='img/helical_parameters_sketch.png')}}"style="max-width:25%;">
-        </div>
+          <h5 class="header">2 - 2nd Oligomeric form (Optional)</h5>
+
+          <p>
+            Helligeom allows you also to compare 2 interfaces by defining a second interface in the form.<br />
+            To do that, you will need to click on the text <i>2nd oligomeric form?</i> and the same form as for the first oligomer will appear.
+          </p>
+
+          <div class="center-align img_help">
+            <img class="responsive-img" src="{{ url_for('static', filename='img/run_3.png')}}"style="max-width:80%;">
+          </div>
         </div>
 
         <div>
-          <h5 class="header">3 - Visualisation</h5>
-          <div class="center-align">
-            <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_bot.png')}}"style="max-width:80%;">
+          <h5 class="header">3 - Run</h5>
+
+          <p>
+            You can hit the <i>Analyze</i> button to start the computation and get the results.
+          </p>
+          <div class="center-align img_help">
+            <img class="responsive-img" src="{{ url_for('static', filename='img/run_4.png')}}"style="max-width:80%;">
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div  class="section scrollspy" id="1_oligo">
+          <h3 class="title_card_results" id="1_oligo">Result Page with 1 Oligomer</h3>
+
+          <h5 class="header">Contacts at the interface</h5>
+          <div class="center-align img_help">
+            <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_up.png')}}"style="max-width:80%;">
           </div>
           <p>
-            Finally, <b>Heligeom</b> offers an interative view of the constructed oligomer. By default, the coloration is made by monomers.<br>
-            The plugin use is <a href="http://webchemdev.ncbr.muni.cz/Litemol/">LiteMol</a>, here a <a href="https://webchem.ncbr.muni.cz/Wiki/LiteMol:UserManual">link</a> to its documentation if needed. <br>
+            On the left, <b>Heligeom</b> displays a summary of the input parameters. <br />
+            For each monomer, you will have the chains, the residues range and the core regions.
+            If one is not specified, the word "Unspecified" is displayed instead. <br />
+
+            On the right, there is a <a href="https://molstar.org/">Mol*</a> visualisation depicting:
+            <ul class="browser-default">
+              <li>the 2 monomers selected by the user represented as <i>Cartoon</i> and whose colors matches their respecting title on the left.</li>
+              <li>the residues in contact at the interface, represented  as <i>ball and stick</i></li>
+            </ul>
+
+          </p>
+          <p>
+            <b>List of contacts:</b> The whole list of contacts can be downloaded by clicking on the button <i>Download list of contacts</i>.<br />
+            A contact is defined when 2 heavy atoms have a distance < 5&#8491;.
+          </p>
+        </div>
+
+        <div>
+          <h5 class="header">Helical parameters</h5>
+
+          <div class="center-align img_help">
+            <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_mid.png')}}"style="max-width:80%;">
+          </div>
+          <p>
+            <b>Heligeom</b> displays the helical parameters computed from the 2 monomers given.
+            It refers to the <a href="{{ url_for('heligeom_bp.homepage', _anchor='screw') }}">screw calculation</a>.<br>
+            <b><i class="tiny material-icons valign">priority_high</i>This calculation is based solely on the C-α of the monomers.</b><i class="tiny material-icons valign">priority_high</i>
+          </p>
+          <div class="row">
+            <div class="col s12 m6 l6">
+              On the left part:
+              <ul class="browser-default">
+                <li>The <b>pitch</b> is the distance of one helix turn along the helix axis.</li>
+                <li>The <b>monomer per turn</b> is the number of monomers needed for <b>1</b> turn of the helix.</li>
+                <li>The <b>Handedness</b> is the direction of rotation around the axis.</li>
+                <li>The 2 distances (<b>IntR</b> and <b>ExtR</b>) are the minimal and maximal distances between the screw axis and the atoms of oligomer.</li>
+              </ul>
+              <p>
+              On the right part:
+              <ul class="browser-default">
+               <li>The parmaters of the Screw axis with a picture above explaining the values. Those will be used to construct the oligomer at the next step.</li>
+              </ul>
+              </p>
+            </div>
+            <div class="col s12 m4 l4">
+              <img class="responsive-img" src="{{ url_for('static', filename='img/helical_parameters_sketch.png')}}"style="max-width:75%;">
+            </div>
+          </div>
+          <p>
+            <b>RMSD:</b> The RMSD value of the superposition between the Carbon-α of the 2 monomers is displayed.<br />
+            Heligeom provides an hint with a color depending of the value:
+            <ul class="browser-default">
+              <li><span class="green-text text-darken-3">RMSD <= 2&#8491;:</span>TODO</li>
+              <li><span class="red-text text-accent-1"">2 < RMSD <= 5&#8491;:</span>TODO</li>
+              <li><span class="red-text">RMSD > 5&#8491;:</span>TODO</li>
+            </ul>
+          </p>
+        </div>
+
+        <div>
+          <h5 class="header">Construction Details</h5>
+          <div class="center-align img_help">
+            <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_bot_form.png')}}"style="max-width:80%;">
+          </div>
+          <p>
+            Once the helical parameters are computed, <b>Heligeom</b> can construct an oligomer based on those.<br />
+            The protocol is
+            <ul class="browser-default">
+             <li>to take the entire Monomer 1 selection (not only the <i>core regions</i>)</li>
+             <li>create copies of this monomers based on the screw parameters</li>
+             <li>repeat the above step to match the number of monomers given by the form.</li>
+            </ul>
+            There is also the option to align the oligomer to the Z-axis by checking the corresponding checkbox.
+          </p>
+          <br >
+          <br >
+          Once the construction is finished, a interactive view (thanks to <a href="https://molstar.org/">Mol*</a>) of the oligomer is displayed below the form.
+          <div class="center-align img_help">
+            <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_bot_visu.png')}}"style="max-width:80%;">
+          </div>
+          <p>
+            By default, the coloration is made by monomers. Each monomers will have a different chain, starting by <i>A</i>.<br >
+            A set of precomputed visualization buttons is available above the view. <br />
             You can download the PDB file of the oligomer with the orange button.<br>
           </p>
         </div>
@@ -68,22 +186,21 @@
 
         <div class="divider"></div>
 
-        <h4 class="header center-align">Result Page with 2 Oligomers</h4>
+        <div  class="section scrollspy" id="2_oligo">
+          <h4 class="header light blue-grey-text text-darken-3">Result Page with 2 Oligomers</h4>
 
-
-        <div>
           <h5 class="header">Results</h5>
-          <div class="center-align">
+          <div class="center-align img_help">
             <img class="responsive-img" src="{{ url_for('static', filename='img/result_2_up.png')}}"style="max-width:80%;">
           </div>
           <p>
-            For a couple of oligmers, <b>Heligeom</b> displays the same content that for <a href="{{ url_for('heligeom_bp.help', _anchor='1_oligo') }}">1 Oligomer</a> with a <b>side by side </b> view.
+            For a couple of oligmers, <b>Heligeom</b> displays the same content that for <a href="{{ url_for('heligeom_bp.help', _anchor='1_oligo') }}">1 Oligomer</a> with a <b>side by side</b> view.
           </p>
         </div>
 
         <div>
           <h5 class="header">Comparison of the interface</h5>
-          <div class="center-align">
+          <div class="center-align img_help">
             <img class="responsive-img" src="{{ url_for('static', filename='img/result_2_mid.png')}}"style="max-width:80%;">
           </div>
           <p>
@@ -96,9 +213,21 @@
           </p>
         </div>
 
-    </div>
-  </div>
+      </div> <!-- end div col s12 m9 l10-->
+      <div class="col hide-on-small-only m3 l2">
+        <div class="pinned" style="top: 70px;">
+        <ul class="section table-of-contents">
+          <li><a href="#examples">Heligeom examples</a></li>
+          <li><a href="#run">Run page</a></li>
+          <li><a href="#1_oligo">Results for 1 oligomer</a></li>
+          <li><a href="#2_oligo">Results for 2 oligomers</a></li>
+        </ul>
+        </div>
+      </div>
+    </div> <!-- end div row-->
+  </div> <!-- end div section-->
+</div> <!-- end div container-->
 
 
 
-  {% endblock %}
+{% endblock %}
