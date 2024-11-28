@@ -330,7 +330,7 @@ def results(results_id):
         if request.method == "POST" and construct_form.validate():
             # Retrieve form values
             n_mer = construct_form.n_mer.data
-            z_align = construct_form.z_align
+            z_align = construct_form.z_align.data
 
             # Name of the constructed PDB (used also in download function)
             if z_align:
