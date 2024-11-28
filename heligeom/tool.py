@@ -226,7 +226,7 @@ class HeligeomInterface:
         monomer2_CA = self.core_monomer2.select("name CA")
         if monomer1_CA.size() != monomer2_CA.size():
             raise MonomersDifferentSizeError(
-                f"Monomer 1 & 2 have different number of CA ({monomer1_CA.size()} vs {monomer2_CA.size()} )."
+                f"Monomer 1 & 2 have different number of Carbon-α ({monomer1_CA.size()} vs {monomer2_CA.size()} )."
             )
 
         self.hp = Screw()

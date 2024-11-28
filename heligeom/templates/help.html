@@ -54,12 +54,24 @@
               <li>select a PDB id taken from <a href="https://www.rcsb.org/">https://www.rcsb.org/</a></li>
             </ul>
             From this input PDB, in the <span style="color: #ed7d31">Selection</span> section, you'll need to define the 2 monomers whose the interface and the Screw parameters will be computed from.<br />
-            For each monomer you can specify either the chain, the residue range or both.
+            For each monomer you can specify either the chain, the residue range or both.<br />
+            <b><i class="tiny material-icons valign">priority_high</i>Only the Carbon-α of the monomers will be used for the Helical parameters computation. Both monomers needs to have the same number.</b><i class="tiny material-icons valign">priority_high</i>
           </p>
           <p>
             <b>Core Region:</b> A core region is a specific region of the monomer which will be used to compute the helical parameters and the residue at the interface.<br>
             <b><i class="tiny material-icons valign">priority_high</i>Careful, during the construction of an oligomer, the whole monomer will be used, not just the core region.</b><i class="tiny material-icons valign">priority_high</i>
           </p>
+
+          <h6 class="header">Missing Residues</h6>
+
+          <p>
+            Heligeom can handle missing residues in one monomer compared to the other:
+            <ul class="browser-default">
+              <li>if only the chain is provided: only missing residues inside the chain are handled.</li>
+              <li>if the residue range is provided: missing residues at the begining or at the end are also handled assuming the residue range is filled with the same gap for both monomers (i.e <i>1-300</i> and <i>301-600</i>).
+            </ul>
+          </p>
+
         </div>
 
         <div>

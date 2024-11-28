@@ -34,6 +34,7 @@
                   <p>For each monomer, you can specify either the <b>chain of interest</b> or/and the <b>residue range</b> which define the monomers or <b>both</b>.</p>
                   <p><b>Note:</b> The tool can handle missing residues within the selection (to manage flexible/unstructured sections).</p>
                     <p>In this case, The 2 monomers <b>must</b> have a residue range filled with the same gap (i.e <i>1-300</i> and <i>301-600</i>).</p>
+                    <p class="red-text light"><b>Please make sure that both monomers selected (with or without core regions) have the same number of Carbon-α.</b></p>
                   <br>
                   <div class="col s12 m6">
                     {{ forms_macro.monomer_card(1, form.chain1_id, form.res_range1, form.core_filter1, form.core_region1) }}
@@ -62,6 +63,7 @@
                         <p>For each monomer, you can specify either the <b>chain of interest</b> or/and the <b>residue range</b> which define the monomers or <b>both</b>.</p>
                         <p><b>Note:</b> The tool can handle missing residues within the selection (to manage flexible/unstructured sections).</p>
                           <p>In this case, The 2 monomers <b>must</b> have a residue range filled with the same gap (i.e <i>1-300</i> and <i>301-600</i>).</p>
+                          <p class="red-text light"><b>Please make sure that both monomers selected (with or without core regions) have the same number of Carbon-α.</b></p>
                         <br>
                           <div class="col s12 m6">
                             {{ forms_macro.monomer_card("1 bis", form.chain1bis_id, form.res_range1bis, form.core_filter1bis, form.core_region1bis) }}
