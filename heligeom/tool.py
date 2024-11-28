@@ -171,6 +171,22 @@ class HeligeomInterface:
         if self.monomer2.size() == 0:
             raise MonomerSizeZeroError("Monomer 2 has a size of 0 atoms.")
 
+        # Handle missing residues
+        # Retrieve the offset between the first resid of the 2 monomers
+        try:
+            min_res1, _ = utils.parse_resrange(self.monomer1.residue_range)
+            min_res2, _ = utils.parse_resrange(self.monomer2.residue_range)
+            delta_resid = min_res2 - min_res1
+            # Handle missing residues with an intersection
+            self.monomer1.rb, self.monomer2.rb = chain_intersect(
+                self.monomer1.rb, self.monomer2.rb, delta_resid=delta_resid
+            )
+        except SyntaxError:
+            # No Residue range provided so assume the delta resid = 0
+            self.monomer1.rb, self.monomer2.rb = chain_intersect(
+                self.monomer1.rb, self.monomer2.rb, delta_resid=0
+            )
+
         # TODO CHECK WITH CORE REGIONS
         # if self.monomer1.size() != self.monomer2.size():
         #     raise MonomersDifferentSizeError(
@@ -189,19 +205,6 @@ class HeligeomInterface:
         force : bool, optional
             Force recompute the transformation, by default False
         """
-
-        # Retrieve the offset between the first resid of the 2 monomers
-        try:
-            min_res1, _ = utils.parse_resrange(self.monomer1.residue_range)
-            min_res2, _ = utils.parse_resrange(self.monomer2.residue_range)
-            delta_resid = min_res2 - min_res1
-            # Handle missing residues with an intersection
-            self.monomer1.rb, self.monomer2.rb = chain_intersect(
-                self.monomer1.rb, self.monomer2.rb, delta_resid=delta_resid
-            )
-        except SyntaxError:
-            # No Residue range provided so no chain_intersect needed
-            pass
 
         # Core region defined?
         if core_filter == "manual":
@@ -234,7 +237,7 @@ class HeligeomInterface:
 
         if monomer1_CA.size() != monomer2_CA.size():
             raise MonomersDifferentSizeError(
-                f"Monomer 1 & 2 have different sizes ({rb1.size()} vs {rb2.size()} )."
+                f"Monomer 1 & 2 have different number of CA ({monomer1_CA.size()} vs {monomer2_CA.size()} )."
             )
 
         self.hp = heli_analyze(monomer1_CA, monomer2_CA)
