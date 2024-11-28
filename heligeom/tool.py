@@ -532,7 +532,8 @@ def create_core_monomer(rb, core_region):
     molstar_selection = ""
     core_rb = RigidBody()
     for res_range in core_region.split(","):
-        min_res, max_res = utils.parse_resrange(res_range)
+        stripped_res_range = res_range.strip()
+        min_res, max_res = utils.parse_resrange(stripped_res_range)
         molstar_selection += f"start_residue_number: {min_res}, end_residue_number: {max_res}"
         tmp_core_rb = rb.select(f"resid {min_res}:{max_res}")
         # Core region = 1 in occupancy

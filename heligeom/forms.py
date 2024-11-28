@@ -411,11 +411,13 @@ def check_core_region_monomer(filter, string_range):
         return False
 
     for res_range in string_range.data.split(","):
-        try:
-            utils.parse_resrange(res_range)
-        except SyntaxError as e:
-            string_range.errors = [e.msg]  # Use a list because it's unpacked in HTML.
-            return False
+        stripped_res_range = res_range.strip()
+        if stripped_res_range:
+            try:
+                utils.parse_resrange(stripped_res_range)
+            except SyntaxError as e:
+                string_range.errors = [e.msg]  # Use a list because it's unpacked in HTML.
+                return False
 
     return True
 
