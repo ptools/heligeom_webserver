@@ -481,6 +481,8 @@ class HeligeomInterface:
     def compute_fnat(cls, heli_interface1, heli_interface2, cutoff=5):
         """Compute the FNAT (fraction of native contacts) between 2 interfaces.
 
+        Handle situation where there is an offset in the residue indices between the 2 interfaces.
+
         Parameters
         ----------
         heli_interface1 : HeligeomInterface
@@ -495,13 +497,30 @@ class HeligeomInterface:
         float
             the FNAT value
         """
-        return measure.fnat(
-            heli_interface1.monomer1.rb,
-            heli_interface1.monomer2.rb,
-            heli_interface2.monomer1.rb,
-            heli_interface2.monomer2.rb,
-            cutoff,
+        rec1 = heli_interface1.monomer1.rb
+        lig1 = heli_interface1.monomer2.rb
+        rec2 = heli_interface2.monomer1.rb
+        lig2 = heli_interface2.monomer2.rb
+        res_pair1 = measure.contacts_by_residue(rec1, lig1, cutoff)
+        if len(res_pair1) == 0:
+            return 0
+
+        res_pair2 = measure.contacts_by_residue(rec2, lig2, cutoff)
+
+        # Compute the offset in the 1st interface, assuming the offset in the 2nd interface is the same
+        offset_resid = (
+            heli_interface1.monomer2.rb[0].residue_index
+            - heli_interface1.monomer1.rb[0].residue_index
         )
+        # Inverse the offset if the 1st monomer residue is smaller than the 2nd one
+        if offset_resid < 0:
+            offset_resid = -offset_resid
+
+        # Apply the offset to the 2nd interface
+        new_res_pair2 = set(map(lambda t: (t[0] - offset_resid, t[1] - offset_resid), res_pair2))
+
+        intersect = res_pair1 & new_res_pair2
+        return len(intersect) / len(res_pair1)
 
 
 def create_core_monomer(rb, core_region):
