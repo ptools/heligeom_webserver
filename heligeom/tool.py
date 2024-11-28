@@ -136,6 +136,10 @@ class HeligeomInterface:
     monomer1: HeligeomMonomer
     #: The 2nd monomer of the interface
     monomer2: HeligeomMonomer
+    #: The RigidBody of the 1st monomer restricted to the core region
+    core_monomer1: RigidBody
+    #: The RigidBody of the 2nd monomer restricted to the core region
+    core_monomer2: RigidBody
     #: The Screw transformation defining the interface
     hp: Screw
     #: The oligomer construction made of monomer1
@@ -150,7 +154,17 @@ class HeligeomInterface:
     #: molstar selection of the core monomer 2
     molstar_select_core_monomer2: str
 
-    def __init__(self, pdb_file, chain_id_M1, chain_id_M2, res_range_M1, res_range_M2):
+    def __init__(
+        self,
+        pdb_file,
+        chain_id_M1,
+        chain_id_M2,
+        res_range_M1,
+        res_range_M2,
+        core_filter,
+        core_region1,
+        core_region2,
+    ):
         # Parse the input file
         global_rb = RigidBody.from_pdb(pdb_file)
 
@@ -163,13 +177,9 @@ class HeligeomInterface:
         # Discard hetero and water atoms
         protein = global_rb.select("not hetero and not water").copy()
 
+        # Create HeligeomMonomers with the selecting region
         self.monomer1 = HeligeomMonomer(protein, chain_id_M1, res_range_M1)
-        if self.monomer1.size() == 0:
-            raise MonomerSizeZeroError("Monomer 1 has a size of 0 atoms.")
-
         self.monomer2 = HeligeomMonomer(protein, chain_id_M2, res_range_M2)
-        if self.monomer2.size() == 0:
-            raise MonomerSizeZeroError("Monomer 2 has a size of 0 atoms.")
 
         # Handle missing residues
         # Retrieve the offset between the first resid of the 2 monomers
@@ -187,31 +197,12 @@ class HeligeomInterface:
                 self.monomer1.rb, self.monomer2.rb, delta_resid=0
             )
 
-        # TODO CHECK WITH CORE REGIONS
-        # if self.monomer1.size() != self.monomer2.size():
-        #     raise MonomersDifferentSizeError(
-        #         f"Monomer 1 & 2 have different atom sizes ({self.monomer1.size()} vs {self.monomer2.size()})."
-        #     )
-
-        self.hp = Screw()
-        self.molstar_select_core_monomer1 = self.monomer1.molstar_selection
-        self.molstar_select_core_monomer2 = self.monomer2.molstar_selection
-
-    def compute_screw(self, core_filter, core_region1, core_region2):
-        """Compute the screw transformation between the 2 monomers.
-
-        Parameters
-        ----------
-        force : bool, optional
-            Force recompute the transformation, by default False
-        """
-
         # Core region defined?
         if core_filter == "manual":
-            rb1, self.molstar_select_core_monomer1 = create_core_monomer(  # type: ignore
+            self.core_monomer1, self.molstar_select_core_monomer1 = create_core_monomer(  # type: ignore
                 self.monomer1.rb, core_region1
             )
-            rb2, self.molstar_select_core_monomer2 = create_core_monomer(  # type: ignore
+            self.core_monomer2, self.molstar_select_core_monomer2 = create_core_monomer(  # type: ignore
                 self.monomer2.rb, core_region2
             )
 
@@ -223,22 +214,31 @@ class HeligeomInterface:
             # The core region is the whole monomer
             self.monomer1.rb.occupancies = [1] * len(self.monomer1.rb)
 
-            rb1 = self.monomer1.rb
-            rb2 = self.monomer2.rb
+            self.core_monomer1 = self.monomer1.rb
+            self.core_monomer2 = self.monomer2.rb
 
-        if rb1.size() == 0:
+        if self.core_monomer1.size() == 0:
             raise MonomerSizeZeroError("Monomer 1 defined with core regions has a size of 0 atoms.")
-        if rb2.size() == 0:
+        if self.core_monomer2.size() == 0:
             raise MonomerSizeZeroError("Monomer 2 defined with core regions has a size of 0 atoms.")
 
-        # Use CA to compute Screw parameters
-        monomer1_CA = rb1.select("name CA")
-        monomer2_CA = rb2.select("name CA")
-
+        monomer1_CA = self.core_monomer1.select("name CA")
+        monomer2_CA = self.core_monomer2.select("name CA")
         if monomer1_CA.size() != monomer2_CA.size():
             raise MonomersDifferentSizeError(
                 f"Monomer 1 & 2 have different number of CA ({monomer1_CA.size()} vs {monomer2_CA.size()} )."
             )
+
+        self.hp = Screw()
+        self.molstar_select_core_monomer1 = self.monomer1.molstar_selection
+        self.molstar_select_core_monomer2 = self.monomer2.molstar_selection
+
+    def compute_screw(self):
+        """Compute the screw transformation between the core 2 monomers."""
+
+        # Use CA to compute Screw parameters
+        monomer1_CA = self.core_monomer1.select("name CA")
+        monomer2_CA = self.core_monomer2.select("name CA")
 
         self.hp = heli_analyze(monomer1_CA, monomer2_CA)
         rmsd_value = rmsd(monomer1_CA, monomer2_CA, do_fit=True)

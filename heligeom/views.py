@@ -79,6 +79,9 @@ def runpage():
                     form.chain2_id.data,
                     form.res_range1.data,
                     form.res_range2.data,
+                    form.core_filter1.data,
+                    form.core_region1.data,
+                    form.core_region2.data,
                 )
             except InvalidPDBFormatError as e:
                 modalError = {
@@ -125,6 +128,9 @@ def runpage():
                         form.chain2bis_id.data,
                         form.res_range1bis.data,
                         form.res_range2bis.data,
+                        form.core_filter1bis.data,
+                        form.core_region1bis.data,
+                        form.core_region2bis.data,
                     )
                 except InvalidPDBFormatError as e:
                     modalError = {
@@ -192,16 +198,21 @@ def results(results_id):
 
         # Object to handle all the computation
         heli_interface1 = HeligeomInterface(
-            pdb_abs_path, chain1_id, chain2_id, res_range1, res_range2
+            pdb_abs_path,
+            chain1_id,
+            chain2_id,
+            res_range1,
+            res_range2,
+            core_filter1,
+            core_region1,
+            core_region2,
         )
 
         # Save monomers only for the 1st molstar visualisation, depicting the interface
         heli_interface1.save_monomers(path_to_result / pdb_monomers)
 
         # Compute Helicoidal parameters
-        pitch, monomers_per_turn, direction, dmin, dmax, rmsd = heli_interface1.compute_screw(
-            core_filter1, core_region1, core_region2
-        )
+        pitch, monomers_per_turn, direction, dmin, dmax, rmsd = heli_interface1.compute_screw()
 
         # Information passed to the jinja2 template
         screw_data = {
@@ -259,14 +270,21 @@ def results(results_id):
                 pdb_abs_path2 = pdb_abs_path
 
             heli_interface2 = HeligeomInterface(
-                pdb_abs_path2, chain1bis_id, chain2bis_id, res_range1bis, res_range2bis
+                pdb_abs_path2,
+                chain1bis_id,
+                chain2bis_id,
+                res_range1bis,
+                res_range2bis,
+                core_filter1bis,
+                core_region1bis,
+                core_region2bis,
             )
 
             heli_interface2.save_monomers(path_to_result / "mono1-2_bis.pdb")
 
             # Compute Helicoidal parameters
             pitch2, monomers_per_turn2, direction2, dmin2, dmax2, rmsd = (
-                heli_interface2.compute_screw(core_filter1bis, core_region1bis, core_region2bis)
+                heli_interface2.compute_screw()
             )
 
             contactsbis_csv = "contacts_interface2.csv"
