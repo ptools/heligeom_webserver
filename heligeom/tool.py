@@ -285,27 +285,22 @@ class HeligeomInterface:
     def heli_ring(self, fileout, ncopies, z_align=True):
         # Create an AttractRigidBody from a RigidBody
         # First need to reduce the structures to Coarse grained structures
-        reducer = reduce.Reducer(
-            self.monomer1.rb, reduce.FORCEFIELDS["attract1"], reduce.DEFAULT_ATOM_RENAME_RULES_PATH
-        )
-        reducer.reduce(reduce.exceptions.all_exceptions())
-        arec = ptools.AttractRigidBody(reducer.get_reduced_model())
+        rb1_beads = reduce.reducer.reduce(self.monomer1.rb)
+        arec = ptools.AttractRigidBody(rb1_beads)  # type: ignore
 
-        reducer = reduce.Reducer(
-            self.monomer2.rb, reduce.FORCEFIELDS["attract1"], reduce.DEFAULT_ATOM_RENAME_RULES_PATH
-        )
-        reducer.reduce(reduce.exceptions.all_exceptions())
-        alig = ptools.AttractRigidBody(reducer.get_reduced_model())
+        rb2_beads = reduce.reducer.reduce(self.monomer2.rb)
+        alig = ptools.AttractRigidBody(rb2_beads)  # type: ignore
 
         # Compute reference energy
         eref = utils.ener1(arec, alig, 7)
 
         # Call adjust with Ptarget = 0 to create a ring
-        newhp, newrb, bestener, rms, fnat = utils.adjust(arec, self.hp, eref, ncopies, 0)
+        newhp, newARb, bestener, rms, fnat = utils.adjust(arec, self.hp, eref, ncopies, 0)
 
         # Reconstruct the atomistic structure
         new_rb_atomistic = self.monomer1.rb.copy()
         rb_CA = self.monomer1.rb.select("name CA")
+        newrb = RigidBody(newARb)
         red_CA = newrb.select("name CA")
         matrix = superpose.fit_matrix(red_CA, rb_CA)
         superpose.transform.move(new_rb_atomistic, matrix)

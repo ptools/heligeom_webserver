@@ -94,7 +94,6 @@ def ener1(rec, lig, cutoff):
 def adjust(ARb, hpori, enref, Ntarget, Ptarget):
     rec = ARb.copy()
     p = measure.center(rec)
-    p = rec.coordinates.centroid()  # type: ignore
 
     axe = hpori.unit
     pt0 = hpori.point  # axis point
