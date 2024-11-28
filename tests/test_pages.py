@@ -23,7 +23,7 @@ def test_help(client):
     """
     response = client.get("/help")
     assert response.status_code == 200
-    assert b"About Heligeom" in response.data
+    assert b"Documentation" in response.data
 
 
 def test_contact(client):
