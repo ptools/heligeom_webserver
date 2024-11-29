@@ -435,7 +435,11 @@ class Construction(FlaskForm):
     )
 
     # If the oligomer will be align on Z.
-    z_align = BooleanField("z_align", validators=[validators.Optional()])
+    z_align = BooleanField(
+        "z_align",
+        validators=[validators.Optional()],
+        render_kw={"disabled": "disabled"},
+    )
 
     # If the oligomer will be flatten
     flatten = BooleanField("flatten", validators=[validators.Optional()])

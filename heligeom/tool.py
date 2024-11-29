@@ -294,14 +294,15 @@ class HeligeomInterface:
         # Compute reference energy
         eref = utils.ener1(arec, alig, 7)
 
+        monomers_per_turn = round(360.0 / abs(math.degrees(self.hp.angle)))
+
         # Call adjust with Ptarget = 0 to create a ring
-        newhp, newARb, bestener, rms, fnat = utils.adjust(arec, self.hp, eref, ncopies, 0)
+        newhp, newARb, bestener, rms, fnat = utils.adjust(arec, self.hp, eref, monomers_per_turn, 0)
 
         # Reconstruct the atomistic structure
         new_rb_atomistic = self.monomer1.rb.copy()
         rb_CA = self.monomer1.rb.select("name CA")
-        newrb = RigidBody(newARb)
-        red_CA = newrb.select("name CA")
+        red_CA = newARb.select("name CA")
         matrix = superpose.fit_matrix(red_CA, rb_CA)
         superpose.transform.move(new_rb_atomistic, matrix)
 
