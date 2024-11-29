@@ -299,14 +299,7 @@ class HeligeomInterface:
         # Call adjust with Ptarget = 0 to create a ring
         newhp, newARb, bestener, rms, fnat = utils.adjust(arec, self.hp, eref, monomers_per_turn, 0)
 
-        # Reconstruct the atomistic structure
-        new_rb_atomistic = self.monomer1.rb.copy()
-        rb_CA = self.monomer1.rb.select("name CA")
-        red_CA = newARb.select("name CA")
-        matrix = superpose.fit_matrix(red_CA, rb_CA)
-        superpose.transform.move(new_rb_atomistic, matrix)
-
-        self.oligomer = heli_construct(new_rb_atomistic, newhp, N=ncopies, Z=z_align)
+        self.oligomer = heli_construct(self.monomer1.rb, newhp, N=ncopies, Z=z_align)
         io.write_pdb(self.oligomer, fileout)  # type: ignore
 
         return (newhp, rms, fnat)

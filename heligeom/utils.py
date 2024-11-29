@@ -332,7 +332,7 @@ def adjust(ARb, hpori, enref, Ntarget, Ptarget):
     transform.move(ligbst, matfi)
 
     # hpnew = mat_trans_to_screw(superpose(rec,ligbst).matrix)  CORR 4.11.22
-    hpbst = heli_analyze(recbst, ligbst)
+    hpbst = heli_analyze(rec, ligbst)
 
     # debug
     print("#ADJ2  Nbest raynew raybst-rayinit  bestnrj   rmsd(ligori,ligbst)  fnat")
@@ -350,5 +350,11 @@ def adjust(ARb, hpori, enref, Ntarget, Ptarget):
     # debug
 
     print("acc2: ", (nbaccept2 * 1.0) / (nbtry2 * 1.0), nbtry2)
+
+    monomers_per_turn = round(360.0 / abs(math.degrees(hpbst.angle)))
+    pitch = abs(hpbst.normtranslation * (360.0 / (abs(math.degrees(hpbst.angle)))))
+
+    print(f"hpbst : {hpbst.normtranslation}, {hpbst.angle}")
+    print(f"hpbst : mono, pitch: {monomers_per_turn}, {pitch} ")
 
     return hpbst, ligbst, bestene, min(rmsd(ligor1, ligbst), rmsd(ligor2, ligbst)), fnatbst
