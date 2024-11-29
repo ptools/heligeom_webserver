@@ -425,7 +425,7 @@ def check_core_region_monomer(filter, string_range):
 class Construction(FlaskForm):
     """Class to handle the construction parameters form."""
 
-    # Number of copy/monomers requested to create the filament.
+    # Number of copy/monomers requested to create the oligomer.
     n_mer = IntegerField(
         "n_mer",
         validators=[
@@ -434,8 +434,15 @@ class Construction(FlaskForm):
         render_kw={"placeholder": "10"},
     )
 
-    # If the filament will be align on Z.
-    z_align = BooleanField("z_align", validators=[validators.Optional()])
+    # If the oligomer will be align on Z.
+    z_align = BooleanField(
+        "z_align",
+        validators=[validators.Optional()],
+        render_kw={"disabled": "disabled"},
+    )
+
+    # If the oligomer will be flatten
+    flatten = BooleanField("flatten", validators=[validators.Optional()])
 
     def validate(self, extra_validators=None):
         """Overload validate() method of the Construction FlaskForm.
@@ -452,8 +459,12 @@ class Construction(FlaskForm):
         if not super().validate(extra_validators=extra_validators):
             return False
 
+        # Start by calling the parent method
+        if not super().validate(extra_validators=extra_validators):
+            return False
+
         if self.n_mer.data is None:
-            self.n_mer.errors = "Required to construct the filament."
+            self.n_mer.errors = "Required to construct the oligomer."
             return False
 
         return True

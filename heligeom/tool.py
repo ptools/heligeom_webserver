@@ -8,7 +8,9 @@ import re
 from dataclasses import dataclass, field
 
 import numpy as np
-from ptools import RigidBody, io, measure
+import ptools
+from ptools import RigidBody, io, measure, reduce
+from ptools import superpose
 from ptools.heligeom import chain_intersect, heli_analyze, heli_construct
 from ptools.pairlist import PairList
 from ptools.superpose import Screw, rmsd
@@ -260,25 +262,47 @@ class HeligeomInterface:
 
         return (pitch, monomers_per_turn, direction, dmin, dmax, rmsd_value)
 
-    def construct_oligomer(self, ncopies, z_align, fileout):
-        """Based on the Screw, construct an oligomer with
+    def construct_oligomer(self, fileout, ncopies, z_align=True):
+        """Based on the interface, construct an oligomer with
         `ncopies` of the 1st monomer.
 
         This oligomer will be written as a PDB in `fileout`.
 
         Parameters
         ----------
+        fileout : str
+            Path to output file.
         ncopies : int
             number of copies of the 1st monomer to be cosntructed.
         z_align: Bool
             Wether the oligomer should be aligned on the Z axis.
-        fileout : str
-            Path to output file.
         """
 
         self.oligomer = heli_construct(self.monomer1.rb, self.hp, N=ncopies, Z=z_align)
 
         io.write_pdb(self.oligomer, fileout)  # type: ignore
+
+    def heli_ring(self, fileout, ncopies, z_align=True):
+        # Create an AttractRigidBody from a RigidBody
+        # First need to reduce the structures to Coarse grained structures
+        rb1_beads = reduce.reducer.reduce(self.monomer1.rb)
+        arec = ptools.AttractRigidBody(rb1_beads)  # type: ignore
+
+        rb2_beads = reduce.reducer.reduce(self.monomer2.rb)
+        alig = ptools.AttractRigidBody(rb2_beads)  # type: ignore
+
+        # Compute reference energy
+        eref = utils.ener1(arec, alig, 7)
+
+        monomers_per_turn = round(360.0 / abs(math.degrees(self.hp.angle)))
+
+        # Call adjust with Ptarget = 0 to create a ring
+        newhp, newARb, bestener, rms, fnat = utils.adjust(arec, self.hp, eref, monomers_per_turn, 0)
+
+        self.oligomer = heli_construct(self.monomer1.rb, newhp, N=ncopies, Z=z_align)
+        io.write_pdb(self.oligomer, fileout)  # type: ignore
+
+        return (newhp, rms, fnat)
 
     def save_monomers(self, fileout):
         """Save both monomers to a PDB file in `fileout`.

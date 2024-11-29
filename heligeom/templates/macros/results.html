@@ -135,7 +135,8 @@
   <div class="col s12" style="margin-bottom: 10px;">
     <p>From the helical parameters calculated from the 2 monomers, you can construct an oligomer made of
       copies of Monomer 1.</p>
-    <p></p>
+    <p>If <b>Flatten the oligomer</b> is checked, Heligeom will try to flatten the oligomer to create a ring (with a pitch = 0Å) with a Monte-Carlo algorithm.
+      See the <a href="{{ url_for('heligeom_bp.help')}}">Help </a>page for more information. </p>
   </div>
   <div class="input-field col s12 m3 {{ offset }}">
     {{ form.n_mer }}
@@ -150,6 +151,13 @@
     <label for="z_align">
       {{ form.z_align }}
       <span>Alignment on Z-axis?</span>
+    </label>
+  </div>
+  <div class="input-field col s12 m3">
+    <label for="flatten">
+      {{ form.flatten }}
+      <span>Flatten the oligomer?</span>
+      <span class="helper-text">Can take up to several minutes to compute.</span>
     </label>
   </div>
 </div>
@@ -229,4 +237,27 @@
               hide-water="true"
               >
 </pdbe-molstar>
+{%- endmacro %}
+
+{% macro display_ring_params(data) -%}
+<table class="striped highlight screw_params">
+  <tbody>
+    <tr>
+      <td>Pitch</td>
+      <td><b>{{ data.ring_pitch }} &#8491;</b></td>
+    </tr>
+    <tr>
+      <td>Monomers per turn</td>
+      <td><b>{{ data.ring_nb_monomers }}</b></td>
+    </tr>
+    <tr>
+      <td>RMSD of the 1st monomer before and after the ring algorithm</td>
+      <td><b>{{ data.ring_rmsd }}</b></td>
+    </tr>
+    <tr>
+      <td>f<sub>NAT</sub> of the 1st monomer before and after the ring algorithm: </td>
+      <td><b>{{ data.ring_fnat }}</b></td>
+    </tr>
+  </tbody>
+</table>
 {%- endmacro %}
