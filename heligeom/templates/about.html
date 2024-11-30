@@ -10,15 +10,159 @@
     <div class="row">
       <div class="col s12 m9 l10">
 
-        <div  class="section scrollspy" id="about" style="padding-top: 0px;">
-          <h2 class="header light blue-grey-text text-darken-3">About Heligeom</h2>
-
-
+        <div  class="section scrollspy" id="about" style="padding-top: 0px; padding-bottom: 0px;">
+          <h3 class="header light blue-grey-text text-darken-3">About Heligeom</h3>
           <p>
-          Heligeom aims at characterizing, manipulating and assembling structural units with a screw organization, and in which the structural units may be individual proteins or protein hetero-multimers.<br/>
+          <b>Heligeom aims at characterizing, manipulating and assembling structural units with a screw organization,
+            and in which the structural units may be individual proteins or protein hetero-multimers.<br/>
+          </b>
           Heligeom relies on the structures of monomer-monomer interfaces both for deriving the transformations and for filament construction. <br />
           </p>
 
+        </div> <!-- end div scrollspy -->
+
+        <div  class="section scrollspy" id="screw" style="padding-top: 0px;padding-bottom: 0px;">
+          <h5 class="title_card_results">Screw & Helical Parameters</h5>
+
+          <p>
+            Heligeom is based on a representation of the spatial displacement of a rigidbody in terms of a screw transformation.<br />
+          </p>
+          <p>
+            A screw motion is defined by the six degrees of freedom associated with the rotation in 3D around a specified axis and a translation along this axis.
+            <br>
+            <img class="center" src="{{ url_for('static', filename='img/Fig1.png')}}" style="width: 600px;">
+            <figcaption class="center"><i><font size="">Transformation from rigid body A to rigid body B is obtained
+              via a Screw transformation of angle θ and translation 'trans' around the (P, Ω) axis.</font></i></figcaption>
+
+            <br>
+            <br>
+            The Heligeom webserver has been developed based on the <a href="https://github.com/ptools/ptools">PTools library</a>,
+            in which screw motions are calculated and stored in a compact implementation from the 4x4 rotation-translation matrix provided from a superposition procedure.
+          </p>
+          <p>
+            The screw transformation is defined by:
+            <ul class="browser-default">
+              <li>the position <b>P</b> and direction <b>Ω</b> of a screw axis</li>
+              <li>a rotation <b>θ</b> around this axis</li>
+              <li>a translation <b>trans</b> parallel to the axis</li>
+            </ul>
+          </p>
+          <p>
+            Pameters describing the helix or ring shape, i.e. the <b>pitch</b>, the number of monomers per turn <b>nb</b> and the direction of rotation <b>dir</b>,
+            are derived from the screw parameters as follows:
+          </p>
+          <math display="block">
+            <mtable>
+            <mtr>
+              <mtd>
+              <mi>nb</mi>
+            </mtd>
+          <mtd>
+              <mo>=</mo>
+            </mtd>
+          <mtd>
+              <mfrac>
+                <mn>360</mn>
+                <mn>θ</mn>
+              </mfrac>
+            </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mi>pitch</mi>
+              </mtd>
+              <mtd>
+                <mo>=</mo>
+              </mtd>
+              <mtd>
+                <mi>nb</mi>
+                <mo>x</mo>
+                <mi>trans</mi>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mi>dir</mi>
+              </mtd>
+              <mtd>
+                <mo>=</mo>
+              </mtd>
+              <mtd>
+                <mi>nb</mi>
+                <mo>x</mo>
+                <mi>trans</mi>
+              </mtd>
+            </mtr>
+          </mtable>
+          </math>
+
+          <div class="row">
+            <div class="col s12 m6 l6">
+              <ul class="browser-default">
+                <li>The <b>pitch</b> is the distance of one helix turn along the helix axis.</li>
+                <li>The <b>monomer per turn</b> is the number of monomers needed for <b>1</b> turn of the helix.</li>
+                <li>The <b>Handedness</b> is the direction of rotation around the axis.</li>
+                <li>The 2 distances (<b>IntR</b> and <b>ExtR</b>) are the minimal and maximal distances between the screw axis and the atoms of oligomer.</li>
+              </ul>
+            </div>
+            <div class="col s12 m4 l4">
+              <img class="responsive-img" src="{{ url_for('static', filename='img/helical_parameters_sketch.png')}}"style="max-width:75%;">
+            </div>
+          </div>
+        </div> <!-- end div scrollspy -->
+
+        <div  class="section scrollspy" id="about" style="padding-top: 0px; padding-bottom: 0px;">
+          <h5 class="title_card_results">Comparison of interfaces</h5>
+          <p>
+            If two interfaces are provided, then in addition to providing both sets of helical parameters
+            the server calls compute the the <b>Fnat</b> which is the ratio of residue-residue contacts sharedin two different binding interfaces,
+             a measure of interface similarity that hasbeen commonly used to evaluate protein-protein docking predictions
+             (see the <a href="{{ url_for('heligeom_bp.homepage', _anchor='interfaces') }}">home page</a> for an example.)
+          </p>
+
+        </div> <!-- end div scrollspy -->
+
+        <div  class="section scrollspy" id="construction" style="padding-top: 0px; padding-bottom: 0px;">
+          <h5 class="title_card_results">Construction of one oligomer</h5>
+          <p>
+            Based on the Screw geometry, the Heligeom web server can construct structures of desired length, provided the number of assembled monomers does not exceed 100, which can be downloaded as .pdb files.
+            For convenience, the server can be requested to align the helix axis of the generated complex with the Z-axis.<br>
+            In case the analysis has been restricted toa core protein region (see previous section), the whole protein may be usedfor construction,
+            which means that the whole protein will undergo the screwtransformation that was defined based on the selected region.
+          </p>
+        </div> <!-- end div scrollspy -->
+
+        <div  class="section scrollspy" id="flatten" style="padding-top: 0px; padding-bottom: 0px;">
+          <h5 class="title_card_results">Targeted adjustment (i.e Flattening)</h5>
+          <p>
+            Heligeom can adjusting an experimental or a predicted helical assembly having a small pitch and a number of monomers per turn close to an integer <i>N</i>
+            to attain a ring structure, with zero pitch and precisely <i>N</i> monomers per turn. with a method described in [1].<br>
+            <br>
+            In short, after calculating the screw parameters corresponding to two interacting subunits, the helix-to-ring adjustment process consists
+            in slightly re-positioning and re-orienting the first subunit with respect to the screw axis, which is kept fixed, in such a way that
+            the interaction energy between the subunit 1 and its image subunit in the plane perpendicular to the axis,
+            obtained via rotation of 2π/N around the axis, is acceptable.<br><br>
+            Initial radial positioning, with respect to the axis, of the first subunit center of mass is evaluated using simple geometrical considerations.<br><br>
+            Subsequently, concerted moves consisting of radial translations and rotations around their centers of mass of the two interacting subunits, considered as rigid bodies,
+            are accepted or rejected based on a Metropolis Monte Carlo criterion.<br><br>
+            The process uses a reduced representation of the proteins [2], which enables decreasing the sensibility to side chain conformational variability at the interface.
+          </p>
+        </div> <!-- end div scrollspy -->
+
+        <div  class="section scrollspy" id="references" style="padding-top: 0px;">
+          <h5 class="title_card_results">References</h5>
+          <p>
+            <ol>
+                <li>Boyer B, Ezelin J, Poulain P, Saladin A, Zacharias M, et al. (2015)
+                    <b>An Integrative Approach to the Study of Filamentous Oligomeric Assemblies, with Application to RecA.</b> PLOS ONE 10(3): e0116414.
+                    <a href=https://doi.org/10.1371/journal.pone.0116414>https://doi.org/10.1371/journal.pone.0116414</a><br /></li>
+                <li>
+                  M. Zacharias (2003)
+                  <b>Protein-protein docking with a reduced protein modelaccounting for side-chain flexibility</b>, Protein Sci 12 (6)  1271–1282
+                  <A href="https://doi.org/10.1110/ps.0239303">https://doi.org/10.1110/ps.0239303</A>
+                </li>
+            </ol>
+        </p>
 
         </div> <!-- end div scrollspy -->
 
@@ -29,9 +173,10 @@
       <div class="pinned" style="top: 70px;">
         <ul class="section table-of-contents">
           <li><a href="#about">About</a></li>
-          <!-- <li><a href="#run">Run page</a></li>
-          <li><a href="#1_oligo">Results for 1 oligomer</a></li>
-          <li><a href="#2_oligo">Results for 2 oligomers</a></li> -->
+          <li><a href="#screw">Screw transformation</a></li>
+          <li><a href="#construction">Construction</a></li>
+          <li><a href="#flatten">Flattening</a></li>
+          <li><a href="#references">References</a></li>
         </ul>
       </div>
     </div> <!-- end div col hide-on-small-only m3 l2-->

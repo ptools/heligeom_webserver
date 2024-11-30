@@ -17,11 +17,10 @@
           <p>
             Here, you can find a set of pre-computed results to explore Heligeom outputs:
             <ul class="browser-default">
-              <li><a href="linktoresults">2GLS</a>: It is an oligomeric ring.
+              <li><a href="http://heligeom.galaxy.ibpc.fr/results/b83edb40aa934f76b866cd24e3aa">2GLS</a>: It is an oligomeric ring.
                 By choosing the first 2 chains (i.e 'A' and 'B') and construct an oligomer of 6 elements, you can retrieve the first layer of ring present in the PDB file.
                 This is the example used when clicking on the <i>Example button</i> on the Run page.
               </li>
-              <li><a href="linktoresults">5i9f</a>: Showcase the comparison of 2 slightly different interfaces, resulting in different constructed oligomers.
             </ul>
 
           </p>
@@ -140,7 +139,7 @@
               <p>
               On the right part:
               <ul class="browser-default">
-               <li>The parmaters of the Screw axis with a picture above explaining the values. Those will be used to construct the oligomer at the next step.</li>
+               <li>The parameters of the Screw axis with a picture above explaining the values. Those will be used to construct the oligomer at the next step.</li>
               </ul>
               </p>
             </div>
@@ -185,6 +184,14 @@
             A set of precomputed visualization buttons is available above the view. <br />
             You can download the PDB file of the oligomer with the orange button.<br>
           </p>
+
+          <h6><b>Flatten the oligomer?</b></h6>
+          <div>
+            There is also the option to flatten the oligomer by checking the corresponding checkbox.<br>
+            The method is described in the <a href="{{ url_for('heligeom_bp.about', _anchor='flatten') }}">about page</a>.<br>
+            <b>This computation can take up to several minutes due to the Monte-Carlo algorithm.</b><br>
+            Once finished, below the visualisation section, Heligeom displays some parameters resulted from the algorithm.
+          </div>
         </div>
       </div>
 

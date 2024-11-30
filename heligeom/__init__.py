@@ -20,6 +20,16 @@ def create_app(config_object=None):
 
         db.create_all()
 
+        # Add examples to the DB
+        # gls = UserInputs(
+        #     request_id="b83edb40aa934f76b866cd24e3aa",
+        #     pdb_filename="2GLS.pdb",
+        #     chain1_id="A",
+        #     chain2_id="B",
+        # )
+        # db.session.add(gls)
+        # db.session.commit()
+
         # Include Routes
         from . import views
 
