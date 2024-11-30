@@ -183,6 +183,15 @@ class HeligeomInterface:
         self.monomer1 = HeligeomMonomer(protein, chain_id_M1, res_range_M1)
         self.monomer2 = HeligeomMonomer(protein, chain_id_M2, res_range_M2)
 
+        if self.monomer1.size() == 0:
+            raise MonomerSizeZeroError(
+                "Monomer 1 defined with chain and/or residues has a size of 0 atoms."
+            )
+        if self.monomer2.size() == 0:
+            raise MonomerSizeZeroError(
+                "Monomer 2 defined with chain and/or residues has a size of 0 atoms."
+            )
+
         # Handle missing residues
         # Retrieve the offset between the first resid of the 2 monomers
         try:
@@ -197,6 +206,15 @@ class HeligeomInterface:
             # No Residue range provided so assume the delta resid = 0
             self.monomer1.rb, self.monomer2.rb = chain_intersect(
                 self.monomer1.rb, self.monomer2.rb, delta_resid=0
+            )
+
+        if self.monomer1.size() == 0:
+            raise MonomerSizeZeroError(
+                "Monomer 1 defined with chain and/or residues has a size of 0 atoms."
+            )
+        if self.monomer2.size() == 0:
+            raise MonomerSizeZeroError(
+                "Monomer 2 defined with chain and/or residues has a size of 0 atoms."
             )
 
         # Core region defined?
