@@ -48,9 +48,9 @@ class UserInputs(db.Model):
         chain2_id="",
         res_range1="",
         res_range2="",
-        core_filter1="",
+        core_filter1="all",
         core_region1="",
-        core_filter2="",
+        core_filter2="all",
         core_region2="",
     ):
         self.request_id = request_id
@@ -71,9 +71,9 @@ class UserInputs(db.Model):
         chain2bis_id="",
         res_range1bis="",
         res_range2bis="",
-        core_filter1bis="",
+        core_filter1bis="all",
         core_region1bis="",
-        core_filter2bis="",
+        core_filter2bis="all",
         core_region2bis="",
     ):
         """Fill the values of the 2nd oligomer form data."""
