@@ -178,6 +178,8 @@ class HeligeomInterface:
 
         # Discard hetero and water atoms
         protein = global_rb.select("not hetero and not water").copy()
+        # Renumber atoms of the protein for the molstar selections
+        protein.reset_atom_indices(protein[0].index)
 
         # Create HeligeomMonomers with the selecting region
         self.monomer1 = HeligeomMonomer(protein, chain_id_M1, res_range_M1)
@@ -233,9 +235,10 @@ class HeligeomInterface:
         else:
             # The core region is the whole monomer
             self.monomer1.rb.occupancies = [1] * len(self.monomer1.rb)
-
             self.core_monomer1 = self.monomer1.rb
             self.core_monomer2 = self.monomer2.rb
+            self.molstar_select_core_monomer1 = self.monomer1.molstar_selection
+            self.molstar_select_core_monomer2 = self.monomer2.molstar_selection
 
         if self.core_monomer1.size() == 0:
             raise MonomerSizeZeroError("Monomer 1 defined with core regions has a size of 0 atoms.")
@@ -250,8 +253,6 @@ class HeligeomInterface:
             )
 
         self.hp = Screw()
-        self.molstar_select_core_monomer1 = self.monomer1.molstar_selection
-        self.molstar_select_core_monomer2 = self.monomer2.molstar_selection
 
     def compute_screw(self):
         """Compute the screw transformation between the core 2 monomers."""
@@ -331,7 +332,6 @@ class HeligeomInterface:
             Path to output file.
         """
         concat = self.monomer1.rb + self.monomer2.rb
-        concat.reset_atom_indices(start=self.monomer1.rb.indices[0])
         io.write_pdb(concat, fileout)  # type: ignore
 
     def interface_atoms_oligomer(self, cutoff=5):
@@ -417,14 +417,14 @@ class HeligeomInterface:
         indexes = np.arange(1, len(lhs_atom_ids) + 1)
 
         # Retrieve info from the first monomer
-        lhs_atom_names = self.monomer1.rb[lhs_atom_ids].names
-        lhs_atom_resids = self.monomer1.rb[lhs_atom_ids].residue_indices
-        lhs_atom_resnames = self.monomer1.rb[lhs_atom_ids].residue_names
+        lhs_atom_names = self.core_monomer1[lhs_atom_ids].names
+        lhs_atom_resids = self.core_monomer1[lhs_atom_ids].residue_indices
+        lhs_atom_resnames = self.core_monomer1[lhs_atom_ids].residue_names
 
         # Retrieve info from the 2nd monomer
-        rhs_atom_names = self.monomer2.rb[rhs_atom_ids].names
-        rhs_atom_resids = self.monomer2.rb[rhs_atom_ids].residue_indices
-        rhs_atom_resnames = self.monomer2.rb[rhs_atom_ids].residue_names
+        rhs_atom_names = self.core_monomer2[rhs_atom_ids].names
+        rhs_atom_resids = self.core_monomer2[rhs_atom_ids].residue_indices
+        rhs_atom_resnames = self.core_monomer2[rhs_atom_ids].residue_names
 
         # :( cast the  contacts distance in string
         distances = [f"{dist:.2f}" for dist in pl.distances()]
@@ -469,26 +469,26 @@ class HeligeomInterface:
             monomer 1 and monomer 2 atom indexes.
         """
 
-        pl = PairList(self.monomer1.rb, self.monomer2.rb, cutoff)
+        pl = PairList(self.core_monomer1, self.core_monomer2, cutoff)
 
         if fileout and isinstance(fileout, str | pathlib.Path):
             self.save_csv_atom_contacts(pl, fileout)
 
         lhs_atom_ids, rhs_atom_ids = pl.raw_contacts()
 
-        lhs_residue_ids = self.monomer1.rb.residue_indices[lhs_atom_ids]
-        rhs_residue_ids = self.monomer2.rb.residue_indices[rhs_atom_ids]
+        lhs_residue_ids = self.core_monomer1.residue_indices[lhs_atom_ids]
+        rhs_residue_ids = self.core_monomer2.residue_indices[rhs_atom_ids]
 
         mono1_atom_indexes = []
         mono2_atom_indexes = []
 
         if lhs_atom_ids.size != 0:
-            mono1_atom_indexes = self.monomer1.rb.select_by_property(
-                "resid", lhs_residue_ids
+            mono1_atom_indexes = self.core_monomer1.select_by_property(
+                "resid", set(lhs_residue_ids)
             ).indices
         if rhs_atom_ids.size != 0:
-            mono2_atom_indexes = self.monomer2.rb.select_by_property(
-                "resid", rhs_residue_ids
+            mono2_atom_indexes = self.core_monomer2.select_by_property(
+                "resid", set(rhs_residue_ids)
             ).indices
 
         return mono1_atom_indexes, mono2_atom_indexes
