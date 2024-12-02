@@ -170,6 +170,14 @@ def runpage():
 
 @heligeom_bp.route("/results/<results_id>", methods=["GET", "POST"])
 def results(results_id):
+    # Absolute path to the result folder
+    path_to_result = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id)
+
+    # Create this folder not matter what.
+    # It should be done after the form submission but results are also directly accessible with the URL.
+    # Useful to store the error.log file
+    path_to_result.mkdir(exist_ok=True)
+
     # Query the database to retrieve the form inputs
     query_result = UserInputs.query.filter_by(request_id=results_id).first()
 
@@ -178,7 +186,6 @@ def results(results_id):
         abort(404)
 
     # Path for all output files accessible to the user
-    path_to_result = pathlib.Path(current_app.config["DATA_UPLOADS"], results_id)
     pdb_monomers = "mono1-2.pdb"
     contacts_csv = "contacts_interface1.csv"
 
