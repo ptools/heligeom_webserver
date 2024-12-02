@@ -290,7 +290,7 @@ def results(results_id):
             heli_interface2.save_monomers(path_to_result / "mono1-2_bis.pdb")
 
             # Compute Helicoidal parameters
-            pitch2, monomers_per_turn2, direction2, dmin2, dmax2, rmsd = (
+            pitch2, monomers_per_turn2, direction2, dmin2, dmax2, rmsd2 = (
                 heli_interface2.compute_screw()
             )
 
@@ -321,7 +321,7 @@ def results(results_id):
                 "translation": f"{heli_interface2.hp.normtranslation:3.2f}",
                 "dmin": f"{dmin2:3.2f}",
                 "dmax": f"{dmax2:3.2f}",
-                "rmsd": f"{rmsd:3.2f}",
+                "rmsd": f"{rmsd2:3.2f}",
                 "fnat": f"{fnat:3.4f}",
                 "select_interface_mono": heli_interface2.molstar_selection_monomers(
                     path_to_result / contactsbis_csv
