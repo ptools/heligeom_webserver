@@ -29,21 +29,6 @@ function showErrorLogs() {
 }
 
 
-// Limit file input size
-function checkSize(){
-  if(this.files[0].size > 10097152){
-    alert("Maximum size accepted is 10Mb.");
-    this.value = "";
- };
-}
-
-var uploadField = document.getElementById("input_file");
-uploadField.onchange = checkSize;
-var uploadField2 = document.getElementById("input_file_2nd");
-uploadField2.onchange = checkSize;
-
-
-
 // Pre populate form with JS
 document.getElementById("example").onclick = function() {
   //Fill PDBid
