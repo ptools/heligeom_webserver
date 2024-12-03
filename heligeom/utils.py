@@ -248,16 +248,9 @@ def adjust(ARb, hpori, enref, Ntarget, Ptarget):
     # debug
     print()
     print("#ADJ  Nbest raynew raybst-rayinit  bestnrj   rmsd(ligori,ligbst)  fnat")
+    min_rmsd = min(rmsd(ligor1, ligbst), rmsd(ligor2, ligbst))
     print(
-        "#ADJ %4d%9.2f%12.2f%12.2f%12.2f%12.2f"
-        % (
-            ibst,
-            raybst,
-            raybst - rayon,
-            bestene,
-            min(rmsd(ligor1, ligbst), rmsd(ligor2, ligbst)),
-            fnatbst,
-        )
+        f"#ADJ2 ${ibst:3d} ${raybst:10.2f} ${raybst-rayon:15.2f} {bestene:12.2f} {min_rmsd:15.2f} ${fnatbst:12.2f}"
     )
     # debug
 
@@ -336,16 +329,9 @@ def adjust(ARb, hpori, enref, Ntarget, Ptarget):
 
     # debug
     print("#ADJ2  Nbest raynew raybst-rayinit  bestnrj   rmsd(ligori,ligbst)  fnat")
+    min_rmsd = min(rmsd(ligor1, ligbst), rmsd(ligor2, ligbst))
     print(
-        "#ADJ2 %3d%10.2f%15.2f%12.2f%15.2f%12.2f"
-        % (
-            ibst,
-            raybst,
-            raybst - rayon,
-            bestene,
-            min(rmsd(ligor1, ligbst), rmsd(ligor2, ligbst)),
-            fnatbst,
-        )
+        f"#ADJ2 ${ibst:3d} ${raybst:10.2f} ${raybst-rayon:15.2f} {bestene:12.2f} {min_rmsd:15.2f} ${fnatbst:12.2f}"
     )
     # debug
 

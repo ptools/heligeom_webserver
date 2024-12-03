@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "A web tool to characterizing, manipulating and assembling protein structural units."
 readme = "README.md"
 license = {file = "LICENSE.txt"}
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "flask",
     "sqlalchemy",

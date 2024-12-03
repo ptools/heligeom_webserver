@@ -16,7 +16,7 @@ from flask import (
     send_from_directory,
     url_for,
 )
-from ptools.io.exceptions import InvalidPDBAtomLineError, InvalidPDBFormatError
+from ptools.io.exceptions import InvalidPDBFormatError
 
 from .forms import Construction, InputStructures, validate_input_structure
 from .models import UserInputs, db

@@ -1,3 +1,4 @@
+attrs
 flask
 sqlalchemy
 flask-wtf
@@ -6,4 +7,4 @@ flask-cors
 pyyaml
 scipy
 numpy
-
+PyYAML

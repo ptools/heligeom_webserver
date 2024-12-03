@@ -26,4 +26,4 @@ ptools = {editable = true, path = "./ptools-python"}
 ruff = "*"
 
 [requires]
-python_version = "3.12"
+python_version = "3.11"

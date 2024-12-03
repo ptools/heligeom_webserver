@@ -1,0 +1,35 @@
+name: Build & Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest ruff
+        python -m pip install -r requirements.txt
+        python -m pip install -e ptools-python/
+    - name: Check with Ruff
+      run: |
+        ruff check --exclude ptools-python/  --ignore E501 heligeom/ --output-format=github
+    - name: Test with pytest
+      run: |
+        python -m pytest -v --ignore=ptools-python
