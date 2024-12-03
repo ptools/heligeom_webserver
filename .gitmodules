@@ -1,4 +1,4 @@
 [submodule "ptools-python"]
 	path = ptools-python
-	url = https://gitlab.galaxy.ibpc.fr/laurent/ptools-python.git
+	url = https://github.com/ptools/ptools.git
 	branch = develop
