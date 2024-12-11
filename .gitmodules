@@ -1,4 +1,4 @@
 [submodule "ptools-python"]
 	path = ptools-python
 	url = https://github.com/ptools/ptools.git
-	branch = develop
+	branch = main
