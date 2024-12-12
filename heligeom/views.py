@@ -390,7 +390,7 @@ def results(results_id):
 
                 # Name of the constructed PDB (used also in download function)
                 filename2 = pathlib.Path(pdb_filename2).stem
-                pdb_out_name2 = f'Construct_{filename2}_N{n_mer}{"_Z" if z_align else ""}{"_flatten" if flatten else ""}.pdb'  # noqa: E501
+                pdb_out_name2 = f'Construct_{filename2}_2nd_N{n_mer}{"_Z" if z_align else ""}{"_flatten" if flatten else ""}.pdb'  # noqa: E501
 
                 pdb_out_abs_path2 = path_to_result / pdb_out_name2
 
