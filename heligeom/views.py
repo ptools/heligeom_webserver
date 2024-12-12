@@ -396,7 +396,20 @@ def results(results_id):
 
                 if flatten:
                     # Try to construct a ring oligomer and write the PDB result in pdb_out_abs_path
-                    newhp, rms, fnat = heli_interface2.heli_ring(pdb_out_abs_path2, n_mer, z_align)
+                    ring_hp, ring_rmsd, ring_fnat = heli_interface2.heli_ring(
+                        pdb_out_abs_path2, n_mer, z_align
+                    )
+                    # Retrieve N & Pitch
+                    ring_angle_degrees = math.degrees(ring_hp.angle)
+                    ring_pitch = abs(ring_hp.normtranslation * (360.0 / abs(ring_angle_degrees)))
+                    ring_monomers_per_turn = 360.0 / abs(ring_angle_degrees)
+                    ring_data_bis = {
+                        "ring_angle": f"{ring_angle_degrees:3.2f}",
+                        "ring_pitch": f"{ring_pitch:3.2f}",
+                        "ring_nb_monomers": f"{ring_monomers_per_turn:3.2f}",
+                        "ring_rmsd": f"{ring_rmsd:3.2f}",
+                        "ring_fnat": f"{ring_fnat:3.4f}",
+                    }
                 else:
                     # Construct oligomer and write the PDB result in pdb_out_abs_path
                     heli_interface2.construct_oligomer(pdb_out_abs_path2, n_mer, z_align)  # type: ignore
@@ -407,7 +420,11 @@ def results(results_id):
                     "select_monomer1": f"struct_asym_id: 'A', color:'{heli_interface2.colors_monomer1[1]}'",
                     "select_monomer2": f"struct_asym_id: 'B', color:'{heli_interface2.colors_monomer2[1]}'",
                     "select_interface": heli_interface2.molstar_selection_interface_oligomer(),
+                    "flatten": flatten,
                 }
+                # Add ring data if selected
+                if flatten:
+                    construct_data_bis.update(ring_data_bis)  # type: ignore
 
                 return render_template(
                     "results_2_oligomers.html",

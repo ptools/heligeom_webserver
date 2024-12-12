@@ -42,14 +42,14 @@
           {{ chain }}
           <label>Chain ID</label>
           {% if chain.errors %}
-            <span class="helper-text error-input">{{ chain.errors[0] }}</span>
+            <span class="helper-text error-input">{{ chain.errors }}</span>
           {% endif %}
         </div>
         <div class="col s12 m6 input-field">
           {{ res_range }}
           <label>Residue Range</label>
           {% if res_range.errors %}
-            <span class="helper-text error-input">{{ res_range.errors[0] }}</span>
+            <span class="helper-text error-input">{{ res_range.errors }}</span>
           {% endif %}
         </div>
       </div>

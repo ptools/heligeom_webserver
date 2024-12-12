@@ -53,7 +53,7 @@ def add_examples(db):
     db.session.commit()
 
 
-def create_app(config_object=None, clear_database=True):
+def create_app(config_object=None, clear_database=False):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_object)
