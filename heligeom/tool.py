@@ -315,7 +315,7 @@ class HeligeomInterface:
         monomers_per_turn = round(360.0 / abs(math.degrees(self.hp.angle)))
 
         # Call adjust with Ptarget = 0 to create a ring
-        newhp, newARb, bestener, rms, fnat = utils.adjust(arec, self.hp, eref, monomers_per_turn, 0)
+        newhp, rms, fnat = utils.adjust(arec, self.hp, eref, monomers_per_turn, 0)
 
         self.oligomer = heli_construct(self.monomer1.rb, newhp, N=ncopies, Z=z_align)
         io.write_pdb(self.oligomer, fileout)  # type: ignore

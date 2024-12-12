@@ -167,6 +167,14 @@
               });
             </script>
           </div>
+          {% if construct_data.flatten %}
+          <div class="row">
+              <h5 class="left-align">Results of the flatten algorithm</h5>
+              <div class="col s12 m6">
+                {{ results_macro.display_ring_params(construct_data) }}
+              </div>
+          </div>
+        {% endif %}
         </div> <!-- end card content-->
       </div> <!-- end card -->
     </div> <!-- end col -->
@@ -191,6 +199,14 @@
               });
             </script>
           </div>
+          {% if construct_data_bis.flatten %}
+          <div class="row">
+              <h5 class="left-align">Results of the flatten algorithm</h5>
+              <div class="col s12 m6">
+                {{ results_macro.display_ring_params(construct_data_bis) }}
+              </div>
+          </div>
+        {% endif %}
         </div> <!-- end card content-->
       </div> <!-- end card -->
     </div> <!-- end col -->
