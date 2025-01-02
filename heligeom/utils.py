@@ -283,7 +283,10 @@ def adjust(ARb, hpori, enref, Ntarget, Ptarget):
         f"{best_iter:3d} {raybst:10.2f} {raybst-rayon:15.2f} {bestene:12.2f} ",
         f"{min_rmsd:15.2f} {fnatbst:12.2f}",
     )
-    print(f"acc: {nbaccept / nbtry} {nbtry}")
+    if nbtry != 0:
+        print(f"acc: {nbaccept / nbtry} {nbtry}")
+    else:
+        print(f"acc: nbtry : {nbtry}")
     # debug
 
     # new MC run around the best energy
@@ -353,7 +356,10 @@ def adjust(ARb, hpori, enref, Ntarget, Ptarget):
         f"{best_iter:3d} {raybst:10.2f} {raybst-rayon:15.2f} {bestene:12.2f} ",
         f"{min_rmsd:15.2f} {fnatbst:12.2f}",
     )
-    print(f"acc2: {nbaccept2 / nbtry2}  {nbtry2}")
+    if nbtry2 != 0:
+        print(f"acc2: {nbaccept2 / nbtry2}  {nbtry2}")
+    else:
+        print(f"acc2: nbtry2 : {nbtry2}")
     # debug
 
     monomers_per_turn = round(360.0 / abs(math.degrees(hpbst.angle)))
