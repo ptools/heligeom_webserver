@@ -140,7 +140,6 @@ def adjust(ARb, hpori, enref, Ntarget, Ptarget):
 
     axe = hpori.unit
     pt0 = hpori.point  # axis point
-
     ligor1 = rec.copy()
     transform.ab_rotate(ligor1, pt0, pt0 + axe, hpori.angle, degrees=False)
     transform.translate(ligor1, axe * hpori.normtranslation)
@@ -242,7 +241,7 @@ def adjust(ARb, hpori, enref, Ntarget, Ptarget):
         transform.ab_rotate(ligtmp, pt0tmp, pt0tmp + axe, angnew, degrees=False)
         transform.translate(ligtmp, axe * transnew)
 
-        fnat = measure.fnat(rec, rectmp, ligor1, ligtmp, 7)
+        fnat = measure.fnat(rec, ligor1, rectmp, ligtmp, 7)
         if fnat < 0.3:
             continue  # goto next iteration
 
@@ -314,7 +313,7 @@ def adjust(ARb, hpori, enref, Ntarget, Ptarget):
         transform.ab_rotate(ligtmp, pt0tmp, pt0tmp + axe, angnew, degrees=False)
         transform.translate(ligtmp, axe * transnew)
 
-        fnat = measure.fnat(rec, rectmp, ligor1, ligtmp, 7)
+        fnat = measure.fnat(rec, ligor1, rectmp, ligtmp, 7)
         if fnat < 0.3:
             continue  # goto next iteration
         nbtry2 += 1
