@@ -17,7 +17,16 @@
           <button class="waves-effect  grey lighten-5 grey-text text-darken-3 btn" type="reset"><i class="material-icons left hide-on-small-only">cancel</i>Clear form</button>
         </div>
         <div class="col s6 m6 l6 right-align"style="padding-right: 0px;">
-          <button class="header waves-effect grey lighten-5 grey-text text-darken-3 btn" type="button" id="example"><i class="material-icons left hide-on-small-only">info_outline</i>Example</button>
+            <!-- Dropdown Trigger -->
+            <a class='dropdown-trigger waves-effect grey lighten-5 grey-text text-darken-3 btn' href='#' data-target='dropdown1'>Examples</a>
+
+            <!-- Dropdown Structure -->
+            <ul id='dropdown1' class='dropdown-content'>
+              <li><a class="grey-text text-darken-3" id="example_2GLS">2GLS</a></li>
+              <li><a class="grey-text text-darken-3" id="example_4ESV">4ESV and core regions</a></li>
+              <li><a class="grey-text text-darken-3" id="example_3ICE">3ICE and alternative interfaces</a></li>
+            </ul>
+          <!-- <button class="header waves-effect grey lighten-5 grey-text text-darken-3 btn" type="button" id="example"><i class="material-icons left hide-on-small-only">info_outline</i>Example</button> -->
         </div>
       </div>
 
@@ -43,7 +52,7 @@
                     {{ forms_macro.monomer_card(2, form.chain2_id, form.res_range2, form.core_filter2, form.core_region2) }}
                   </div> <!-- end div col -->
                   <div class="row">
-                    <ul class="collapsible" style="box-shadow: none; border:none;" >
+                    <ul class="collapsible" id="form_2nd_part" style="box-shadow: none; border:none;" >
                       <li>
                         <div class="collapsible-header" style="display: block;"><b style="font-size: 20px;">2nd Oligomeric form?</b><i class="material-icons valign">arrow_drop_down</i>
                           <p>You can specify a second couple of monomers to define another interface and compare it to the first one.</p>
@@ -119,6 +128,16 @@
 {% endif %}
 <script type="text/javascript">
 
+  document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.dropdown-trigger');
+      var dropdownOptions = {
+        'constrainWidth': false,
+        'alignment':'right',
+
+    }
+      var instances = M.Dropdown.init(elems, dropdownOptions);
+    });
+
   // Limit file input size
   function checkSize(){
     if(this.files[0].size > 10097152){
@@ -131,13 +150,40 @@
   var uploadField2 = document.getElementById("input_file_2nd");
   uploadField2.onchange = checkSize;
 
-  // Pre populate form with JS
-  document.getElementById("example").onclick = function() {
-    //Fill PDBid
+  // Pre populate form with JS when clicked on example dropdown
+  document.getElementById("example_2GLS").onclick = function() {
     document.getElementById("pdb_id").value="2GLS";
-    //Fill Chains
     document.getElementById("chain1_id").value="A";
     document.getElementById("chain2_id").value="B";
   }
+
+  document.getElementById("example_4ESV").onclick = function() {
+    document.getElementById("pdb_id").value="4ESV";
+    document.getElementById("chain1_id").value="B";
+    document.getElementById("chain2_id").value="C";
+    document.getElementById("chain1bis_id").value="B";
+    document.getElementById("chain2bis_id").value="C";
+    document.getElementById("core_filter1bis-1").click();
+    document.getElementById("core_filter2bis-1").click();
+    document.getElementById("core_region1bis").value="184-365";
+    document.getElementById("core_region2bis").value="184-365";
+    // Display the 2nd part of the form
+    var collapsible =  document.getElementById("form_2nd_part")
+    var instance = M.Collapsible.getInstance(collapsible);
+    instance.open();
+  }
+
+  document.getElementById("example_3ICE").onclick = function() {
+    document.getElementById("pdb_id").value="3ICE";
+    document.getElementById("chain1_id").value="A";
+    document.getElementById("chain2_id").value="B";
+    document.getElementById("chain1bis_id").value="E";
+    document.getElementById("chain2bis_id").value="F";
+    // Display the 2nd part of the form
+    var collapsible =  document.getElementById("form_2nd_part")
+    var instance = M.Collapsible.getInstance(collapsible);
+    instance.open();
+  }
+
 </script>
 {% endblock %}
