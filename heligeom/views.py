@@ -339,17 +339,19 @@ def results(results_id):
             n_mer = construct_form.n_mer.data
             z_align = construct_form.z_align.data
             flatten = construct_form.flatten.data
+            mmCIF = construct_form.mmCIF.data
 
             # Name of the constructed PDB (used also in download function)
             filename = pathlib.Path(pdb_filename).stem
-            pdb_out_name = f'Construct_{filename}_N{n_mer}{"_Z" if z_align else ""}{"_flatten" if flatten else ""}.pdb'  # noqa: E501
+            pdb_out_name = f'Construct_{filename}_N{n_mer}{"_Z" if z_align else ""}{"_flatten" if flatten else ""}'  # noqa: E501
+            pdb_out_name += f'{".cif" if mmCIF else ".pdb"}'
 
             pdb_out_abs_path = path_to_result / pdb_out_name
 
             if flatten:
                 # Try to construct a ring oligomer and write the PDB result in pdb_out_abs_path
                 ring_hp, ring_rmsd, ring_fnat = heli_interface1.heli_ring(
-                    pdb_out_abs_path, n_mer, z_align
+                    pdb_out_abs_path, n_mer, z_align, mmCIF
                 )
                 # Retrieve N & Pitch
                 ring_angle_degrees = math.degrees(ring_hp.angle)
@@ -364,14 +366,14 @@ def results(results_id):
                 }
             else:
                 # Construct oligomer and write the PDB result in pdb_out_abs_path
-                heli_interface1.construct_oligomer(pdb_out_abs_path, n_mer, z_align)
+                heli_interface1.construct_oligomer(pdb_out_abs_path, n_mer, z_align, mmCIF)
 
             # Create dict of construction details to pass to render_template
             # In the oligomer structure, monomer 1 will be the chain A and monomer 1' will be the chain B.
             construct_data = {
                 "pdb_out_name": pdb_out_name,
-                "select_monomer1": f"struct_asym_id: 'A', color:'{heli_interface1.colors_monomer1[1]}'",
-                "select_monomer2": f"struct_asym_id: 'B', color:'{heli_interface1.colors_monomer2[1]}'",
+                "select_monomer1": f"struct_asym_id: 'a', color:'{heli_interface1.colors_monomer1[1]}'",
+                "select_monomer2": f"struct_asym_id: 'b', color:'{heli_interface1.colors_monomer2[1]}'",
                 "select_interface": heli_interface1.molstar_selection_interface_oligomer(),
                 "flatten": flatten,
             }
@@ -390,14 +392,15 @@ def results(results_id):
 
                 # Name of the constructed PDB (used also in download function)
                 filename2 = pathlib.Path(pdb_filename2).stem
-                pdb_out_name2 = f'Construct_{filename2}_2nd_N{n_mer}{"_Z" if z_align else ""}{"_flatten" if flatten else ""}.pdb'  # noqa: E501
+                pdb_out_name2 = f'Construct_{filename2}_2nd_N{n_mer}{"_Z" if z_align else ""}{"_flatten" if flatten else ""}'  # noqa: E501
+                pdb_out_name2 += f'{".cif" if mmCIF else ".pdb"}'
 
                 pdb_out_abs_path2 = path_to_result / pdb_out_name2
 
                 if flatten:
                     # Try to construct a ring oligomer and write the PDB result in pdb_out_abs_path
                     ring_hp, ring_rmsd, ring_fnat = heli_interface2.heli_ring(
-                        pdb_out_abs_path2, n_mer, z_align
+                        pdb_out_abs_path2, n_mer, z_align, mmCIF
                     )
                     # Retrieve N & Pitch
                     ring_angle_degrees = math.degrees(ring_hp.angle)
@@ -412,7 +415,7 @@ def results(results_id):
                     }
                 else:
                     # Construct oligomer and write the PDB result in pdb_out_abs_path
-                    heli_interface2.construct_oligomer(pdb_out_abs_path2, n_mer, z_align)  # type: ignore
+                    heli_interface2.construct_oligomer(pdb_out_abs_path2, n_mer, z_align, mmCIF)  # type: ignore
 
                 # Create dict of construction details to pass to render_template
                 construct_data_bis = {

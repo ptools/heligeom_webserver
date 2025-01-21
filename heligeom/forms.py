@@ -443,6 +443,9 @@ class Construction(FlaskForm):
     # If the oligomer will be flatten
     flatten = BooleanField("flatten", validators=[validators.Optional()])
 
+    # If the output file will be a mmCIF file
+    mmCIF = BooleanField("mmCIF", validators=[validators.Optional()])
+
     def validate(self, extra_validators=None):
         """Overload validate() method of the Construction FlaskForm.
         Check the n_mer field.
@@ -458,12 +461,11 @@ class Construction(FlaskForm):
         if not super().validate(extra_validators=extra_validators):
             return False
 
-        # Start by calling the parent method
-        if not super().validate(extra_validators=extra_validators):
-            return False
-
         if self.n_mer.data is None:
             self.n_mer.errors = "Required to construct the oligomer."
+            return False
+        elif self.n_mer.data < 2 or self.n_mer.data > 100:
+            self.n_mer.errors = "Valid numbers are between 2 and 100."
             return False
 
         return True

@@ -142,7 +142,7 @@
     {{ form.n_mer }}
     <label>Number of Monomers (100 maximum)</label>
     {% if form.n_mer.errors %}
-    <span class="helper-text error-input">{{form.n_mer.errors[0]}}</span>
+    <span class="helper-text error-input">{{form.n_mer.errors}}</span>
     {% else %}
     <span class="helper-text" data-error="Number only" data-success="">Number only</span>
     {% endif %}
@@ -158,6 +158,13 @@
       {{ form.flatten }}
       <span>Flatten the oligomer?</span>
       <span class="helper-text">Can take up to several minutes to compute.</span>
+    </label>
+  </div>
+  <div class="input-field col s12 m3">
+    <label for="mmCIF">
+      {{ form.mmCIF }}
+      <span>Write a mmCIF file?</span>
+      <span class="helper-text">Necessary for oligomers with >62 subunits.</span>
     </label>
   </div>
 </div>
@@ -232,7 +239,7 @@
               hide-animation-icon="true"
               bg-color-r="250" bg-color-g="250" bg-color-b="250"
               custom-data-url="{{url_for('heligeom_bp.download', results_id=results_id, filename=oligo_filename)}}"
-              custom-data-format="pdb"
+              custom-data-format="{{ oligo_filename.split('.') | last }}"
               hide-het="true"
               hide-water="true"
               >

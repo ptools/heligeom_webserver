@@ -280,7 +280,7 @@ class HeligeomInterface:
 
         return (pitch, monomers_per_turn, direction, dmin, dmax, rmsd_value)
 
-    def construct_oligomer(self, fileout, ncopies, z_align=True):
+    def construct_oligomer(self, fileout, ncopies, z_align=True, mmCIF=False):
         """Based on the interface, construct an oligomer with
         `ncopies` of the 1st monomer.
 
@@ -291,16 +291,19 @@ class HeligeomInterface:
         fileout : str
             Path to output file.
         ncopies : int
-            number of copies of the 1st monomer to be cosntructed.
+            number of copies of the 1st monomer to be constructed.
         z_align: Bool
             Wether the oligomer should be aligned on the Z axis.
         """
 
         self.oligomer = heli_construct(self.monomer1.rb, self.hp, N=ncopies, Z=z_align)
 
-        io.write_pdb(self.oligomer, fileout)  # type: ignore
+        if mmCIF:
+            io.write_mmCIF(self.oligomer, fileout, pathlib.Path(fileout).stem)  # type: ignore
+        else:
+            io.write_pdb(self.oligomer, fileout)  # type: ignore
 
-    def heli_ring(self, fileout, ncopies, z_align=True):
+    def heli_ring(self, fileout, ncopies, z_align=True, mmCIF=False):
         # Create an AttractRigidBody from a RigidBody
         # First need to reduce the structures to Coarse grained structures
         rb1_beads = reduce.reducer.reduce(self.monomer1.rb)
@@ -321,7 +324,11 @@ class HeligeomInterface:
         newhp, rms, fnat = utils.adjust(arec, hp_ring, eref, monomers_per_turn, 0)
 
         self.oligomer = heli_construct(self.monomer1.rb, newhp, N=ncopies, Z=z_align)
-        io.write_pdb(self.oligomer, fileout)  # type: ignore
+
+        if mmCIF:
+            io.write_mmCIF(self.oligomer, fileout, pathlib.Path(fileout).stem)  # type: ignore
+        else:
+            io.write_pdb(self.oligomer, fileout)  # type: ignore
 
         return (newhp, rms, fnat)
 
