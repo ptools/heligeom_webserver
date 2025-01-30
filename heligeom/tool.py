@@ -143,6 +143,9 @@ class HeligeomInterface:
     core_monomer2: RigidBody
     #: The Screw transformation defining the interface
     hp: Screw
+    #: The monomer1 used for the construction of the oligomer.
+    # It differs from monomer1 because here missing residues are not taked in account.
+    monomer1_oligo: RigidBody
     #: The oligomer construction made of monomer1
     oligomer: RigidBody = field(init=False, repr=False)
     #: colors of the 1st monomer ([light, strong])
@@ -193,6 +196,10 @@ class HeligeomInterface:
                 "Monomer 2 defined with chain and/or residues has a size of 0 atoms."
             )
 
+        # Save the basic definition of monomer1 for the constrution later
+        # This allow to have missing residues or to apply construction on non protein residues
+        self.monomer1_oligo = self.monomer1.rb.copy()
+
         # Handle missing residues
         # Retrieve the offset between the first resid of the 2 monomers
         try:
@@ -235,9 +242,12 @@ class HeligeomInterface:
                 self.molstar_select_core_monomer2 = (
                     f"struct_asym_id: '{self.monomer2.chain}', {self.molstar_select_core_monomer2}"  # noqa: E501
                 )
+
+            # For the construction of the oligomer, put the value of the occupency of core residues to 1.
+            self.set_core_occupency(core_region1)
         else:
-            # The core region is the whole monomer
-            self.monomer1.rb.occupancies = [1] * len(self.monomer1.rb)
+            # The core region is the whole monomer so set the occupency to 1 for all residues.
+            self.monomer1_oligo.occupancies = [1] * len(self.monomer1_oligo)
             self.core_monomer1 = self.monomer1.rb
             self.core_monomer2 = self.monomer2.rb
             self.molstar_select_core_monomer1 = self.monomer1.molstar_selection
@@ -300,7 +310,7 @@ class HeligeomInterface:
             Wether the oligomer should be aligned on the Z axis.
         """
 
-        self.oligomer = heli_construct(self.monomer1.rb, self.hp, N=ncopies, Z=z_align)
+        self.oligomer = heli_construct(self.monomer1_oligo, self.hp, N=ncopies, Z=z_align)
 
         if mmCIF:
             io.write_mmCIF(self.oligomer, fileout, pathlib.Path(fileout).stem)  # type: ignore
@@ -327,7 +337,7 @@ class HeligeomInterface:
         # Call adjust with Ptarget = 0 to create a ring
         newhp, rms, fnat = utils.adjust(arec, hp_ring, eref, monomers_per_turn, 0)
 
-        self.oligomer = heli_construct(self.monomer1.rb, newhp, N=ncopies, Z=z_align)
+        self.oligomer = heli_construct(self.monomer1_oligo, newhp, N=ncopies, Z=z_align)
 
         if mmCIF:
             io.write_mmCIF(self.oligomer, fileout, pathlib.Path(fileout).stem)  # type: ignore
@@ -532,6 +542,27 @@ class HeligeomInterface:
 
         return selection
 
+    def set_core_occupency(self, core_region):
+        """For the construction of the oligomer,
+        put the value of the occupency of core residues to 1.
+
+        The string should be in the form of "X-Y, Z-A,..." with X,Y,Z,A as residue numbers.
+
+        Parameters
+        ----------
+        core_region : String
+            litteral string defining a core region, in the form of "X-Y, Z-A,..."
+        """
+        # Parse core region input
+        res = re.match(InputStructures.cls_regexp_core, core_region)
+        if not res:
+            return
+
+        for res_range in core_region.split(","):
+            stripped_res_range = res_range.strip()
+            min_res, max_res = utils.parse_resrange(stripped_res_range)
+            self.monomer1_oligo.select(f"resid {min_res}:{max_res}").occupancies = 1
+
     @classmethod
     def compute_fnat(cls, heli_interface1, heli_interface2, cutoff=5):
         """Compute the FNAT (fraction of native contacts) between 2 interfaces.
@@ -614,7 +645,7 @@ def create_core_monomer(rb, core_region):
     # Parse core region input
     res = re.match(InputStructures.cls_regexp_core, core_region)
     if not res:
-        return rb
+        return rb, ""
 
     molstar_selection = ""
     core_rb = RigidBody()
