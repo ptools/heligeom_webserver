@@ -115,7 +115,7 @@ def _create_monomer(struct, chain="", res_range=""):
 
     if chain:
         monomer = _custom_select_chains(struct, chain)
-        molstar_selection = f"struct_asym_id: '{ chain }'"
+        molstar_selection = f"struct_asym_id: '{chain}'"
         if res_range:
             min_resid, max_resid = utils.parse_resrange(res_range)
             monomer = _custom_select_residue_range(monomer, min_resid, max_resid)
@@ -228,9 +228,13 @@ class HeligeomInterface:
             )
 
             if self.monomer1.chain:
-                self.molstar_select_core_monomer1 = f"struct_asym_id: '{ self.monomer1.chain }', {self.molstar_select_core_monomer1}"  # noqa: E501
+                self.molstar_select_core_monomer1 = (
+                    f"struct_asym_id: '{self.monomer1.chain}', {self.molstar_select_core_monomer1}"  # noqa: E501
+                )
             if self.monomer2.chain:
-                self.molstar_select_core_monomer2 = f"struct_asym_id: '{ self.monomer2.chain }', {self.molstar_select_core_monomer2}"  # noqa: E501
+                self.molstar_select_core_monomer2 = (
+                    f"struct_asym_id: '{self.monomer2.chain}', {self.molstar_select_core_monomer2}"  # noqa: E501
+                )
         else:
             # The core region is the whole monomer
             self.monomer1.rb.occupancies = [1] * len(self.monomer1.rb)
@@ -393,11 +397,11 @@ class HeligeomInterface:
 
         selection = (
             # selection of the monomer 1
-            f"{{ struct_asym_id: 'A', color:'{ self.colors_monomer1[0] }' }},"
+            f"{{ struct_asym_id: 'A', color:'{self.colors_monomer1[0]}' }},"
             # selection of the monomer 1 atoms at the interface
             f"{{ struct_asym_id: 'A', atom_id: [{', '.join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer1[1]}', color:'{self.colors_monomer1[0]}', focus:true }},"
             # selection of the monomer 2
-            f"{{ struct_asym_id: 'B', color:'{ self.colors_monomer2[0] }' }},"
+            f"{{ struct_asym_id: 'B', color:'{self.colors_monomer2[0]}' }},"
             # selection of the monomer 2 atoms at the interface
             f"{{ struct_asym_id: 'B', atom_id: [{', '.join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer2[1]}', color:'{self.colors_monomer2[0]}', focus:true }},"
         )
@@ -517,13 +521,13 @@ class HeligeomInterface:
 
         selection = (
             # selection of the monomer 1
-            f"{{ { self.monomer1.molstar_selection }, color:'{ self.colors_monomer1[0] }' }},"
+            f"{{ {self.monomer1.molstar_selection}, color:'{self.colors_monomer1[0]}' }},"
             # selection of the monomer 1 atoms at the interface
-            f"{{ { self.monomer1.molstar_selection }, atom_id: [{', '.join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer1[1]}', color:'{self.colors_monomer1[0]}', focus:true }},"
+            f"{{ {self.monomer1.molstar_selection}, atom_id: [{', '.join([str(i) for i in mono1_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer1[1]}', color:'{self.colors_monomer1[0]}', focus:true }},"
             # selection of the monomer 2
-            f"{{ { self.monomer2.molstar_selection }, color:'{ self.colors_monomer2[0] }' }},"
+            f"{{ {self.monomer2.molstar_selection}, color:'{self.colors_monomer2[0]}' }},"
             # selection of the monomer 2 atoms at the interface
-            f"{{ { self.monomer2.molstar_selection }, atom_id: [{', '.join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer2[1]}', color:'{self.colors_monomer2[0]}', focus:true }},"
+            f"{{ {self.monomer2.molstar_selection}, atom_id: [{', '.join([str(i) for i in mono2_atom_indexes])}], representation:'ball-and-stick', representationColor:'{self.colors_monomer2[1]}', color:'{self.colors_monomer2[0]}', focus:true }},"
         )
 
         return selection
@@ -533,6 +537,9 @@ class HeligeomInterface:
         """Compute the FNAT (fraction of native contacts) between 2 interfaces.
 
         Handle situation where there is an offset in the residue indices between the 2 interfaces.
+
+        Fnat is not depending on the order of the monomers in the 2nd interface.
+        Both order is tested (AB & BA) and the maximum fnat is taken.
 
         Parameters
         ----------
@@ -559,6 +566,7 @@ class HeligeomInterface:
         res_pair2 = measure.contacts_by_residue(rec2, lig2, cutoff)
 
         # Compute the offset in the 1st interface, assuming the offset in the 2nd interface is the same
+        # Mandatory when the 2 monomers come from the same chain.
         offset_resid = (
             heli_interface1.monomer2.rb[0].residue_index
             - heli_interface1.monomer1.rb[0].residue_index
@@ -568,10 +576,19 @@ class HeligeomInterface:
             offset_resid = -offset_resid
 
         # Apply the offset to the 2nd interface
-        new_res_pair2 = set(map(lambda t: (t[0] - offset_resid, t[1] - offset_resid), res_pair2))
+        new_res_pair2 = set(
+            map(lambda t: (int(t[0] - offset_resid), int(t[1] - offset_resid)), res_pair2)
+        )
 
         intersect = res_pair1 & new_res_pair2
-        return len(intersect) / len(res_pair1)
+        fnat = len(intersect) / len(res_pair1)
+
+        # Compute also the fnat for lig2/rec2 by inversing the order of residue pair tuple.
+        inv_new_res_pair2 = set([t[::-1] for t in new_res_pair2])
+        inv_intersect = res_pair1 & inv_new_res_pair2
+        fnat_inv = len(inv_intersect) / len(res_pair1)
+
+        return max(fnat, fnat_inv)
 
 
 def create_core_monomer(rb, core_region):
