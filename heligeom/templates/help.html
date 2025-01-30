@@ -51,6 +51,7 @@
               <li>select a PDB id taken from <a href="https://www.rcsb.org/">https://www.rcsb.org/</a></li>
             </ul>
             From this input PDB, in the <span style="color: #ed7d31">Selection</span> section, you'll need to define the 2 monomers whose the interface and the Screw parameters will be computed from.<br />
+            <b>Note: A first <i>cleaning</i> step is performed where all HETERO and water atoms are discarded from the input PDB.</b><br />
             For each monomer you can specify either the chain, the residue range or both.<br />
             <b><i class="tiny material-icons valign">priority_high</i>Only the Carbon-α of the monomers will be used for the Helical parameters computation. Both monomers needs to have the same number.</b><i class="tiny material-icons valign">priority_high</i>
           </p>
@@ -67,6 +68,14 @@
               <li>if only the chain is provided: only missing residues inside the chain are handled.</li>
               <li>if the residue range is provided: missing residues at the begining or at the end are also handled assuming the residue range is filled with the same gap for both monomers (i.e <i>1-300</i> and <i>301-600</i>).
             </ul>
+          </p>
+
+
+          <h6 class="header">Non protein atoms</h6>
+
+          <p>
+            As stated above, all HETERO and waters atoms are discarded from the input before the selection process.<br />
+            If one want to keep non protein atoms for the construction, we suggest to rename those atoms line from  HETERO to ATOMS. They will not be used for the Screw calculation because only Carbon-α of monomers are handled.
           </p>
 
         </div>
@@ -157,9 +166,9 @@
             <b>RMSD:</b> The RMSD value of the superposition between the Carbon-α of the 2 monomers is displayed.<br />
             Heligeom provides an hint with a color depending of the value:
             <ul class="browser-default">
-              <li><span class="green-text text-darken-3">RMSD <= 2&#8491;:</span>TODO</li>
-              <li><span class="red-text text-accent-1"">2 < RMSD <= 5&#8491;:</span>TODO</li>
-              <li><span class="red-text">RMSD > 5&#8491;:</span>TODO</li>
+              <li><span class="green-text text-darken-3">RMSD <= 2&#8491;: </span>The RMSD of the superposition is acceptable.</li>
+              <li><span class="red-text text-accent-1"">2 < RMSD <= 5&#8491;: </span>The construction of the oligomer could be incorrect.</li>
+              <li><span class="red-text">RMSD > 5&#8491;: </span>The construction of the oligomer will lead to incorrect results.</li>
             </ul>
           </p>
         </div>
@@ -173,11 +182,19 @@
             Once the helical parameters are computed, <b>Heligeom</b> can construct an oligomer based on those.<br />
             The protocol is
             <ul class="browser-default">
-             <li>to take the entire Monomer 1 selection (not only the <i>core regions</i>)</li>
+             <li>take the entire Monomer 1 selection (not only the <i>core regions</i>), even non proteins atoms if they are part of the selection.</li>
              <li>create copies of this monomers based on the screw parameters</li>
              <li>repeat the above step to match the number of monomers given by the form.</li>
             </ul>
-            There is also the option to align the oligomer to the Z-axis by checking the corresponding checkbox.
+            <b>Alignment on Z-axis?: </b>This option enable the alignment the oligomer to the Z-axis.<br />
+            <b>Write a mmCIF file?: </b>This option creates, for the oligomer, a mmCIF file instead of a PDB one. This is useful for construction with more than 62 chains.<br />
+            <h6 id="flatten"><b>Flatten the oligomer?</b></h6>
+            <div>
+              There is also the option to flatten the oligomer by checking the corresponding checkbox.<br>
+              The method is described in the <a href="{{ url_for('heligeom_bp.about', _anchor='flatten') }}">about page</a>.<br>
+              <b>This computation can take up to several minutes due to the Monte-Carlo algorithm.</b><br>
+              Once finished, below the visualisation section, Heligeom displays some parameters resulted from the algorithm.
+            </div>
           </p>
           <br >
           <br >
@@ -191,13 +208,6 @@
             You can download the PDB file of the oligomer with the orange button.<br>
           </p>
 
-          <h6><b>Flatten the oligomer?</b></h6>
-          <div>
-            There is also the option to flatten the oligomer by checking the corresponding checkbox.<br>
-            The method is described in the <a href="{{ url_for('heligeom_bp.about', _anchor='flatten') }}">about page</a>.<br>
-            <b>This computation can take up to several minutes due to the Monte-Carlo algorithm.</b><br>
-            Once finished, below the visualisation section, Heligeom displays some parameters resulted from the algorithm.
-          </div>
         </div>
       </div>
 
