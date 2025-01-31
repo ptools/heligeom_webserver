@@ -1,5 +1,6 @@
 **1.1.0**
 
+- Improve English in text
 - Improve examples button in Run page.
 - Add an option to write a mmCIF file for the construction
 - Fix incorrect FNAT computation during flattening
