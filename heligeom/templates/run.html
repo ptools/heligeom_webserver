@@ -35,15 +35,15 @@
           <div class="card-content">
               <div class="row">
                   <div class="col s12">
-                      <p><b style="font-size: 20px;">1st Oligomeric form</b></p>
+                      <p><b style="font-size: 20px;">1st oligomeric form</b></p>
                   </div>
 
                     {{ forms_macro.input_structure(form.input_file, form.pdb_id)}}
 
-                  <p>For each monomer, you can specify either the <b>chain of interest</b> or/and the <b>residue range</b> which define the monomers or <b>both</b>.</p>
-                  <p><b>Note:</b> The tool can handle missing residues within the selection (to manage flexible/unstructured sections).</p>
-                    <p>In this case, The 2 monomers <b>must</b> have a residue range filled with the same gap (i.e <i>1-300</i> and <i>301-600</i>).</p>
-                    <p class="red-text light"><b>Please make sure that both monomers selected (with or without core regions) have the same number of Carbon-α.</b></p>
+                  <p>For each monomer, you can specify the <b>chain of interest</b> or the <b>residue range</b>, or <b>both</b>.</p>
+                  <p><b>Note:</b> This tool can handle missing residues within the selection (to manage flexible/unstructured sections).</p>
+                    <p>In this case, The 2 monomers <b>must</b> have a residue range of the same length (e.g., <i>1-300</i> and <i>301-600</i>).</p>
+                    <p class="red-text light"><b>Please make sure that both selected monomers (with or without core regions) have the same number of α carbons.</b></p>
                   <br>
                   <div class="col s12 m6">
                     {{ forms_macro.monomer_card(1, form.chain1_id, form.res_range1, form.core_filter1, form.core_region1) }}
@@ -54,8 +54,8 @@
                   <div class="row">
                     <ul class="collapsible" id="form_2nd_part" style="box-shadow: none; border:none;" >
                       <li>
-                        <div class="collapsible-header" style="display: block;"><b style="font-size: 20px;">2nd Oligomeric form?</b><i class="material-icons valign">arrow_drop_down</i>
-                          <p>You can specify a second couple of monomers to define another interface and compare it to the first one.</p>
+                        <div class="collapsible-header" style="display: block;"><b style="font-size: 20px;">2nd oligomeric form?</b><i class="material-icons valign">arrow_drop_down</i>
+                          <p>You can specify a second pair of monomers to define another interface and compare it to the first one.</p>
                         </div>
 
                         <!-- Keep the collapsible extended when the user selected a 2nd assembly and ask for helical parameters -->
@@ -66,13 +66,13 @@
                           <div class="collapsible-body" style="padding-left: 0px; border-bottom: none;">
                         {% endif %}
 
-                        <p class="red-text light"><b>Leave it blanck to use the structure defined in the first oligomeric form.</b></p>
+                        <p class="red-text light"><b>Leave blank to use the structure defined in the first oligomeric form.</b></p>
                         {{ forms_macro.input_structure(form.input_file_2nd, form.pdb_id_2nd)}}
 
-                        <p>For each monomer, you can specify either the <b>chain of interest</b> or/and the <b>residue range</b> which define the monomers or <b>both</b>.</p>
-                        <p><b>Note:</b> The tool can handle missing residues within the selection (to manage flexible/unstructured sections).</p>
-                          <p>In this case, The 2 monomers <b>must</b> have a residue range filled with the same gap (i.e <i>1-300</i> and <i>301-600</i>).</p>
-                          <p class="red-text light"><b>Please make sure that both monomers selected (with or without core regions) have the same number of Carbon-α.</b></p>
+                        <p>For each monomer, you can specify the <b>chain of interest</b> or the <b>residue range</b>, or <b>both</b>.</p>
+                        <p><b>Note:</b> This tool can handle missing residues within the selection (to manage flexible/unstructured sections).</p>
+                          <p>In this case, The 2 monomers <b>must</b> have a residue range of the same length (e.g., <i>1-300</i> and <i>301-600</i>).</p>
+                          <p class="red-text light"><b>Please make sure that both selected monomers (with or without core regions) have the same number of α carbons.</b></p>
                         <br>
                           <div class="col s12 m6">
                             {{ forms_macro.monomer_card("1 bis", form.chain1bis_id, form.res_range1bis, form.core_filter1bis, form.core_region1bis) }}
@@ -141,7 +141,7 @@
   // Limit file input size
   function checkSize(){
     if(this.files[0].size > 10097152){
-      alert("Maximum size accepted is 10Mb.");
+      alert("Maximum size accepted is 10MB.");
       this.value = "";
   };
   }
