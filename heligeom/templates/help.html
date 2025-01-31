@@ -15,17 +15,19 @@
           <h5 class="title_card_results">Examples</h5>
 
           <p>
-            Here, you can find a set of pre-computed results to explore Heligeom outputs, taken from the Heligeom webserver paper.
+            Here you can find a set of pre-computed results to explore Heligeom outputs, taken from the Heligeom webserver paper.
+            Each example can be explored by clicking on the <i>Examples</i> menu on the Run page.</li>
             <ul class="browser-default">
-              <li><a href="{{ url_for('heligeom_bp.results', results_id='2GLS') }}">2GLS</a>: It is an oligomeric ring.
-                By choosing the first 2 chains (i.e 'A' and 'B') and construct an oligomer of 6 elements, you can retrieve the first layer of ring present in the PDB file.<br>
-                This is the example used when clicking on the <i>Example button</i> on the Run page.</li>
-                <li><a href="{{ url_for('heligeom_bp.results', results_id='4ESV_core') }}">4ESV and core regions</a>: This example showcases the need for defining a core region in the case of flexible monomers.<br>
-                  For the 1st oligomer, the whole chains B and C are used. In the 2nd one, the same chains are used but a core region is defined (residues 184 to 365).<br>
-                  Heligeom analysis produces different results due to the N-domain (excluced by selecting the core region) which interact differently.
+              <li><a href="{{ url_for('heligeom_bp.results', results_id='2GLS') }}">2GLS</a>: an oligomeric ring assembly.
+                By choosing the first two chains (A and B) and constructing an oligomer of 6 elements, you should obtain the first layer of the ring present in the PDB file.<br>
+
+                <li><a href="{{ url_for('heligeom_bp.results', results_id='4ESV_core') }}">4ESV and core regions</a>: This example makes use of Heligeom server's capacity to compare two oligomeric forms to showcase the need for defining a core region in the case of flexible monomers.<br>
+                  For the 1st oligomeric form, the complete chains B and C are specified. In the 2nd oligomeric form, the same chains are studied but a quasi-rigid "core" region is defined that excludes the N-terminal residues.<br>
+                  Heligeom analysis produces different results due to the presence or absence of the N-terminal domain in the analysis. In the first oligomer definition, the large rmsd between the two monomers after superposition reflects the differences in the relative positions of the mobile N-terminal domain. The second oligomeric definition limits the analysis to a more stable core region, which provides a smaller rmsd and better-defined helical parameters.
+
                 </li>
-                <li><a href="{{ url_for('heligeom_bp.results', results_id='3ICE_AB_EF') }}">3ICE and alternative interfaces</a>: This example showcases different interfaces within a same structure (an hexameric ring structure of the Rho transcription termination factor).<br>
-                  Depending of the pair of chains chosen (here A & B and E & F), the fNAT values differs: 0.43 for AB/EF and 0.85 for AB/BC.
+                <li><a href="{{ url_for('heligeom_bp.results', results_id='3ICE_AB_EF') }}">3ICE and alternative interfaces</a>: This example showcases different interfaces within the same structure - here an hexameric ring structure of the Rho transcription termination factor.<br>
+                  Depending of which pairs of chains are chosen for analysis, the fNAT values characterizing the interfaces differ: 0.43 for interface AB vs EF and 0.85 for AB vs BC.
                 </li>
             </ul>
 
@@ -42,22 +44,22 @@
             <img class="responsive-img" src="{{ url_for('static', filename='img/run_1.png')}}"style="max-width:80%;">
           </div>
           <p>
-            The form is organised in 2 parts: the <span style="color: #4472c4">Input data</span>
+            The form is organised in two parts: the <span style="color: #4472c4">Input data</span>
             and the <span style="color: #ed7d31">Selection</span>. <br />
             <br />
             In the <span style="color: #4472c4">Input data</span>, you can either:
             <ul class="browser-default">
-              <li>choose a input file. Only the PDB format is accepted.</li>
+              <li>choose an input file. Only the PDB format is accepted.</li>
               <li>select a PDB id taken from <a href="https://www.rcsb.org/">https://www.rcsb.org/</a></li>
             </ul>
-            From this input PDB, in the <span style="color: #ed7d31">Selection</span> section, you'll need to define the 2 monomers whose the interface and the Screw parameters will be computed from.<br />
-            <b>Note: A first <i>cleaning</i> step is performed where all HETERO and water atoms are discarded from the input PDB.</b><br />
-            For each monomer you can specify either the chain, the residue range or both.<br />
-            <b><i class="tiny material-icons valign">priority_high</i>Only the Carbon-α of the monomers will be used for the Helical parameters computation. Both monomers needs to have the same number.</b><i class="tiny material-icons valign">priority_high</i>
+            From this input PDB, in the <span style="color: #ed7d31">Selection</span> section, you'll need to define the two monomers for which the interface and the Screw parameters will be computed.<br />
+            <b>Note: A <i>cleaning</i> step is performed in which all HETATM and water atoms are discarded from the input PDB.</b><br />
+            For each monomer you can specify the chain, the residue range, or both.<br />
+            <b><i class="tiny material-icons valign">priority_high</i>Only the α-carbon of the monomers will be used for computing the helical parameters. Both monomers needs to have the same number.</b><i class="tiny material-icons valign">priority_high</i>
           </p>
           <p>
-            <b>Core Region:</b> A core region is a specific region of the monomer which will be used to compute the helical parameters and the residue at the interface.<br>
-            <b><i class="tiny material-icons valign">priority_high</i>Careful, during the construction of an oligomer, the whole monomer will be used, not just the core region.</b><i class="tiny material-icons valign">priority_high</i>
+            <b>Core Region:</b> A core region is a specific region of the monomer which will be used to compute the helical parameters and the residues at the interface.<br>
+            <b><i class="tiny material-icons valign">priority_high</i>Careful! Even if a core is defined, during the construction of an oligomer the whole monomer will be used, not just the core region.</b><i class="tiny material-icons valign">priority_high</i>
           </p>
 
           <h6 class="header">Missing Residues</h6>
@@ -65,17 +67,17 @@
           <p>
             Heligeom can handle missing residues in one monomer compared to the other:
             <ul class="browser-default">
-              <li>if only the chain is provided: only missing residues inside the chain are handled.</li>
-              <li>if the residue range is provided: missing residues at the begining or at the end are also handled assuming the residue range is filled with the same gap for both monomers (i.e <i>1-300</i> and <i>301-600</i>).
+              <li>if only the chain is provided, any missing residues inside that chain are handled.</li>
+              <li>if residue ranges are provided: any missing residues at the beginning or end are also handled assuming the same residue numbering difference applies throughout the ranges. For example, if residue ranges <i>1-300</i> and <i>301-600</i> are specified, then all residues in each monomer having a residue id difference of 300 will be retained for the helical parameter analysis.
             </ul>
           </p>
 
 
-          <h6 class="header">Non protein atoms</h6>
+          <h6 class="header">Non-protein atoms</h6>
 
           <p>
-            As stated above, all HETERO and waters atoms are discarded from the input before the selection process.<br />
-            If one want to keep non protein atoms for the construction, we suggest to rename those atoms line from  HETERO to ATOMS. They will not be used for the Screw calculation because only Carbon-α of monomers are handled.
+            As stated above, all HETATM and waters atoms are discarded from the input before the selection process.<br />
+            If one wishes to keep non-protein atoms for the oligomer construction step, we suggest renaming the corresponding atom lines in the PDB file from "HETATM" to "ATOM&nbsp;&nbsp;". They will not be used for the Screw calculation because only α-Carbon monomers are handled.
           </p>
 
         </div>
@@ -84,8 +86,8 @@
           <h5 class="header">2 - 2nd Oligomeric form (Optional)</h5>
 
           <p>
-            Helligeom allows you also to compare 2 interfaces by defining a second interface in the form.<br />
-            To do that, you will need to click on the text <i>2nd oligomeric form?</i> and the same form as for the first oligomer will appear.
+            Helligeom allows you also to compare 2 interfaces by specifying a second interface.<br />
+            To do so, you must click on the text <i>2nd oligomeric form?</i>, and a new form as for the first oligomeric form will appear.
           </p>
 
           <div class="center-align img_help">
@@ -97,7 +99,7 @@
           <h5 class="header">3 - Run</h5>
 
           <p>
-            You can hit the <i>Analyze</i> button to start the computation and get the results.
+            Clicking on the <i>Analyze</i> button starts the computation. The Results page is displayed once the calculation is scomplete.
           </p>
           <div class="center-align img_help">
             <img class="responsive-img" src="{{ url_for('static', filename='img/run_4.png')}}"style="max-width:80%;">
@@ -107,7 +109,7 @@
         <div class="divider"></div>
 
         <div  class="section scrollspy" id="1_oligo">
-          <h3 class="title_card_results" id="1_oligo">Result Page with 1 Oligomer</h3>
+          <h3 class="title_card_results" id="1_oligo">Results Page with 1 Oligomer</h3>
 
           <h5 class="header">Contacts at the interface</h5>
           <div class="center-align img_help">
@@ -115,19 +117,19 @@
           </div>
           <p>
             On the left, <b>Heligeom</b> displays a summary of the input parameters. <br />
-            For each monomer, you will have the chains, the residues range and the core regions.
-            If one is not specified, the word "Unspecified" is displayed instead. <br />
+            For each monomer, you will see the specified chains, the residues ranges, and the core regions.
+            If any field is not specified, the word "Unspecified" is displayed instead. <br />
 
             On the right, there is a <a href="https://molstar.org/">Mol*</a> visualisation depicting:
             <ul class="browser-default">
-              <li>the 2 monomers selected by the user represented as <i>Cartoon</i> and whose colors matches their respecting title on the left.</li>
-              <li>the residues in contact at the interface, represented  as <i>ball and stick</i></li>
+              <li>the 2 monomers selected by the user represented as <i>Cartoon</i> and whose colors match their respective titles on the left.</li>
+              <li>the residues in contact at the interface, represented as <i>ball and stick</i></li>
             </ul>
 
           </p>
           <p>
-            <b>List of contacts:</b> The whole list of contacts can be downloaded by clicking on the button <i>Download list of contacts</i>.<br />
-            A contact is defined when 2 heavy atoms have a distance < 5&#8491;.
+            <b>List of contacts:</b> The list of contacts can be downloaded by clicking <i>Download list of contacts</i>.<br />
+            A contact is defined when 2 heavy atoms, one from each monomer, are at a distance < 5&#8491;.
           </p>
 
 
@@ -138,23 +140,23 @@
             <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_mid.png')}}"style="max-width:80%;">
           </div>
           <p>
-            <b>Heligeom</b> displays the helical parameters computed from the 2 monomers given.
+            <b>Heligeom</b> displays the helical parameters computed from the 2 provided monomers.
             It refers to the <a href="{{ url_for('heligeom_bp.homepage', _anchor='screw') }}">screw calculation</a>.<br>
-            <b><i class="tiny material-icons valign">priority_high</i>This calculation is based solely on the C-α of the monomers.</b><i class="tiny material-icons valign">priority_high</i>
+            <b><i class="tiny material-icons valign">priority_high</i>This calculation is based solely on the α-Carbons of the monomers.</b><i class="tiny material-icons valign">priority_high</i>
           </p>
           <div class="row">
             <div class="col s12 m6 l6">
-              On the left part:
+              On the left:
               <ul class="browser-default">
                 <li>The <b>pitch</b> is the distance of one helix turn along the helix axis.</li>
-                <li>The <b>monomer per turn</b> is the number of monomers needed for <b>1</b> turn of the helix.</li>
+                <li>The <b>monomers per turn</b> is the number of monomers needed for <b>1</b> turn of the helix.</li>
                 <li>The <b>Handedness</b> is the direction of rotation around the axis.</li>
-                <li>The 2 distances (<b>IntR</b> and <b>ExtR</b>) are the minimal and maximal distances between the screw axis and the atoms of oligomer.</li>
+                <li>The 2 distances (<b>IntR</b> and <b>ExtR</b>) are the minimal and maximal distances between the screw axis and the atoms of the oligomer.</li>
               </ul>
               <p>
-              On the right part:
+              On the right:
               <ul class="browser-default">
-               <li>The parameters of the Screw axis with a picture above explaining the values. Those will be used to construct the oligomer at the next step.</li>
+               <li>The parameters of the Screw axis are provided along with a schematic of the parameter definitions. The parameters will be used to construct the oligomer in the next step.</li>
               </ul>
               </p>
             </div>
@@ -163,8 +165,8 @@
             </div>
           </div>
           <p>
-            <b>RMSD:</b> The RMSD value of the superposition between the Carbon-α of the 2 monomers is displayed.<br />
-            Heligeom provides an hint with a color depending of the value:
+            <b>RMSD:</b> The RMSD value of the α-Carbon superposition of the 2 monomers is displayed.<br />
+            Heligeom uses color to provides a hint for interpreting this value depending on the value:
             <ul class="browser-default">
               <li><span class="green-text text-darken-3">RMSD <= 2&#8491;: </span>The RMSD of the superposition is acceptable.</li>
               <li><span class="red-text text-accent-1"">2 < RMSD <= 5&#8491;: </span>The construction of the oligomer could be incorrect.</li>
@@ -179,33 +181,33 @@
             <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_bot_form.png')}}"style="max-width:80%;">
           </div>
           <p>
-            Once the helical parameters are computed, <b>Heligeom</b> can construct an oligomer based on those.<br />
+            Once the helical parameters are computed, <b>Heligeom</b> can construct an oligomer based on them.<br />
             The protocol is
             <ul class="browser-default">
-             <li>take the entire Monomer 1 selection (not only the <i>core regions</i>), even non proteins atoms if they are part of the selection.</li>
-             <li>create copies of this monomers based on the screw parameters</li>
+             <li>take the entire Monomer 1 selection (not just the <i>core regions</i>), including non-protein atoms if they are part of the selection.</li>
+             <li>create copies of this monomer applying the screw transformation</li>
              <li>repeat the above step to match the number of monomers given by the form.</li>
             </ul>
-            <b>Alignment on Z-axis?: </b>This option enable the alignment the oligomer to the Z-axis.<br />
-            <b>Write a mmCIF file?: </b>This option creates, for the oligomer, a mmCIF file instead of a PDB one. This is useful for construction with more than 62 chains.<br />
+            <b>Alignment on Z-axis?: </b>This option enables the alignment the oligomer to the global Z-axis.<br />
+            <b>Write a mmCIF file?: </b>This option writes the structure file for the oligomer using the mmCIF file format instead of the PDB flat-file format. This is useful when constructing assemblies with more than 62 chains.<br />
             <h6 id="flatten"><b>Flatten the oligomer?</b></h6>
             <div>
               There is also the option to flatten the oligomer by checking the corresponding checkbox.<br>
-              The method is described in the <a href="{{ url_for('heligeom_bp.about', _anchor='flatten') }}">about page</a>.<br>
-              <b>This computation can take up to several minutes due to the Monte-Carlo algorithm.</b><br>
-              Once finished, below the visualisation section, Heligeom displays some parameters resulted from the algorithm.
+              The method is described in the <a href="{{ url_for('heligeom_bp.about', _anchor='flatten') }}">About page</a>.<br>
+              <b>This computation can take up to several minutes due to the underlying Monte-Carlo calculation.</b><br>
+              Once finished, below the visualisation section, Heligeom displays several parameters resulting from the calculation.
             </div>
           </p>
           <br >
           <br >
-          Once the construction is finished, a interactive view (thanks to <a href="https://molstar.org/">Mol*</a>) of the oligomer is displayed below the form.
+          Once the construction is finished, an interactive view of the oligomer is displayed below the form (thanks to <a href="https://molstar.org/">Mol*</a>).
           <div class="center-align img_help">
             <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_bot_visu.png')}}"style="max-width:80%;">
           </div>
           <p>
-            By default, the coloration is made by monomers. Each monomers will have a different chain, starting by <i>A</i>.<br >
+            By default, the coloring is by monomer. Each monomer will have a different chain, starting by <i>A</i>.<br >
             A set of precomputed visualization buttons is available above the view. <br />
-            You can download the PDB file of the oligomer with the orange button.<br>
+            You can download the PDB file of the generated oligomer to your computer by clicking on the orange button.<br>
           </p>
 
         </div>
@@ -214,29 +216,29 @@
         <div class="divider"></div>
 
         <div  class="section scrollspy" id="2_oligo">
-          <h4 class="header light blue-grey-text text-darken-3">Result Page with 2 Oligomers</h4>
+          <h4 class="header light blue-grey-text text-darken-3">Result Page with 2 oligomeric forms</h4>
 
           <h5 class="header">Results</h5>
           <div class="center-align img_help">
             <img class="responsive-img" src="{{ url_for('static', filename='img/result_2_up.png')}}"style="max-width:80%;">
           </div>
           <p>
-            For a couple of oligmers, <b>Heligeom</b> displays the same content that for <a href="{{ url_for('heligeom_bp.help', _anchor='1_oligo') }}">1 Oligomer</a> with a <b>side by side</b> view.
+            For two oligomeric forms, <b>Heligeom</b> displays the same content that for <a href="{{ url_for('heligeom_bp.help', _anchor='1_oligo') }}">1 Oligomer</a> with a <b>side-by-side</b> view.
           </p>
         </div>
 
         <div>
-          <h5 class="header">Comparison of the interface</h5>
+          <h5 class="header">Comparison of the interfaces</h5>
           <div class="center-align img_help">
             <img class="responsive-img" src="{{ url_for('static', filename='img/result_2_mid.png')}}"style="max-width:80%;">
           </div>
           <p>
-            On the Result page, <b>Heligeom</b> displays some analyzis of the comparison of the 2 interfaces.<br>
+            On the Results page, <b>Heligeom</b> displays some analyses comparing the 2 interfaces.<br>
             <b><font size="+1">fNAT</font></b><br>
-            The Fnat is the fraction of residue pairs of the 1st interface present in the 2nd interface, as defined
+            The fNAT is the fraction of residue contact pairs of the 1st interface present in the 2nd interface, as defined
             <a href="{{ url_for('heligeom_bp.homepage', _anchor='interfaces') }}">here</a>.<br>
-            Value of 1.0: <b>All</b> of the residue pairs of the 1st interface are present in the 2nd one.<br>
-            Value of 0.0: <b>None</b> of the residue pairs of the 1st interface are present in the 2nd one.<br>
+            Value of 1.0: <b>All</b> of the contacting residue pairs of the 1st interface are present in the 2nd one.<br>
+            Value of 0.0: <b>None</b> of the contacting residue pairs of the 1st interface are present in the 2nd one.<br>
           </p>
         </div>
 
