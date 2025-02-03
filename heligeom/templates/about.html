@@ -124,7 +124,7 @@
           <h5 class="title_card_results">Comparison of interfaces</h5>
           <p>
             If two interfaces are provided, the server provides both sets of helical parameters
-            and additionally computes the <b>Fnat</b> : the fraction of residue-residue contacts shared in the two interfaces,
+            and additionally computes the <b>fNAT</b> : the fraction of residue-residue contacts shared in the two interfaces,
              which is a measure of interface similarity commonly used to evaluate protein-protein docking predictions
              (see <a href="{{ url_for('heligeom_bp.homepage', _anchor='interfaces') }}">the home page</a> for an example.)
           </p>
@@ -145,7 +145,7 @@
           <h5 class="title_card_results">Targeted adjustment (i.e Flattening)</h5>
           <p>
             Heligeom can be used to adjust an experimental or a predicted helical assembly having a small pitch and a number of monomers per turn close to an integer value <i>N</i>
-            to attain a ring structure, with zero pitch and precisely <i>N</i> monomers per turn. with a method described in [1].<br>
+            to attain a ring structure, with zero pitch and precisely <i>N</i> monomers per turn, using a method described in [1].<br>
             <br>
             In short, after calculating the screw parameters for two interacting subunits, the adjustment process consists
             in slightly re-positioning and re-orienting the first subunit with respect to the screw axis, which is kept fixed, in such a way that

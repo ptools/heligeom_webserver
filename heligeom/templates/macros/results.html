@@ -108,7 +108,7 @@
 {%- endmacro %}
 
 {% macro display_rmsd(data) -%}
-<div class="center tooltipped" data-position="top" data-tooltip="RMSD is computed between the Carbon-α of the 2 monomers." style="margin-top: 20px;">
+<div class="center tooltipped" data-position="top" data-tooltip="RMSD is computed between the α-Carbons of the 2 monomers." style="margin-top: 20px;">
   {% if (data.rmsd | float < 2) %}
     <div class="green-text text-darken-3">
       RMSD: <b>{{ data.rmsd }}</b>  <i class="valign tiny material-icons">help</i>

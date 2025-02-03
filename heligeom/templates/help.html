@@ -21,13 +21,13 @@
               <li><a href="{{ url_for('heligeom_bp.results', results_id='2GLS') }}">2GLS</a>: an oligomeric ring assembly.
                 By choosing the first two chains (A and B) and constructing an oligomer of 6 elements, you should obtain the first layer of the ring present in the PDB file.<br>
 
-                <li><a href="{{ url_for('heligeom_bp.results', results_id='4ESV_core') }}">4ESV and core regions</a>: This example makes use of Heligeom server's capacity to compare two oligomeric forms to showcase the need for defining a core region in the case of flexible monomers.<br>
-                  For the 1st oligomeric form, the complete chains B and C are specified. In the 2nd oligomeric form, the same chains are studied but a quasi-rigid "core" region is defined that excludes the N-terminal residues.<br>
-                  Heligeom analysis produces different results due to the presence or absence of the N-terminal domain in the analysis. In the first oligomer definition, the large rmsd between the two monomers after superposition reflects the differences in the relative positions of the mobile N-terminal domain. The second oligomeric definition limits the analysis to a more stable core region, which provides a smaller rmsd and better-defined helical parameters.
+                <li><a href="{{ url_for('heligeom_bp.results', results_id='4ESV_core') }}">4ESV and core regions</a>: This example makes use of Heligeom server's capacity to compare two oligomeric forms, here to showcase the need for defining a core region in the case of flexible monomers.<br>
+                  For the 1st oligomeric form, the complete chains B and C are specified. In the 2nd oligomeric form the same two chains are specified, but a quasi-rigid "core" region is defined that excludes the N-terminal residues.<br>
+                  The Heligeom analysis produces different results axccording to the presence or absence of the N-terminal domain in the analysis. In the first oligomer definition, the different relative positions of the mobile N-terminal domain in the two monomers contributes to a large rmsd after superposition. The second oligomeric definition limits the analysis to a less-variable core region, resulting in a smaller rmsd and better-defined helical parameters.
 
                 </li>
-                <li><a href="{{ url_for('heligeom_bp.results', results_id='3ICE_AB_EF') }}">3ICE and alternative interfaces</a>: This example showcases different interfaces within the same structure - here an hexameric ring structure of the Rho transcription termination factor.<br>
-                  Depending of which pairs of chains are chosen for analysis, the fNAT values characterizing the interfaces differ: 0.43 for interface AB vs EF and 0.85 for AB vs BC.
+                <li><a href="{{ url_for('heligeom_bp.results', results_id='3ICE_AB_EF') }}">3ICE and alternative interfaces</a>: This example focuses on different interfaces within the same structure - here an hexameric ring structure of the Rho helicase transcription termination factor.<br>
+                  Depending of which pairs of chains are chosen for analysis, the fNAT values characterizing the interfaces differ: here 0.43 for interface AB vs EF and 0.85 for AB vs BC.
                 </li>
             </ul>
 
@@ -44,7 +44,7 @@
             <img class="responsive-img" src="{{ url_for('static', filename='img/run_1.png')}}"style="max-width:80%;">
           </div>
           <p>
-            The form is organised in two parts: the <span style="color: #4472c4">Input data</span>
+            The input form is organised in two parts: the <span style="color: #4472c4">Input data</span>
             and the <span style="color: #ed7d31">Selection</span>. <br />
             <br />
             In the <span style="color: #4472c4">Input data</span>, you can either:
@@ -55,7 +55,7 @@
             From this input PDB, in the <span style="color: #ed7d31">Selection</span> section, you'll need to define the two monomers for which the interface and the Screw parameters will be computed.<br />
             <b>Note: A <i>cleaning</i> step is performed in which all HETATM and water atoms are discarded from the input PDB.</b><br />
             For each monomer you can specify the chain, the residue range, or both.<br />
-            <b><i class="tiny material-icons valign">priority_high</i>Only the α-carbon of the monomers will be used for computing the helical parameters. Both monomers needs to have the same number.</b><i class="tiny material-icons valign">priority_high</i>
+            <b><i class="tiny material-icons valign">priority_high</i>Only the α-Carbon of the monomers will be used for computing the helical parameters. Both monomers needs to have the same number.</b><i class="tiny material-icons valign">priority_high</i>
           </p>
           <p>
             <b>Core Region:</b> A core region is a specific region of the monomer which will be used to compute the helical parameters and the residues at the interface.<br>
@@ -87,7 +87,7 @@
 
           <p>
             Helligeom allows you also to compare 2 interfaces by specifying a second interface.<br />
-            To do so, you must click on the text <i>2nd oligomeric form?</i>, and a new form as for the first oligomeric form will appear.
+            To do so, you must click on the text <i>2nd oligomeric form?</i>, and a new input form as for the first oligomeric form will appear.
           </p>
 
           <div class="center-align img_help">
@@ -186,7 +186,7 @@
             <ul class="browser-default">
              <li>take the entire Monomer 1 selection (not just the <i>core regions</i>), including non-protein atoms if they are part of the selection.</li>
              <li>create copies of this monomer applying the screw transformation</li>
-             <li>repeat the above step to match the number of monomers given by the form.</li>
+             <li>repeat the above step to match the number of monomers provided as input.</li>
             </ul>
             <b>Alignment on Z-axis?: </b>This option enables the alignment the oligomer to the global Z-axis.<br />
             <b>Write a mmCIF file?: </b>This option writes the structure file for the oligomer using the mmCIF file format instead of the PDB flat-file format. This is useful when constructing assemblies with more than 62 chains.<br />
@@ -200,7 +200,7 @@
           </p>
           <br >
           <br >
-          Once the construction is finished, an interactive view of the oligomer is displayed below the form (thanks to <a href="https://molstar.org/">Mol*</a>).
+          Once the construction is finished, an interactive view of the oligomer is displayed below the input form (thanks to <a href="https://molstar.org/">Mol*</a>).
           <div class="center-align img_help">
             <img class="responsive-img" src="{{ url_for('static', filename='img/result_1_bot_visu.png')}}"style="max-width:80%;">
           </div>
