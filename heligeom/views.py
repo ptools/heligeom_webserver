@@ -27,7 +27,7 @@ heligeom_bp = Blueprint(
     "heligeom_bp", __name__, template_folder="templates", static_folder="static"
 )
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 
 
 # Functions used to time spent on each page
