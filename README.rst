@@ -1,6 +1,6 @@
-j==============================
+==============================
 Heligeom WebServer
-===============================
+==============================
 
 This is the implementation of a Web Server for the tool **Heligeom**. The webserver address is `https://heligeom.galaxy.ibpc.fr/ <https://heligeom.galaxy.ibpc.fr/>`_
 
