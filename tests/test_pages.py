@@ -37,4 +37,4 @@ def test_contact(client):
     assert b"Created" in response.data
     assert b"Address" in response.data
     assert b"UPR 9080 CNRS" in response.data
-    assert b"Citations" in response.data
+    assert b"Citation" in response.data
