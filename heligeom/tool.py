@@ -326,10 +326,10 @@ class HeligeomInterface:
     def heli_ring(self, fileout, ncopies, z_align=True, mmCIF=False):
         # Create an AttractRigidBody from a RigidBody
         # First need to reduce the structures to Coarse grained structures
-        rb1_beads = reduce.reducer.reduce(self.monomer1.rb)
+        rb1_beads = reduce.reducer.reduce(self.core_monomer1)
         arec = ptools.AttractRigidBody(rb1_beads)  # type: ignore
 
-        rb2_beads = reduce.reducer.reduce(self.monomer2.rb)
+        rb2_beads = reduce.reducer.reduce(self.core_monomer2)
         alig = ptools.AttractRigidBody(rb2_beads)  # type: ignore
 
         if len(rb1_beads) != len(rb2_beads):
