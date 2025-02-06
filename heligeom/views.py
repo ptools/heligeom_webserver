@@ -21,10 +21,10 @@ from ptools.io.exceptions import InvalidPDBFormatError
 from .forms import Construction, InputStructures, validate_input_structure
 from .models import UserInputs, db
 from .tool import (
+    BeadsDifferentSizeError,
     HeligeomInterface,
     MonomersDifferentSizeError,
     MonomerSizeZeroError,
-    BeadsDifferentSizeError,
 )
 
 # Blueprint Configuration
