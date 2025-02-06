@@ -170,7 +170,7 @@ class HeligeomInterface:
         core_region2,
     ):
         # Parse the input file
-        global_rb = RigidBody.from_pdb(pdb_file)
+        global_rb = ptools.read_pdb(pdb_file)
 
         # Add manually the occupency property if it's not read
         if "occupancies" not in global_rb.atom_properties:
@@ -179,7 +179,7 @@ class HeligeomInterface:
             global_rb.occupancies = [0] * len(global_rb)
 
         # Discard hetero and water atoms
-        protein = global_rb.select("not hetero and not water").copy()
+        protein = global_rb.select("not hetero and not water and not altloc B").copy()
         # Renumber atoms of the protein for the molstar selections
         protein.reset_atom_indices(protein[0].index)
 

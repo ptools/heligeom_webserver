@@ -21,6 +21,7 @@ class DevConfig(Config):
     FLASK_ENV = "development"
     DEBUG = True
     TESTING = False
+    WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "heligeom.db")
 
 
