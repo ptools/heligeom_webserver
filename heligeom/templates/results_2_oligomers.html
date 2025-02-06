@@ -145,6 +145,26 @@
   <!-- visualisation-->
   {% if construct_data %}
 
+
+  {% if construct_data.flatten_errors %}
+  <div class="col s12 m6">
+    <div class="card">
+      <div class="card-content">
+        <div class="red-text" style="text-align: center;" >
+          {% if construct_data.oligomer_2nd %}
+            <p>Error occured when flattening the <b>2nd</b> oligomer:<br />
+          {% else %}
+            <p>Error occured when flattening the <b>1st</b> oligomer:<br />
+          {% endif %}
+            This is due to a different number of atoms in the reduced representation of monomers (most likely due to missing atoms inside one or several residues).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+
   <div class="row" id="visualisation">
     <div class="col s12 m6">
       <div class="card">
@@ -212,6 +232,7 @@
     <script> // Snippet to scroll down to the visualisation section once the form is validated.
       document.location.hash = '#visualisation';
     </script>
+    {% endif %}
     {% endif %}
   </div> <!-- end row -->
 

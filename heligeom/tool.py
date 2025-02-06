@@ -42,7 +42,13 @@ class MonomerSizeZeroError(BaseException):
 
 
 class MonomersDifferentSizeError(BaseException):
-    """Raised when 2 RigidBodys have differnt sizes."""
+    """Raised when 2 RigidBodys have different sizes."""
+
+    pass
+
+
+class BeadsDifferentSizeError(BaseException):
+    """Raised when 2 attract beads object have different sizes."""
 
     pass
 
@@ -325,6 +331,9 @@ class HeligeomInterface:
 
         rb2_beads = reduce.reducer.reduce(self.monomer2.rb)
         alig = ptools.AttractRigidBody(rb2_beads)  # type: ignore
+
+        if len(rb1_beads) != len(rb2_beads):
+            raise BeadsDifferentSizeError
 
         # Compute reference energy
         eref = utils.ener1(arec, alig, 7)

@@ -20,7 +20,12 @@ from ptools.io.exceptions import InvalidPDBFormatError
 
 from .forms import Construction, InputStructures, validate_input_structure
 from .models import UserInputs, db
-from .tool import HeligeomInterface, MonomersDifferentSizeError, MonomerSizeZeroError
+from .tool import (
+    HeligeomInterface,
+    MonomersDifferentSizeError,
+    MonomerSizeZeroError,
+    BeadsDifferentSizeError,
+)
 
 # Blueprint Configuration
 heligeom_bp = Blueprint(
@@ -60,7 +65,9 @@ def runpage():
     # Initialize submission form
     form = InputStructures()
 
+    print("titi")
     if request.method == "POST" and form.validate():
+        print("toto")
         # Generate UUID for storing files
         uniq_id = uuid.uuid4().hex
         # Create result folder
@@ -343,16 +350,35 @@ def results(results_id):
 
             # Name of the constructed PDB (used also in download function)
             filename = pathlib.Path(pdb_filename).stem
-            pdb_out_name = f'Construct_{filename}_N{n_mer}{"_Z" if z_align else ""}{"_flatten" if flatten else ""}'  # noqa: E501
-            pdb_out_name += f'{".cif" if mmCIF else ".pdb"}'
+            pdb_out_name = f"Construct_{filename}_N{n_mer}{'_Z' if z_align else ''}{'_flatten' if flatten else ''}"  # noqa: E501
+            pdb_out_name += f"{'.cif' if mmCIF else '.pdb'}"
 
             pdb_out_abs_path = path_to_result / pdb_out_name
 
             if flatten:
-                # Try to construct a ring oligomer and write the PDB result in pdb_out_abs_path
-                ring_hp, ring_rmsd, ring_fnat = heli_interface1.heli_ring(
-                    pdb_out_abs_path, n_mer, z_align, mmCIF
-                )
+                try:
+                    # Try to construct a ring oligomer and write the PDB result in pdb_out_abs_path
+                    ring_hp, ring_rmsd, ring_fnat = heli_interface1.heli_ring(
+                        pdb_out_abs_path, n_mer, z_align, mmCIF
+                    )
+                except BeadsDifferentSizeError:
+                    construct_data = {"flatten_errors": True, "oligomer_2nd": False}
+                    if not has_2nd_oligo:
+                        return render_template(
+                            "results.html",
+                            construct_form=construct_form,
+                            screw_data=screw_data,
+                            construct_data=construct_data,
+                        )
+                    else:
+                        return render_template(
+                            "results_2_oligomers.html",
+                            construct_form=construct_form,
+                            screw_data=screw_data,
+                            screw_data_bis=screw_data_bis,
+                            construct_data=construct_data,
+                        )
+
                 # Retrieve N & Pitch
                 ring_angle_degrees = math.degrees(ring_hp.angle)
                 ring_pitch = abs(ring_hp.normtranslation * (360.0 / abs(ring_angle_degrees)))
@@ -392,16 +418,26 @@ def results(results_id):
 
                 # Name of the constructed PDB (used also in download function)
                 filename2 = pathlib.Path(pdb_filename2).stem
-                pdb_out_name2 = f'Construct_{filename2}_2nd_N{n_mer}{"_Z" if z_align else ""}{"_flatten" if flatten else ""}'  # noqa: E501
-                pdb_out_name2 += f'{".cif" if mmCIF else ".pdb"}'
+                pdb_out_name2 = f"Construct_{filename2}_2nd_N{n_mer}{'_Z' if z_align else ''}{'_flatten' if flatten else ''}"  # noqa: E501
+                pdb_out_name2 += f"{'.cif' if mmCIF else '.pdb'}"
 
                 pdb_out_abs_path2 = path_to_result / pdb_out_name2
 
                 if flatten:
-                    # Try to construct a ring oligomer and write the PDB result in pdb_out_abs_path
-                    ring_hp, ring_rmsd, ring_fnat = heli_interface2.heli_ring(
-                        pdb_out_abs_path2, n_mer, z_align, mmCIF
-                    )
+                    try:
+                        # Try to construct a ring oligomer and write the PDB result in pdb_out_abs_path
+                        ring_hp, ring_rmsd, ring_fnat = heli_interface2.heli_ring(
+                            pdb_out_abs_path2, n_mer, z_align, mmCIF
+                        )
+                    except BeadsDifferentSizeError:
+                        construct_data = {"flatten_errors": True, "oligomer_2nd": True}
+                        return render_template(
+                            "results_2_oligomers.html",
+                            construct_form=construct_form,
+                            screw_data=screw_data,
+                            screw_data_bis=screw_data_bis,
+                            construct_data=construct_data,
+                        )
                     # Retrieve N & Pitch
                     ring_angle_degrees = math.degrees(ring_hp.angle)
                     ring_pitch = abs(ring_hp.normtranslation * (360.0 / abs(ring_angle_degrees)))
