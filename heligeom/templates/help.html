@@ -11,29 +11,6 @@
       <div class="col s12 m9 l10">
         <h2 class="header light blue-grey-text text-darken-3">Documentation</h2>
 
-        <div  class="section scrollspy" id="examples" style="padding-top: 0px;">
-          <h5 class="title_card_results">Examples</h5>
-
-          <p>
-            Here you can find a set of pre-computed results to explore Heligeom outputs, taken from the Heligeom webserver paper.
-            Each example can be explored by clicking on the <i>Examples</i> menu on the Run page.</li>
-            <ul class="browser-default">
-              <li><a href="{{ url_for('heligeom_bp.results', results_id='2GLS') }}">2GLS</a>: an oligomeric ring assembly.
-                In this structure, two successive chains (here A and B) provide a pitch of 0 and 6 monomers per turn. This information allows (re-)constructing a regular cyclic hexamer.<br>
-
-                <li><a href="{{ url_for('heligeom_bp.results', results_id='4ESV_core') }}">4ESV and core regions</a>: This example makes use of Heligeom server's capacity to compare two oligomeric forms, here to showcase the need for defining a core region in the case of flexible monomers.<br>
-                  For the 1st oligomeric form, the complete chains B and C are specified. In the 2nd oligomeric form the same two chains are specified, but a quasi-rigid "core" region is defined that excludes the N-terminal residues.<br>
-                  The Heligeom analysis produces different results according to the presence or absence of the N-terminal domain in the analysis. In the first oligomer definition, the different relative positions of the mobile N-terminal domain in the two monomers contributes to a large rmsd after superposition. The second oligomeric definition limits the analysis to a less-variable core region, resulting in a smaller rmsd and better-defined helical parameters.
-
-                </li>
-                <li><a href="{{ url_for('heligeom_bp.results', results_id='3ICE_AB_EF') }}">3ICE and alternative interfaces</a>: This example focuses on different interfaces within the same structure - here an hexameric ring structure of the Rho helicase transcription termination factor.<br>
-                  Depending of which pairs of chains are chosen for analysis, the fNAT values characterizing the interfaces differ: here 0.43 for interface AB vs EF and 0.85 for AB vs BC.
-                </li>
-            </ul>
-
-          </p>
-        </div>
-
 
 
         <div class="section scrollspy" id="run" style="padding-top: 0px;">
@@ -246,7 +223,6 @@
       <div class="col hide-on-small-only m3 l2">
         <div class="pinned" style="top: 70px;">
         <ul class="section table-of-contents">
-          <li><a href="#examples">Examples</a></li>
           <li><a href="#run">Run page</a></li>
           <li><a href="#1_oligo">Results for 1 oligomer</a></li>
           <li><a href="#2_oligo">Results for 2 oligomers</a></li>

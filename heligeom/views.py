@@ -480,6 +480,11 @@ def help():
     return render_template("help.html")
 
 
+@heligeom_bp.route("/examples")
+def examples():
+    return render_template("examples.html")
+
+
 @heligeom_bp.route("/about")
 def about():
     return render_template("about.html")
