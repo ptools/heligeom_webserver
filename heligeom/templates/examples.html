@@ -30,13 +30,15 @@
         <p>
             <a href="{{ url_for('heligeom_bp.results', results_id='4ESV_core') }}">Link to the results</a><br />
 
-            The proteins making up helicase DNAse B in the 4ESV structure have two domains. In the different monomers of the crystallized molecule, the N-terminal domain is seen to have multiple orientations relative to the C-terminal domain. 
-            This example highlights Heligeom server' capacity to compare two oligomeric forms, showcasing the importance of defining a core region in the case of flexible monomers.<br>
-			
-            For the 1st oligomeric form, the complete chains B and C are specified. In the 2nd oligomeric form the same two chains are specified, but a quasi-rigid "core" region is defined that excludes the mobile N-terminal domain.<br>
+            The proteins making up helicase DNAse B in the 4ESV structure have two domains. In the different monomers of the crystallized molecule, the N-terminal domain is seen to have multiple orientations relative to the C-terminal domain.
+            This example highlights Heligeom server' capacity to compare two oligomeric forms, showcasing the importance of defining a core region in the case of flexible monomers.<br><br/>
 
-            One sees that Heligeom produces different results according to the presence or absence of the N-terminal domain in the analysis.
-            When the complete monomers are used for the helical analysis (first oligomeric definition), the different relative orientations of the N-terminal domains contribute to a large rmsd after superposition, which affects the calculated screw transformation.
+            For the 1st oligomeric form, the complete chains B and C are specified. In the 2nd oligomeric form the same two chains are specified,
+             but a quasi-rigid "core" region is defined that excludes the mobile N-terminal domain.<br><br/>
+
+            One sees that Heligeom produces different results according to the presence or absence of the N-terminal domain in the analysis.<br/>
+            When the complete monomers are used for the helical analysis (first oligomeric definition),
+            the different relative orientations of the N-terminal domains contribute to a large rmsd after superposition, which affects the calculated screw transformation.<br/>
             Limiting the analysis to the stable core regions, as in the second oligomeric definition, results in a smaller rmsd and more meaningful helical parameters.
         </p>
 
@@ -52,19 +54,27 @@
         <h3 class="title_card_results">4ESV ring flattening.</h3>
 
         <p>
-            <a href="{{ url_for('heligeom_bp.results', results_id='4ESV_flatten') }}">Link to the results</a><br />
+            <a href="{{ url_for('heligeom_bp.results', results_id='4ESV_flat') }}">Link to the results</a><br />
 
 			<!-- Data for this example: 4ESV Chains B C, residue range 132-365i, core definition 184-365 -->
 
-			The DNAse B molecule in 4ESV is organized as a shallow helix wih a pitch of less than 40 A. Suggested mechanisms for this enzyme's function involve a transition from this helical form to a ring conformation. Here we will show how Heligeom server can be used to explore possible ring geometries close to the helical crystal structure.
+			The DNAse B molecule in 4ESV is organized as a shallow helix wih a pitch of less than 40 A.
+      Suggested mechanisms for this enzyme's function involve a transition from this helical form to a ring conformation.<br/>
+      Here we will show how Heligeom server can be used to explore possible ring geometries close to the helical crystal structure:<br/><br/>
 
-			As in the <i>"4ESV and core regions"</i> example, residues 184-365 of chains B and C have been defined as the core regions, which excludes the mobile N-terminal domains and results in a core-assembly pitch of 38.1 A and 6.04 monomers per turn.
+			As in the <i>"4ESV and core regions"</i> example, residues 184-365 of chains B and C have been defined as the core regions,
+      which excludes the mobile N-terminal domains and results in a core-assembly pitch of 38.1 A and 6.04 monomers per turn.<br/><br/>
 
-			For the present example you may obtain a ring assembly having exactly 6 monomers and a pitch of 0, by constructing an assembly while requesting "flattening" of the starting helix. This launches a Monte Carlo procedure to adjust the monomer core packing in order to attain the closest integral number of monomers per turn, as described in the Help page.
-			
-			Concretely, you enter 6 for the number of monomers and check the box <i>"Flatten the oligomer"</i>. We also recommend aligning the axis of the assembly to the Z-axis by checking the appropriate box.
+			For the present example you may obtain a ring assembly having exactly 6 monomers and a pitch of 0,
+      by constructing an assembly while requesting "flattening" of the starting helix.<br/>
+      This launches a Monte Carlo procedure to adjust the monomer core packing in order to attain the closest integral number of monomers per turn,
+      as described in the Help page.<br/><br/>
 
-			For this example we also pre-defined each monomer to include a few N-terminal domain residues as well as the core region, in order to better visualize where the flexible N-terminal domain is joined to the core.
+			Concretely, you enter 6 for the number of monomers and check the box <i>"Flatten the oligomer"</i>.
+      We also recommend aligning the axis of the assembly to the Z-axis by checking the appropriate box.<br/>
+
+			For this example we also pre-defined each monomer to include a few N-terminal domain residues as well as the core region,
+      in order to better visualize where the flexible N-terminal domain is joined to the core.<br/><br/>
 			However, because the construction is made by assembling identical copies of the first monomer, no N-terminal variability will be present in the resulting assembly.
 		</p>
 

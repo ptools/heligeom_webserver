@@ -185,19 +185,18 @@
     var instance = M.Collapsible.getInstance(collapsible);
     instance.open();
   }
- 
+
   document.getElementById("example_4ESV_flatten").onclick = function() {
     document.getElementById("pdb_id").value="4ESV";
     document.getElementById("chain1_id").value="B";
     document.getElementById("chain2_id").value="C";
     document.getElementById("res_range1").value="132-365";
     document.getElementById("res_range2").value="132-365";
-    document.getElementById("core_filter1").click();
-    document.getElementById("core_filter2").click();
+    document.getElementById("core_filter1-1").click();
+    document.getElementById("core_filter2-1").click();
     document.getElementById("core_region1").value="184-365";
     document.getElementById("core_region2").value="184-365";
   }
-
 
 </script>
 {% endblock %}

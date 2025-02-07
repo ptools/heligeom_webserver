@@ -52,6 +52,21 @@ def add_examples(db):
     db.session.add(ice_AB_EF)
     db.session.commit()
 
+    esv_flat = UserInputs(
+        request_id="4ESV_flat",
+        pdb_filename="4ESV.pdb",
+        chain1_id="B",
+        res_range1="132-365",
+        chain2_id="C",
+        res_range2="132-365",
+        core_filter1="manual",
+        core_region1="184-365",
+        core_filter2="manual",
+        core_region2="184-365",
+    )
+    db.session.add(esv_flat)
+    db.session.commit()
+
 
 def create_app(config_object=None, clear_database=False):
     # create and configure the app

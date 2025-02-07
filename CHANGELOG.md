@@ -1,3 +1,10 @@
+**1.2.0**
+
+- Handle alternate location (take location A by default) with ptools update.
+- Return error message when the reduced pdbs don't have the same size for the Flattening.
+- Flattening take into account the core regions now.
+- Add an example for the flattening
+
 **1.1.0**
 
 - Improve English in text
