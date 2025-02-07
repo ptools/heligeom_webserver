@@ -25,6 +25,7 @@
               <li><a class="grey-text text-darken-3" id="example_2GLS">2GLS ring analysis</a></li>
               <li><a class="grey-text text-darken-3" id="example_4ESV">4ESV and core regions</a></li>
               <li><a class="grey-text text-darken-3" id="example_3ICE">3ICE and alternative interfaces</a></li>
+              <li><a class="grey-text text-darken-3" id="example_4ESV_flatten">4ESV flattening</a></li>
             </ul>
           <!-- <button class="header waves-effect grey lighten-5 grey-text text-darken-3 btn" type="button" id="example"><i class="material-icons left hide-on-small-only">info_outline</i>Example</button> -->
         </div>
@@ -184,6 +185,19 @@
     var instance = M.Collapsible.getInstance(collapsible);
     instance.open();
   }
+ 
+  document.getElementById("example_4ESV_flatten").onclick = function() {
+    document.getElementById("pdb_id").value="4ESV";
+    document.getElementById("chain1_id").value="B";
+    document.getElementById("chain2_id").value="C";
+    document.getElementById("res_range1").value="132-365";
+    document.getElementById("res_range2").value="132-365";
+    document.getElementById("core_filter1").click();
+    document.getElementById("core_filter2").click();
+    document.getElementById("core_region1").value="184-365";
+    document.getElementById("core_region2").value="184-365";
+  }
+
 
 </script>
 {% endblock %}

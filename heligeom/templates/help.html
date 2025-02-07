@@ -31,12 +31,12 @@
             </ul>
             From this input PDB, in the <span style="color: #ed7d31">Selection</span> section, you'll need to define the two monomers for which the interface and the Screw parameters will be computed.<br />
             <b>Note: A <i>cleaning</i> step is performed in which all HETATM and water atoms are discarded from the input PDB.</b><br />
-            For each monomer you can specify the chain, the residue range, or both.<br />
-            <b><i class="tiny material-icons valign">priority_high</i>Only the α-Carbon of the monomers will be used for computing the helical parameters. Both monomers needs to have the same number.</b><i class="tiny material-icons valign">priority_high</i>
+            Each monomer may be specified by the chain, the residue range, or both and this definition dictates what will be includd in the displayed molecule and any constructions.<br />
+            <b><i class="tiny material-icons valign">priority_high</i>Only the α-Carbons of the monomers will be used for computing the helical parameters; both monomers need to have the same number.</b><i class="tiny material-icons valign">priority_high</i>
           </p>
           <p>
-            <b>Core Region:</b> A core region is a specific region of the monomer which will be used to compute the helical parameters and the residues at the interface.<br>
-            <b><i class="tiny material-icons valign">priority_high</i>Careful! Even if a core is defined, during the construction of an oligomer the whole monomer will be used, not just the core region.</b><i class="tiny material-icons valign">priority_high</i>
+            <b>Core Region:</b> If specified, a core region is a region of the specified monomer which will be used to compute the helical parameters and the residues at the interface. This may be necessary to focus the helical analysis on structurally similar (low-rmsd) "core" regions of the two specified monomers.<br>
+            <b><i class="tiny material-icons valign">priority_high</i>Careful! Even if a core is defined, during the construction of an oligomer the whole monomer defined by the chain/residue range will be used, not just the core region.</b><i class="tiny material-icons valign">priority_high</i>
           </p>
 
           <h6 class="header">Missing Residues</h6>
@@ -53,7 +53,7 @@
           <h6 class="header">Non-protein atoms</h6>
 
           <p>
-            As stated above, all HETATM and waters atoms are discarded from the input before the selection process.<br />
+            As stated above, all HETATM and water atoms are discarded from the input before the selection process.<br />
             If one wishes to keep non-protein atoms for the oligomer construction step, we suggest renaming the corresponding atom lines in the PDB file from "HETATM" to "ATOM&nbsp;&nbsp;". They will not be used for the Screw calculation because only α-Carbon monomers are handled.
           </p>
 
