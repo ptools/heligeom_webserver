@@ -55,10 +55,11 @@ Citation
 
 To cite the Heligeom webserver, please refer to the following publications:
 
+.. [1] Santuz H, Laurent B, Robert CH, and Prévost C (2025) Heligeom: A web resource to generate, analyze, and visualize filament architectures based on pairwise association geometries of biological macromolecules. Journal of Molecular Biology. `https://doi.org/10.1016/j.jmb.2025.169019 <https://doi.org/10.1016/j.jmb.2025.169019>`_
+
 References
 ------------
 
-.. [1] Santuz H, Laurent B, Robert CH, and Prévost C (2025) Heligeom: A web resource to generate, analyze, and visualize filament architectures based on pairwise association geometries of biological macromolecules. (submitted).
 
 .. [2] Boyer B, Ezelin J, Poulain P, Saladin A, Zacharias M, Robert CH, and Prévost C (2015) An Integrative Approach to the Study of Filamentous Oligomeric Assemblies, with Application to RecA. PLOS ONE 10(3): e0116414.
 
