@@ -1,0 +1,85 @@
+{
+    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "type": "SoftwareSourceCode",
+    "applicationCategory": "Structural Biology",
+    "author": [
+        {
+            "id": "https://orcid.org/0000-0001-6149-9480",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "CNRS"
+            },
+            "familyName": "Santuz",
+            "givenName": "Hubert"
+        },
+        {
+            "id": "https://orcid.org/0000-0003-0337-1504",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "CNRS"
+            },
+            "familyName": "Robert",
+            "givenName": "Charles H."
+        },
+        {
+            "id": "https://orcid.org/0000-0003-3516-6687",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "CNRS"
+            },
+            "familyName": "Prevost",
+            "givenName": "Chantal"
+        },
+        {
+            "id": "https://orcid.org/0000-0002-1714-2238",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "CNRS"
+            },
+            "familyName": "Laurent",
+            "givenName": "Benoist"
+        }
+    ],
+    "codeRepository": "https://github.com/ptools/heligeom_webserver",
+    "dateCreated": "2020-09-15",
+    "dateModified": "2025-02-07",
+    "datePublished": "2024-12-11",
+    "description": "Heligeom is a tool, part of Ptools, for characterizing, manipulating and assembling structural units with a screw organization.",
+    "downloadUrl": "https://github.com/ptools/heligeom_webserver/archive/refs/tags/v1.2.0.tar.gz",
+    "funder": {
+        "type": "Organization",
+        "name": "French State, CNRS, University of Paris Cité"
+    },
+    "keywords": [
+        "Oligomeric protein assembly",
+        "Cyclic protein oligomer",
+        "Helical protein filament",
+        "Plasticity",
+        "Screw transformation",
+        "Integrative modeling"
+    ],
+    "license": "https://spdx.org/licenses/GPL-3.0+",
+    "name": "Heligeom WebServer",
+    "programmingLanguage": "Python 3",
+    "relatedLink": [
+        "https://heligeom.galaxy.ibpc.fr/",
+        "https://doi.org/10.1016/j.jmb.2025.169019"
+    ],
+    "softwareRequirements": [
+        "https://flask.palletsprojects.com/en/2.2.x/",
+        "https://github.com/ptools/ptools"
+    ],
+    "version": "1.2.0",
+    "contIntegration": "https://github.com/ptools/heligeom_webserver/actions",
+    "codemeta:continuousIntegration": {
+        "id": "https://github.com/ptools/heligeom_webserver/actions"
+    },
+    "developmentStatus": "active",
+    "funding": "ANR-11-LABX-0011, ANR-11-EQPX-0008",
+    "issueTracker": "https://github.com/ptools/heligeom_webserver/issues",
+    "referencePublication": "https://doi.org/10.1016/j.jmb.2025.169019"
+}
